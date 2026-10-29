@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:background="@drawable/bg_reward_dialog"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingTop="22.0dip"
+        android:paddingBottom="8.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="22.0dip"
+        android:paddingEnd="22.0dip">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="60.0dip">
+            <FrameLayout
+                android:layout_gravity="center"
+                android:background="@drawable/bg_round_12_blue_selected"
+                android:layout_width="56.0dip"
+                android:layout_height="56.0dip">
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:src="@drawable/ic_reward_gift" />
+            </FrameLayout>
+            <ImageView
+                android:layout_gravity="end|center|top"
+                android:id="@id/reward_ad_close"
+                android:background="@drawable/bg_effect_click"
+                android:padding="8.0dip"
+                android:layout_width="32.0dip"
+                android:layout_height="32.0dip"
+                android:src="@drawable/ic_result_close"
+                android:tint="@color/cl_text_mean"
+                android:contentDescription="@string/reward_ui_close" />
+        </FrameLayout>
+        <TextView
+            android:theme="@style/fontSemi"
+            android:textSize="21.0dip"
+            android:textColor="@color/cl_text_word"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15.0dip"
+            android:text="@string/reward_ui_title"
+            android:includeFontPadding="false" />
+        <TextView
+            android:textSize="12.5dip"
+            android:textColor="@color/cl_text_mean"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8.0dip"
+            android:text="@string/reward_ui_detail"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="3.0dip" />
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/bg_round_12_blue_selected"
+            android:padding="18.0dip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22.0dip">
+            <TextView
+                android:textSize="12.799988dip"
+                android:textColor="@color/cl_text_mean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_ui_remaining"
+                android:includeFontPadding="false" />
+            <FrameLayout
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8.0dip">
+                <TextView
+                    android:theme="@style/fontSemi"
+                    android:textSize="36.0dip"
+                    android:textColor="@color/cl_default_white"
+                    android:layout_gravity="center"
+                    android:id="@id/reward_ad_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:includeFontPadding="false" />
+                <TextView
+                    android:theme="@style/fontSemi"
+                    android:textSize="18.0dip"
+                    android:textColor="@color/cl_default_white"
+                    android:layout_gravity="center"
+                    android:id="@id/reward_ad_gain"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:translationX="65.0dip"
+                    android:importantForAccessibility="no" />
+            </FrameLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18.0dip">
+            <ImageView
+                android:layout_width="22.0dip"
+                android:layout_height="22.0dip"
+                android:src="@drawable/ic_reward_video" />
+            <TextView
+                android:textSize="13.0dip"
+                android:textColor="@color/cl_text_word"
+                android:layout_width="0.0dip"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_ui_each_video"
+                android:includeFontPadding="false"
+                android:layout_weight="1.0"
+                android:layout_marginStart="10.0dip" />
+            <TextView
+                android:theme="@style/fontSemi"
+                android:textSize="13.0dip"
+                android:textColor="@color/cl_default_white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_ui_bonus"
+                android:includeFontPadding="false" />
+        </LinearLayout>
+        <TextView
+            android:textSize="13.0dip"
+            android:textColor="@color/cl_text_word"
+            android:id="@id/reward_ad_daily_remaining"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.0dip"
+            android:includeFontPadding="false" />
+        <TextView
+            android:textSize="11.5dip"
+            android:textColor="@color/cl_text_mean"
+            android:id="@id/reward_ad_rule"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.0dip"
+            android:text="@string/reward_ui_rule"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="3.0dip" />
+        <LinearLayout
+            android:enabled="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:id="@id/reward_ad_watch"
+            android:background="@drawable/bg_reward_action"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginTop="20.0dip">
+            <ProgressBar
+                android:id="@id/reward_ad_loading"
+                android:layout_width="18.0dip"
+                android:layout_height="18.0dip"
+                android:layout_marginEnd="9.0dip"
+                android:indeterminateTint="@color/cl_text_mean"
+                style="?android:progressBarStyleSmall" />
+            <ImageView
+                android:id="@id/reward_ad_play"
+                android:visibility="gone"
+                android:layout_width="20.0dip"
+                android:layout_height="20.0dip"
+                android:src="@drawable/ic_reward_video"
+                android:tint="@color/white"
+                android:layout_marginEnd="9.0dip" />
+            <TextView
+                android:theme="@style/fontSemi"
+                android:textSize="15.0dip"
+                android:textColor="@color/cl_text_mean"
+                android:id="@id/reward_ad_watch_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_ui_loading"
+                android:includeFontPadding="false" />
+        </LinearLayout>
+        <TextView
+            android:textSize="11.0dip"
+            android:textColor="@color/cl_text_mean"
+            android:gravity="center"
+            android:id="@id/reward_ad_status"
+            android:visibility="invisible"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6.0dip"
+            android:text="@string/reward_ui_load_failed"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="3.0dip"
+            android:accessibilityLiveRegion="polite" />
+    </LinearLayout>
+</ScrollView>

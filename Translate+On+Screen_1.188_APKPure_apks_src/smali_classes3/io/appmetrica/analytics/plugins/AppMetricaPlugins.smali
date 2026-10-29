@@ -1,0 +1,14 @@
+.class public interface abstract Lio/appmetrica/analytics/plugins/AppMetricaPlugins;
+.super Ljava/lang/Object;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+
+# virtual methods
+.method public abstract reportError(Lio/appmetrica/analytics/plugins/PluginErrorDetails;Ljava/lang/String;)V
+.end method
+
+.method public abstract reportError(Ljava/lang/String;Ljava/lang/String;Lio/appmetrica/analytics/plugins/PluginErrorDetails;)V
+.end method
+
+.method public abstract reportUnhandledException(Lio/appmetrica/analytics/plugins/PluginErrorDetails;)V
+.end method

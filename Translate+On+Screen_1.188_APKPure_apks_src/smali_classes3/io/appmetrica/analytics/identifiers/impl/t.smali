@@ -1,0 +1,10 @@
+.class public abstract Lio/appmetrica/analytics/identifiers/impl/t;
+.super Landroid/os/Binder;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+# interfaces
+.implements Lio/appmetrica/analytics/identifiers/impl/u;
+
+
+# static fields
+.field public static final synthetic a:I

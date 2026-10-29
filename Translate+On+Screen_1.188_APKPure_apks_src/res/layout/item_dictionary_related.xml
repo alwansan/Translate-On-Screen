@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:paddingTop="2.0dip"
+    android:paddingBottom="12.0dip"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16.0dip"
+    android:paddingEnd="16.0dip"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:id="@id/layoutSynonyms"
+        android:paddingTop="6.0dip"
+        android:paddingBottom="6.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="17.0dip"
+            android:textColor="@color/cl_text_word"
+            android:layout_width="120.0dip"
+            android:layout_height="wrap_content"
+            android:text="Synonyms:" />
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:fillViewport="false"
+            android:layout_weight="1.0">
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:id="@id/containerSynonyms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </HorizontalScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:id="@id/layoutAntonyms"
+        android:paddingTop="6.0dip"
+        android:paddingBottom="6.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="17.0dip"
+            android:textColor="@color/cl_text_word"
+            android:layout_width="120.0dip"
+            android:layout_height="wrap_content"
+            android:text="Antonyms:" />
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:fillViewport="false"
+            android:layout_weight="1.0">
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:id="@id/containerAntonyms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </HorizontalScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:id="@id/layoutRelatedWords"
+        android:paddingTop="6.0dip"
+        android:paddingBottom="6.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="17.0dip"
+            android:textColor="@color/cl_text_word"
+            android:layout_width="120.0dip"
+            android:layout_height="wrap_content"
+            android:text="Related words:" />
+        <HorizontalScrollView
+            android:scrollbars="none"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:fillViewport="false"
+            android:layout_weight="1.0">
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:id="@id/containerRelatedWords"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </HorizontalScrollView>
+    </LinearLayout>
+</LinearLayout>

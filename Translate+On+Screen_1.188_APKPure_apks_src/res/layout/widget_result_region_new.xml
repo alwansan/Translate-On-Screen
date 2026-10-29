@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:id="@id/layout_result_ll_root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3.0dip"
+    android:layout_marginBottom="5.0dip"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog_center_stroke"
+        android:paddingBottom="8.0dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20.0dip"
+        android:layout_marginRight="20.0dip">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="30.0dip"
+            android:layout_marginLeft="5.0dip"
+            android:layout_marginRight="5.0dip">
+            <ImageView
+                android:id="@id/img_move"
+                android:padding="7.0dip"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="30.0dip"
+                android:layout_height="fill_parent"
+                android:foreground="@drawable/fg_efftect_circle"
+                android:src="@drawable/ic_result_move" />
+            <ImageView
+                android:id="@id/img_restart"
+                android:padding="7.0dip"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="30.0dip"
+                android:layout_height="fill_parent"
+                android:foreground="@drawable/fg_efftect_circle"
+                android:src="@drawable/ic_result_settings" />
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:id="@id/container_widget_ll_translation"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="30.0dip"
+                android:layout_height="fill_parent"
+                android:foreground="@drawable/fg_efftect_circle">
+                <TextView
+                    android:theme="@style/fontSemi"
+                    android:textSize="17.0dip"
+                    android:textColor="@color/cl_text_word"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:id="@id/container_widget_tv_translation_engine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:text="G"
+                    android:includeFontPadding="false" />
+                <ImageView
+                    android:layout_gravity="center|left"
+                    android:layout_width="8.0dip"
+                    android:layout_height="fill_parent"
+                    android:src="@drawable/ic_more_down" />
+            </LinearLayout>
+            <com.recognize_text.translate.screen.domain.widgets.widget_main.WidgetChooseLanguage
+                android:gravity="center|left"
+                android:layout_gravity="center"
+                android:id="@id/widget_result_region_wcl"
+                android:layout_width="78.0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3.0dip" />
+            <View
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0" />
+            <ImageView
+                android:layout_gravity="right"
+                android:id="@id/layout_result_detail_iv_close"
+                android:padding="7.0dip"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_width="30.0dip"
+                android:layout_height="fill_parent"
+                android:foreground="@drawable/fg_efftect_circle"
+                android:src="@drawable/ic_result_close" />
+        </LinearLayout>
+        <View
+            android:background="@color/cl_underline"
+            android:layout_width="fill_parent"
+            android:layout_height="0.8000001dip" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@id/layout_result_detail_ll_container_source"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@id/fragment_translate_ll_container_no_text"
+                android:visibility="visible"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9.0dip"
+                android:layout_marginRight="6.0dip">
+                <ImageView
+                    android:id="@id/layout_result_iv_flag_source"
+                    android:padding="6.0dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/zflag_en_us" />
+                <TextView
+                    android:theme="@style/fontSemi"
+                    android:textSize="17.0dip"
+                    android:textColor="@color/cl_text_word"
+                    android:layout_gravity="center|left"
+                    android:id="@id/layout_result_tv_language_source"
+                    android:layout_width="0.0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5.0dip"
+                    android:text="English"
+                    android:singleLine="true"
+                    android:includeFontPadding="false"
+                    android:layout_weight="1.0" />
+                <ImageView
+                    android:id="@id/layout_result_iv_dict_source"
+                    android:padding="7.5dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/ic_dictionary_svg"
+                    android:tint="@color/cl_text_word" />
+                <ImageView
+                    android:id="@id/layout_result_iv_copy_source"
+                    android:padding="7.0dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/ic_copy_new" />
+                <ImageView
+                    android:id="@id/layout_result_iv_speak_source"
+                    android:padding="6.5999756dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/ic_speaker_new" />
+            </LinearLayout>
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:theme="@style/fontMedium"
+                    android:textSize="16.0dip"
+                    android:textColor="@color/cl_text_word"
+                    android:id="@id/layout_result_detail_edt_text_source"
+                    android:background="@drawable/bg_round_12"
+                    android:scrollbars="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15.0dip"
+                    android:layout_marginRight="15.0dip"
+                    android:maxHeight="120.0dip"
+                    android:text="This is sample text"
+                    android:includeFontPadding="false" />
+                <TextView
+                    android:theme="@style/fontMedium"
+                    android:textSize="16.0dip"
+                    android:textColor="@color/cl_text_word"
+                    android:id="@id/layout_result_detail_tv_text_source"
+                    android:background="@drawable/bg_round_12"
+                    android:visibility="gone"
+                    android:scrollbars="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15.0dip"
+                    android:layout_marginRight="15.0dip"
+                    android:maxHeight="120.0dip"
+                    android:text="This is sample text"
+                    android:includeFontPadding="false" />
+            </FrameLayout>
+            <View
+                android:background="@color/cl_underline"
+                android:layout_width="fill_parent"
+                android:layout_height="0.39999998dip"
+                android:layout_marginLeft="15.0dip"
+                android:layout_marginTop="3.0dip"
+                android:layout_marginRight="15.0dip" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9.0dip"
+                android:layout_marginRight="6.0dip">
+                <ImageView
+                    android:id="@id/layout_result_iv_flag_target"
+                    android:padding="6.0dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/zflag_vn" />
+                <TextView
+                    android:theme="@style/fontSemi"
+                    android:textSize="17.0dip"
+                    android:textColor="@color/cl_text_word"
+                    android:layout_gravity="center|left"
+                    android:id="@id/layout_result_tv_language_target"
+                    android:layout_width="0.0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5.0dip"
+                    android:text="Vietnamese"
+                    android:singleLine="true"
+                    android:includeFontPadding="false"
+                    android:layout_weight="1.0" />
+                <ImageView
+                    android:id="@id/layout_result_iv_copy_target"
+                    android:padding="7.0dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/ic_copy_new" />
+                <ImageView
+                    android:id="@id/layout_result_iv_speak_target"
+                    android:padding="6.5999756dip"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="30.0dip"
+                    android:layout_height="30.0dip"
+                    android:foreground="@drawable/fg_efftect_circle"
+                    android:src="@drawable/ic_speaker_new" />
+            </LinearLayout>
+            <TextView
+                android:theme="@style/fontMedium"
+                android:textSize="16.0dip"
+                android:textColor="@color/cl_text_word"
+                android:id="@id/layout_result_detail_tv_text_translated"
+                android:scrollbars="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15.0dip"
+                android:layout_marginRight="15.0dip"
+                android:maxHeight="120.0dip"
+                android:text="Đây là văn bản mẫu"
+                android:includeFontPadding="false" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

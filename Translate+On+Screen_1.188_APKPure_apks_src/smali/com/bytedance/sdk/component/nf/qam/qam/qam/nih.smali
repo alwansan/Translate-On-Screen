@@ -1,0 +1,11 @@
+.class public interface abstract Lcom/bytedance/sdk/component/nf/qam/qam/qam/nih;
+.super Ljava/lang/Object;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+
+# virtual methods
+.method public abstract nf()Z
+.end method
+
+.method public abstract qam()Ljava/util/concurrent/ExecutorService;
+.end method

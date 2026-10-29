@@ -1,0 +1,23 @@
+.class public interface abstract Lcom/mbridge/msdk/config/component/load/downloader/f;
+.super Ljava/lang/Object;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+
+# virtual methods
+.method public abstract a(Lcom/mbridge/msdk/config/component/load/downloader/b;)V
+.end method
+
+.method public abstract a(Lcom/mbridge/msdk/config/component/load/downloader/b;Lcom/mbridge/msdk/config/component/load/downloader/DownloadProgress;)V
+.end method
+
+.method public abstract a(Lcom/mbridge/msdk/config/component/load/downloader/b;Lcom/mbridge/msdk/config/component/load/downloader/a;)V
+.end method
+
+.method public abstract b(Lcom/mbridge/msdk/config/component/load/downloader/b;)V
+.end method
+
+.method public abstract c(Lcom/mbridge/msdk/config/component/load/downloader/b;)V
+.end method
+
+.method public abstract d(Lcom/mbridge/msdk/config/component/load/downloader/b;)V
+.end method

@@ -1,0 +1,1026 @@
+.class public final Lrn/a;
+.super Lrn/e;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+# interfaces
+.implements Lrn/d;
+
+
+# static fields
+.field public static final e:Z
+
+
+# instance fields
+.field public c:Landroid/content/Context;
+
+.field public final d:Ljava/util/ArrayList;
+
+
+# direct methods
+.method static constructor <clinit>()V
+    .locals 2
+
+    .line 1
+    sget v0, Landroid/os/Build$VERSION;->SDK_INT:I
+
+    .line 2
+    .line 3
+    const/16 v1, 0x1d
+
+    .line 4
+    .line 5
+    if-lt v0, v1, :cond_0
+
+    .line 6
+    .line 7
+    const/4 v0, 0x1
+
+    .line 8
+    goto :goto_0
+
+    .line 9
+    :cond_0
+    const/4 v0, 0x0
+
+    .line 10
+    :goto_0
+    sput-boolean v0, Lrn/a;->e:Z
+
+    .line 11
+    .line 12
+    return-void
+    .line 13
+    .line 14
+    .line 15
+    .line 16
+    .line 17
+    .line 18
+    .line 19
+.end method
+
+.method public constructor <init>()V
+    .locals 6
+
+    .line 1
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    .line 2
+    .line 3
+    .line 4
+    sget v0, Landroid/os/Build$VERSION;->SDK_INT:I
+
+    .line 5
+    .line 6
+    const/16 v1, 0x1d
+
+    .line 7
+    .line 8
+    if-lt v0, v1, :cond_0
+
+    .line 9
+    .line 10
+    new-instance v0, Lsn/a;
+
+    .line 11
+    .line 12
+    invoke-direct {v0}, Ljava/lang/Object;-><init>()V
+
+    .line 13
+    .line 14
+    .line 15
+    goto :goto_0
+
+    .line 16
+    :cond_0
+    const/4 v0, 0x0
+
+    .line 17
+    :goto_0
+    new-instance v1, Lsn/m;
+
+    .line 18
+    .line 19
+    sget-object v2, Lsn/e;->e:Lqi/k;
+
+    .line 20
+    .line 21
+    invoke-direct {v1, v2}, Lsn/m;-><init>(Lsn/l;)V
+
+    .line 22
+    .line 23
+    .line 24
+    new-instance v2, Lsn/m;
+
+    .line 25
+    .line 26
+    sget-object v3, Lsn/k;->a:Lsn/i;
+
+    .line 27
+    .line 28
+    invoke-direct {v2, v3}, Lsn/m;-><init>(Lsn/l;)V
+
+    .line 29
+    .line 30
+    .line 31
+    new-instance v3, Lsn/m;
+
+    .line 32
+    .line 33
+    sget-object v4, Lsn/h;->a:Lsn/f;
+
+    .line 34
+    .line 35
+    invoke-direct {v3, v4}, Lsn/m;-><init>(Lsn/l;)V
+
+    .line 36
+    .line 37
+    .line 38
+    const/4 v4, 0x4
+
+    .line 39
+    new-array v4, v4, [Lsn/n;
+
+    .line 40
+    .line 41
+    const/4 v5, 0x0
+
+    .line 42
+    aput-object v0, v4, v5
+
+    .line 43
+    .line 44
+    const/4 v0, 0x1
+
+    .line 45
+    aput-object v1, v4, v0
+
+    .line 46
+    .line 47
+    const/4 v0, 0x2
+
+    .line 48
+    aput-object v2, v4, v0
+
+    .line 49
+    .line 50
+    const/4 v0, 0x3
+
+    .line 51
+    aput-object v3, v4, v0
+
+    .line 52
+    .line 53
+    invoke-static {v4}, Lml/k;->l([Ljava/lang/Object;)Ljava/util/ArrayList;
+
+    .line 54
+    .line 55
+    .line 56
+    move-result-object v0
+
+    .line 57
+    new-instance v1, Ljava/util/ArrayList;
+
+    .line 58
+    .line 59
+    invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
+
+    .line 60
+    .line 61
+    .line 62
+    invoke-virtual {v0}, Ljava/util/ArrayList;->size()I
+
+    .line 63
+    .line 64
+    .line 65
+    move-result v2
+
+    .line 66
+    :cond_1
+    :goto_1
+    if-ge v5, v2, :cond_2
+
+    .line 67
+    .line 68
+    invoke-virtual {v0, v5}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+
+    .line 69
+    .line 70
+    .line 71
+    move-result-object v3
+
+    .line 72
+    add-int/lit8 v5, v5, 0x1
+
+    .line 73
+    .line 74
+    move-object v4, v3
+
+    .line 75
+    check-cast v4, Lsn/n;
+
+    .line 76
+    .line 77
+    invoke-interface {v4}, Lsn/n;->isSupported()Z
+
+    .line 78
+    .line 79
+    .line 80
+    move-result v4
+
+    .line 81
+    if-eqz v4, :cond_1
+
+    .line 82
+    .line 83
+    invoke-virtual {v1, v3}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+
+    .line 84
+    .line 85
+    .line 86
+    goto :goto_1
+
+    .line 87
+    :cond_2
+    iput-object v1, p0, Lrn/a;->d:Ljava/util/ArrayList;
+
+    .line 88
+    .line 89
+    return-void
+    .line 90
+    .line 91
+    .line 92
+    .line 93
+    .line 94
+    .line 95
+    .line 96
+    .line 97
+    .line 98
+.end method
+
+
+# virtual methods
+.method public final a()Landroid/content/Context;
+    .locals 1
+
+    .line 1
+    iget-object v0, p0, Lrn/a;->c:Landroid/content/Context;
+
+    .line 2
+    .line 3
+    return-object v0
+    .line 4
+    .line 5
+    .line 6
+    .line 7
+    .line 8
+    .line 9
+    .line 10
+    .line 11
+    .line 12
+    .line 13
+    .line 14
+    .line 15
+    .line 16
+    .line 17
+    .line 18
+    .line 19
+.end method
+
+.method public final b(Landroid/content/Context;)V
+    .locals 0
+
+    .line 1
+    iput-object p1, p0, Lrn/a;->c:Landroid/content/Context;
+
+    .line 2
+    .line 3
+    return-void
+    .line 4
+    .line 5
+    .line 6
+    .line 7
+    .line 8
+    .line 9
+    .line 10
+    .line 11
+    .line 12
+    .line 13
+    .line 14
+    .line 15
+    .line 16
+    .line 17
+    .line 18
+    .line 19
+    .line 20
+    .line 21
+    .line 22
+    .line 23
+    .line 24
+    .line 25
+.end method
+
+.method public final c(Ljavax/net/ssl/X509TrustManager;)Lra/kb;
+    .locals 3
+
+    .line 1
+    const/4 v0, 0x0
+
+    .line 2
+    :try_start_0
+    new-instance v1, Landroid/net/http/X509TrustManagerExtensions;
+
+    .line 3
+    .line 4
+    invoke-direct {v1, p1}, Landroid/net/http/X509TrustManagerExtensions;-><init>(Ljavax/net/ssl/X509TrustManager;)V
+    :try_end_0
+    .catch Ljava/lang/IllegalArgumentException; {:try_start_0 .. :try_end_0} :catch_0
+
+    .line 5
+    .line 6
+    .line 7
+    goto :goto_0
+
+    .line 8
+    :catch_0
+    move-object v1, v0
+
+    .line 9
+    :goto_0
+    if-eqz v1, :cond_0
+
+    .line 10
+    .line 11
+    new-instance v0, Lsn/b;
+
+    .line 12
+    .line 13
+    invoke-direct {v0, p1, v1}, Lsn/b;-><init>(Ljavax/net/ssl/X509TrustManager;Landroid/net/http/X509TrustManagerExtensions;)V
+
+    .line 14
+    .line 15
+    .line 16
+    :cond_0
+    if-eqz v0, :cond_1
+
+    .line 17
+    .line 18
+    return-object v0
+
+    .line 19
+    :cond_1
+    new-instance v0, Lvn/a;
+
+    .line 20
+    .line 21
+    const-string v1, "buildTrustRootIndex"
+
+    .line 22
+    .line 23
+    invoke-static {v1}, Landroid/os/StrictMode;->noteSlowCall(Ljava/lang/String;)V
+
+    .line 24
+    .line 25
+    .line 26
+    new-instance v1, Lvn/b;
+
+    .line 27
+    .line 28
+    invoke-interface {p1}, Ljavax/net/ssl/X509TrustManager;->getAcceptedIssuers()[Ljava/security/cert/X509Certificate;
+
+    .line 29
+    .line 30
+    .line 31
+    move-result-object p1
+
+    .line 32
+    array-length v2, p1
+
+    .line 33
+    invoke-static {p1, v2}, Ljava/util/Arrays;->copyOf([Ljava/lang/Object;I)[Ljava/lang/Object;
+
+    .line 34
+    .line 35
+    .line 36
+    move-result-object p1
+
+    .line 37
+    check-cast p1, [Ljava/security/cert/X509Certificate;
+
+    .line 38
+    .line 39
+    invoke-direct {v1, p1}, Lvn/b;-><init>([Ljava/security/cert/X509Certificate;)V
+
+    .line 40
+    .line 41
+    .line 42
+    invoke-direct {v0, v1}, Lvn/a;-><init>(Lvn/d;)V
+
+    .line 43
+    .line 44
+    .line 45
+    return-object v0
+    .line 46
+    .line 47
+    .line 48
+    .line 49
+    .line 50
+    .line 51
+    .line 52
+    .line 53
+    .line 54
+    .line 55
+    .line 56
+    .line 57
+    .line 58
+    .line 59
+    .line 60
+    .line 61
+    .line 62
+    .line 63
+    .line 64
+    .line 65
+    .line 66
+    .line 67
+    .line 68
+    .line 69
+    .line 70
+    .line 71
+    .line 72
+    .line 73
+    .line 74
+    .line 75
+    .line 76
+    .line 77
+    .line 78
+    .line 79
+    .line 80
+    .line 81
+    .line 82
+    .line 83
+    .line 84
+    .line 85
+    .line 86
+    .line 87
+    .line 88
+    .line 89
+    .line 90
+    .line 91
+    .line 92
+    .line 93
+    .line 94
+    .line 95
+    .line 96
+    .line 97
+    .line 98
+    .line 99
+    .line 100
+    .line 101
+    .line 102
+    .line 103
+    .line 104
+    .line 105
+    .line 106
+    .line 107
+    .line 108
+    .line 109
+    .line 110
+    .line 111
+    .line 112
+    .line 113
+.end method
+
+.method public final d(Ljavax/net/ssl/SSLSocket;Ljava/lang/String;Ljava/util/List;)V
+    .locals 5
+
+    .line 1
+    invoke-virtual {p3}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 2
+    .line 3
+    .line 4
+    iget-object v0, p0, Lrn/a;->d:Ljava/util/ArrayList;
+
+    .line 5
+    .line 6
+    invoke-virtual {v0}, Ljava/util/ArrayList;->size()I
+
+    .line 7
+    .line 8
+    .line 9
+    move-result v1
+
+    .line 10
+    const/4 v2, 0x0
+
+    .line 11
+    :cond_0
+    if-ge v2, v1, :cond_1
+
+    .line 12
+    .line 13
+    invoke-virtual {v0, v2}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+
+    .line 14
+    .line 15
+    .line 16
+    move-result-object v3
+
+    .line 17
+    add-int/lit8 v2, v2, 0x1
+
+    .line 18
+    .line 19
+    move-object v4, v3
+
+    .line 20
+    check-cast v4, Lsn/n;
+
+    .line 21
+    .line 22
+    invoke-interface {v4, p1}, Lsn/n;->a(Ljavax/net/ssl/SSLSocket;)Z
+
+    .line 23
+    .line 24
+    .line 25
+    move-result v4
+
+    .line 26
+    if-eqz v4, :cond_0
+
+    .line 27
+    .line 28
+    goto :goto_0
+
+    .line 29
+    :cond_1
+    const/4 v3, 0x0
+
+    .line 30
+    :goto_0
+    check-cast v3, Lsn/n;
+
+    .line 31
+    .line 32
+    if-eqz v3, :cond_2
+
+    .line 33
+    .line 34
+    invoke-interface {v3, p1, p2, p3}, Lsn/n;->c(Ljavax/net/ssl/SSLSocket;Ljava/lang/String;Ljava/util/List;)V
+
+    .line 35
+    .line 36
+    .line 37
+    :cond_2
+    return-void
+    .line 38
+    .line 39
+    .line 40
+    .line 41
+    .line 42
+    .line 43
+    .line 44
+    .line 45
+    .line 46
+    .line 47
+    .line 48
+    .line 49
+    .line 50
+    .line 51
+    .line 52
+    .line 53
+    .line 54
+    .line 55
+    .line 56
+    .line 57
+    .line 58
+    .line 59
+    .line 60
+    .line 61
+    .line 62
+    .line 63
+    .line 64
+    .line 65
+    .line 66
+    .line 67
+    .line 68
+    .line 69
+    .line 70
+    .line 71
+    .line 72
+    .line 73
+    .line 74
+    .line 75
+    .line 76
+    .line 77
+    .line 78
+    .line 79
+    .line 80
+    .line 81
+    .line 82
+    .line 83
+    .line 84
+    .line 85
+    .line 86
+    .line 87
+    .line 88
+    .line 89
+    .line 90
+    .line 91
+    .line 92
+    .line 93
+    .line 94
+    .line 95
+    .line 96
+    .line 97
+    .line 98
+    .line 99
+    .line 100
+    .line 101
+    .line 102
+    .line 103
+    .line 104
+    .line 105
+    .line 106
+    .line 107
+    .line 108
+    .line 109
+    .line 110
+    .line 111
+    .line 112
+    .line 113
+    .line 114
+    .line 115
+    .line 116
+    .line 117
+    .line 118
+    .line 119
+    .line 120
+    .line 121
+    .line 122
+    .line 123
+    .line 124
+    .line 125
+    .line 126
+    .line 127
+    .line 128
+.end method
+
+.method public final f(Ljavax/net/ssl/SSLSocket;)Ljava/lang/String;
+    .locals 6
+
+    .line 1
+    iget-object v0, p0, Lrn/a;->d:Ljava/util/ArrayList;
+
+    .line 2
+    .line 3
+    invoke-virtual {v0}, Ljava/util/ArrayList;->size()I
+
+    .line 4
+    .line 5
+    .line 6
+    move-result v1
+
+    .line 7
+    const/4 v2, 0x0
+
+    .line 8
+    :cond_0
+    const/4 v3, 0x0
+
+    .line 9
+    if-ge v2, v1, :cond_1
+
+    .line 10
+    .line 11
+    invoke-virtual {v0, v2}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+
+    .line 12
+    .line 13
+    .line 14
+    move-result-object v4
+
+    .line 15
+    add-int/lit8 v2, v2, 0x1
+
+    .line 16
+    .line 17
+    move-object v5, v4
+
+    .line 18
+    check-cast v5, Lsn/n;
+
+    .line 19
+    .line 20
+    invoke-interface {v5, p1}, Lsn/n;->a(Ljavax/net/ssl/SSLSocket;)Z
+
+    .line 21
+    .line 22
+    .line 23
+    move-result v5
+
+    .line 24
+    if-eqz v5, :cond_0
+
+    .line 25
+    .line 26
+    goto :goto_0
+
+    .line 27
+    :cond_1
+    move-object v4, v3
+
+    .line 28
+    :goto_0
+    check-cast v4, Lsn/n;
+
+    .line 29
+    .line 30
+    if-eqz v4, :cond_2
+
+    .line 31
+    .line 32
+    invoke-interface {v4, p1}, Lsn/n;->b(Ljavax/net/ssl/SSLSocket;)Ljava/lang/String;
+
+    .line 33
+    .line 34
+    .line 35
+    move-result-object p1
+
+    .line 36
+    return-object p1
+
+    .line 37
+    :cond_2
+    return-object v3
+    .line 38
+    .line 39
+    .line 40
+    .line 41
+    .line 42
+    .line 43
+    .line 44
+    .line 45
+    .line 46
+    .line 47
+    .line 48
+    .line 49
+    .line 50
+    .line 51
+    .line 52
+    .line 53
+    .line 54
+    .line 55
+    .line 56
+    .line 57
+    .line 58
+    .line 59
+    .line 60
+    .line 61
+    .line 62
+    .line 63
+    .line 64
+    .line 65
+    .line 66
+    .line 67
+    .line 68
+    .line 69
+    .line 70
+    .line 71
+    .line 72
+    .line 73
+    .line 74
+    .line 75
+    .line 76
+    .line 77
+    .line 78
+    .line 79
+    .line 80
+    .line 81
+    .line 82
+    .line 83
+    .line 84
+    .line 85
+    .line 86
+    .line 87
+    .line 88
+    .line 89
+    .line 90
+    .line 91
+    .line 92
+    .line 93
+    .line 94
+    .line 95
+    .line 96
+    .line 97
+    .line 98
+    .line 99
+    .line 100
+    .line 101
+    .line 102
+    .line 103
+    .line 104
+    .line 105
+    .line 106
+    .line 107
+    .line 108
+    .line 109
+    .line 110
+    .line 111
+    .line 112
+    .line 113
+.end method
+
+.method public final g()Ljava/lang/Object;
+    .locals 2
+
+    .line 1
+    sget v0, Landroid/os/Build$VERSION;->SDK_INT:I
+
+    .line 2
+    .line 3
+    const/16 v1, 0x1e
+
+    .line 4
+    .line 5
+    if-lt v0, v1, :cond_0
+
+    .line 6
+    .line 7
+    invoke-static {}, Ll7/a;->e()Landroid/util/CloseGuard;
+
+    .line 8
+    .line 9
+    .line 10
+    move-result-object v0
+
+    .line 11
+    invoke-static {v0}, Ll7/a;->j(Landroid/util/CloseGuard;)V
+
+    .line 12
+    .line 13
+    .line 14
+    return-object v0
+
+    .line 15
+    :cond_0
+    invoke-super {p0}, Lrn/e;->g()Ljava/lang/Object;
+
+    .line 16
+    .line 17
+    .line 18
+    move-result-object v0
+
+    .line 19
+    return-object v0
+.end method
+
+.method public final h(Ljava/lang/String;)Z
+    .locals 1
+
+    .line 1
+    invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 2
+    .line 3
+    .line 4
+    invoke-static {}, Landroid/security/NetworkSecurityPolicy;->getInstance()Landroid/security/NetworkSecurityPolicy;
+
+    .line 5
+    .line 6
+    .line 7
+    move-result-object v0
+
+    .line 8
+    invoke-virtual {v0, p1}, Landroid/security/NetworkSecurityPolicy;->isCleartextTrafficPermitted(Ljava/lang/String;)Z
+
+    .line 9
+    .line 10
+    .line 11
+    move-result p1
+
+    .line 12
+    return p1
+    .line 13
+    .line 14
+    .line 15
+    .line 16
+    .line 17
+    .line 18
+    .line 19
+    .line 20
+    .line 21
+    .line 22
+    .line 23
+    .line 24
+    .line 25
+.end method
+
+.method public final j(Ljava/lang/Object;Ljava/lang/String;)V
+    .locals 2
+
+    .line 1
+    sget v0, Landroid/os/Build$VERSION;->SDK_INT:I
+
+    .line 2
+    .line 3
+    const/16 v1, 0x1e
+
+    .line 4
+    .line 5
+    if-lt v0, v1, :cond_0
+
+    .line 6
+    .line 7
+    invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 8
+    .line 9
+    .line 10
+    invoke-static {p1}, Ll7/a;->f(Ljava/lang/Object;)Landroid/util/CloseGuard;
+
+    .line 11
+    .line 12
+    .line 13
+    move-result-object p1
+
+    .line 14
+    invoke-static {p1}, Ll7/a;->q(Landroid/util/CloseGuard;)V
+
+    .line 15
+    .line 16
+    .line 17
+    return-void
+
+    .line 18
+    :cond_0
+    invoke-super {p0, p1, p2}, Lrn/e;->j(Ljava/lang/Object;Ljava/lang/String;)V
+
+    .line 19
+    .line 20
+    .line 21
+    return-void
+    .line 22
+    .line 23
+    .line 24
+    .line 25
+    .line 26
+    .line 27
+    .line 28
+    .line 29
+    .line 30
+    .line 31
+    .line 32
+    .line 33
+    .line 34
+    .line 35
+    .line 36
+    .line 37
+    .line 38
+    .line 39
+    .line 40
+    .line 41
+    .line 42
+    .line 43
+    .line 44
+    .line 45
+    .line 46
+    .line 47
+    .line 48
+.end method
+
+.method public final k()Ljavax/net/ssl/SSLContext;
+    .locals 1
+
+    .line 1
+    const-string v0, "newSSLContext"
+
+    .line 2
+    .line 3
+    invoke-static {v0}, Landroid/os/StrictMode;->noteSlowCall(Ljava/lang/String;)V
+
+    .line 4
+    .line 5
+    .line 6
+    const-string v0, "TLS"
+
+    .line 7
+    .line 8
+    invoke-static {v0}, Ljavax/net/ssl/SSLContext;->getInstance(Ljava/lang/String;)Ljavax/net/ssl/SSLContext;
+
+    .line 9
+    .line 10
+    .line 11
+    move-result-object v0
+
+    .line 12
+    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 13
+    .line 14
+    .line 15
+    return-object v0
+    .line 16
+    .line 17
+    .line 18
+    .line 19
+.end method

@@ -1,0 +1,28 @@
+.class interface abstract Lcom/mbridge/msdk/playercommon/exoplayer2/mediacodec/MediaCodecUtil$MediaCodecListCompat;
+.super Ljava/lang/Object;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+
+# annotations
+.annotation system Ldalvik/annotation/EnclosingClass;
+    value = Lcom/mbridge/msdk/playercommon/exoplayer2/mediacodec/MediaCodecUtil;
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x609
+    name = "MediaCodecListCompat"
+.end annotation
+
+
+# virtual methods
+.method public abstract getCodecCount()I
+.end method
+
+.method public abstract getCodecInfoAt(I)Landroid/media/MediaCodecInfo;
+.end method
+
+.method public abstract isSecurePlaybackSupported(Ljava/lang/String;Landroid/media/MediaCodecInfo$CodecCapabilities;)Z
+.end method
+
+.method public abstract secureDecodersExplicit()Z
+.end method

@@ -1,0 +1,11 @@
+.class public interface abstract Lio/appmetrica/analytics/impl/K5;
+.super Ljava/lang/Object;
+.source "r8-map-id-2d84ff62924c663909b79ba1ad65af9dc5badea367026afdad4af02792a1171c"
+
+# interfaces
+.implements Lzl/l;
+
+
+# virtual methods
+.method public abstract synthetic invoke(Ljava/lang/Object;)Ljava/lang/Object;
+.end method
