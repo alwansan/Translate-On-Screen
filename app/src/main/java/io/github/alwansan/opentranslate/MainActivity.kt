@@ -517,6 +517,7 @@ class MainActivity : Activity() {
         ui.button(preferences, t("Add Quick Settings tile", "إضافة بلاطة الإعدادات السريعة")) { addQuickTile() }
         val help = ui.card(body, t("About and help", "حول التطبيق والمساعدة"))
         ui.button(help, t("How to use the app", "طريقة استخدام التطبيق")) { showGuide() }
+        ui.button(help, t("If the floating button disappears", "إذا اختفت الفقاعة العائمة")) { showBackgroundHelp() }
         ui.button(help, t("Privacy and permissions", "الخصوصية والصلاحيات")) { showPrivacy() }
         ui.button(help, t("Open-source licenses", "تراخيص المصدر المفتوح")) { showLicenses() }
         ui.button(help, t("Source code and project", "المصدر ومشروع التطبيق")) {
@@ -1088,6 +1089,33 @@ class MainActivity : Activity() {
                 "إذا أوقف Android أو نظام الجهاز الخدمة، افتح التطبيق وابدأ جلسة جديدة. لا توجد إعادة تشغيل خلفية خفية. للصور، استخدم معاينة القص والتدوير قبل القراءة.\n\n" +
                 "لمعاني الكلمات، حدد كلمة في النتيجة واختر معنى الكلمة، أو افتح القاموس المعجمي من المزيد. يحتاج البحث الشبكي موافقة مستقلة.")
         textDialog(t("Quick guide", "الدليل السريع"), text)
+    }
+
+    private fun showBackgroundHelp() {
+        val text = t(
+            "If your phone stops the floating button while you switch apps, open App info and check Battery. " +
+                "If your phone offers an Unrestricted battery setting or allows background activity, you can enable it for Open Screen Translate. This can use more battery.\n\n" +
+                "Some phones also let you allow auto-start in device settings or keep an app open from the Recent apps card menu. " +
+                "Look for Keep open or a lock icon if your phone offers either control.\n\n" +
+                "When sharing ends, reopen Open Screen Translate, start the floating button and approve sharing again.",
+            "إذا اختفت الفقاعة عند التنقل بين التطبيقات، افتح معلومات التطبيق وراجع إعدادات البطارية. " +
+                "إذا أتاح هاتفك خيار البطارية بلا قيود أو السماح بالنشاط في الخلفية، يمكنك تفعيله لترجمة الشاشة المفتوحة. قد يزيد ذلك استهلاك البطارية.\n\n" +
+                "تتيح بعض الهواتف أيضاً السماح بالتشغيل التلقائي من إعدادات الجهاز أو إبقاء التطبيق مفتوحاً من قائمة بطاقته في التطبيقات الأخيرة. " +
+                "ابحث عن خيار إبقاء التطبيق مفتوحاً أو رمز القفل إذا كان متاحاً.\n\n" +
+                "عند انتهاء المشاركة، أعد فتح ترجمة الشاشة المفتوحة وشغّل الفقاعة ووافق على المشاركة مجدداً.")
+        val view = ui.label(text).apply { setPadding(ui.dp(20), ui.dp(12), ui.dp(20), ui.dp(18)) }
+        AlertDialog.Builder(this)
+            .setTitle(t("If the floating button disappears", "إذا اختفت الفقاعة العائمة"))
+            .setView(ScrollView(this).apply { addView(view) })
+            .setPositiveButton(t("Open app info", "افتح معلومات التطبيق")) { _, _ ->
+                try {
+                    startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
+                } catch (_: ActivityNotFoundException) {
+                    message(t("Open App info from your phone's Settings.", "افتح معلومات التطبيق من إعدادات الهاتف."))
+                }
+            }
+            .setNegativeButton(R.string.close, null)
+            .show()
     }
 
     private fun showPrivacy() {

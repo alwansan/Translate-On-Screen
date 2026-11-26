@@ -4,7 +4,7 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "008",
+  "session": "009",
   "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
@@ -27,9 +27,9 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/008-comic-font.md",
+  "session_checkpoint": "memory/sessions/009-background-help.md",
   "environment": {
-    "status": "unavailable",
+    "status": "Local Git, Python and GitHub CLI available; Android validation through Actions",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
     "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
     "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
@@ -44,7 +44,7 @@
       "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
     }
   },
-  "observed_branch_head": "74ae4f47befd79a3f95497f3e666b44292a2ee3e",
+  "observed_branch_head": "5a3314b15957e93fbad8622ddf38e1726f0dbbc3",
   "latest_observed_android_ci": {
     "run_id": 45896196263,
     "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
@@ -97,10 +97,10 @@
   },
   "last_verified_code_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-  "implementation_complete": true,
-  "available_validation_gates_passed": true,
+  "implementation_complete": false,
+  "available_validation_gates_passed": false,
   "acceptance_ready": false,
-  "completion_condition": "Record the owner's one consolidated final device trial; resolve any reported defect before final closure.",
+  "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
   "latest_evidence": "memory/evidence/validation-f0388b2.json",
   "delivery": {
@@ -139,14 +139,11 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "006",
+    "id": "009",
     "matrix": "docs/HM_BEHAVIOR_MATRIX_AR.md",
     "validation": "pending",
-    "previous_runs": {
-      "45895016436": "success",
-      "45895016302": "cancelled",
-      "45895474474": "success"
-    }
+    "prior_host_run": 45898119251,
+    "prior_device_run": 45898119250
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
