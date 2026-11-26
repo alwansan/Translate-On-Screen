@@ -1,0 +1,28 @@
+{
+  "source": "45293ec572391154ddc933425016dad180b86b83",
+  "host": {
+    "run": 45909524987,
+    "jvm_passed": 72,
+    "lint_errors": 0,
+    "lint_warnings": 46
+  },
+  "device": {
+    "run": 45909525188,
+    "attempt": 1,
+    "conclusion": "failure",
+    "apis": {
+      "29": {
+        "passed": 32,
+        "failed": 6,
+        "vertical_japanese": "passed",
+        "failure": "Java heap growth limit 16 MiB, with failures in History, Wordbook and offline inference"
+      },
+      "35": {
+        "passed": 37,
+        "failed": 1,
+        "vertical_japanese": "passed",
+        "failure": "OCR output after rotation did not contain expected source text"
+      }
+    }
+  }
+}

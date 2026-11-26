@@ -1,5 +1,10 @@
 # Validation record
 
+## الدفعتان 013 و014
+
+نجح بناء 013 بـ72/72 اختبار JVM، وLint بلا أخطاء مع 46 تحذيراً. اجتاز اختبار القراءة اليابانية العمودية على المحاكيين في المحاولة الأولى، لكن جولة الجهاز الكاملة فشلت. على API 29 رُصد حد نمو heap بمقدار 16 MiB ضمن اختبارات فاشلة، وعلى API 35 لم تظهر نتيجة OCR المتوقعة بعد التدوير. يجري إعادة تشغيل المصدر نفسه، مع بقاء حدود التحقق منفصلة بحسب الالتزام. [سجل المحاولة الأولى](../memory/evidence/validation-45293ec-attempt1.json) · [جولة الجهاز](https://github.com/alwansan/Translate-On-Screen/actions/runs/45909525188).
+
+
 ## التحقق من الدفعة 011
 
 نجح بناء المصدر `62fa00e6838d81d125f759716bb0ce69f1e1b2ef` في [45899477091](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477091) مع 70/70 JVM و25/25 Python و0 أخطاء lint و46 تحذيراً. تشمل الحالات 40 مقارنة SentencePiece و12 بصمة ملف ونتيجة ja→en من Marian على JVM. تحقق جرد المرجع في [45899477134](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477134). نجح [45899477061](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477061) على API 29 و35. شغّل كلاهما استدلال ja→en دون اتصال، واختار اختبار API 35 مهمة مستقلة من منتقي النظام وقرأ نصها في لوحة القراءة. [دليل الدفعة](../memory/evidence/validation-62fa00e.json). فشل بناء الدفعة 010 في عدّاد تحقق ملفات الحزم الذي بقي على ثمانية، وصحّحته الدفعة 011 إلى اثني عشر.
