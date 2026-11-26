@@ -44,7 +44,7 @@ object ScreenPreferences {
                 backgroundColor = int("background_color", d.backgroundColor), backgroundOpacity = int("background_opacity", d.backgroundOpacity),
                 centerText = bool("center", d.centerText), hideOriginal = bool("hide_original", d.hideOriginal),
                 speakAutomatically = bool("speak", d.speakAutomatically), lineByLine = bool("lines", d.lineByLine),
-                positionedResults = bool("positioned", d.positionedResults), verticalText = bool("vertical", d.verticalText),
+                positionedResults = bool("positioned", d.positionedResults), verticalText = bool("vertical", d.verticalText), showFixedRegionBorder = bool("fixed_border", false),
                 skipUnchangedFrames = bool("skip_unchanged", true), changeThreshold = int("threshold", 8),
                 translateOnInteraction = bool("interaction", false), interactionDelayMs = int("interaction_delay", d.interactionDelayMs), tapToDismissAutoOverlay = bool("dismiss_auto_overlay", false), smartColors = bool("smart_colors", false),
                 bubbleAutoDock = p.getBoolean("dock", true), bubbleAutoDim = p.getBoolean("dim", true),
@@ -80,6 +80,7 @@ object ScreenPreferences {
             .putBoolean(prefix + "bold", v.fontBold).putBoolean(prefix + "border", v.backgroundBorder)
             .putInt(prefix + "border_color", v.borderColor).putInt(prefix + "panel_width", v.panelWidthPercent)
             .putBoolean(prefix + "below_region", v.anchorBelowRegion)
+            .putBoolean(prefix + "fixed_border", v.showFixedRegionBorder)
             .putString(prefix + "font", v.fontFamily).putBoolean(prefix + "outline", v.outlineText)
             .putBoolean(prefix + "uppercase", v.uppercaseText)
             .putBoolean(prefix + "manga_font", v.mangaFont)

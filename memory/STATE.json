@@ -4,13 +4,13 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "020",
+  "session": "021",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "123a155f1d047d0c0d0084cf6907c900037959b0",
+  "last_verified_code_commit": "2faf99203c728775fdd30caff27eaf5b0c9ef7ba",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45910963570,
+  "last_verified_android_ci": 45911135845,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/020-16k-avd-tag.md",
+  "session_checkpoint": "memory/sessions/021-saved-area-border.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -61,8 +61,8 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45910963526,
-    "head_sha": "123a155f1d047d0c0d0084cf6907c900037959b0",
+    "run_id": 45911135970,
+    "head_sha": "2faf99203c728775fdd30caff27eaf5b0c9ef7ba",
     "conclusion": "success",
     "apis": [
       29,
@@ -106,7 +106,7 @@
   "acceptance_ready": false,
   "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-123a155.json",
+  "latest_evidence": "memory/evidence/validation-2faf992.json",
   "delivery": {
     "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
     "artifact_id": 15101850735,
@@ -143,10 +143,11 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "020",
+    "id": "021",
     "validation": "pending",
-    "failed_16k_setup_run": 45911551008,
-    "chinese_device_run": 45911858296
+    "prior_16k_run": 45911997691,
+    "chinese_device_run": 45911858296,
+    "korean_device_run": 45911340829
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

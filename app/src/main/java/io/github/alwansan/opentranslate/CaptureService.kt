@@ -1104,18 +1104,19 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             val value = block.translated?.takeIf { it.isNotBlank() } ?: block.original
             if (value.isBlank()) null else OverlayTextBlock(value, bounds, entry.palettes.getOrNull(index))
         }
-        if (canPosition && blocks.isNotEmpty() && showPositioned(blocks)) {
-            showResultControls(entry)
+        val selection = entry.requestedRegion.takeIf { options.requiresFixedRegion && options.showFixedRegionBorder && reliableDisplay() }
+        if (canPosition && blocks.isNotEmpty() && showPositioned(blocks, selection)) {
+            showResultControls(entry, selection)
             showBubble()
             armResultTimeout()
-        } else showTextResult(entry.result, entry.settings)
+        } else showTextResult(entry.result, entry.settings, selection)
     }
 
-    private fun showPositioned(blocks: List<OverlayTextBlock>): Boolean {
+    private fun showPositioned(blocks: List<OverlayTextBlock>, selection: NormalizedRegion? = null): Boolean {
         val screen = screenSize()
         val style = if (options.mode == CaptureMode.SUBTITLE) options.copy(centerText = true) else options
-        val view = TranslationOverlayView(this, blocks, screen.x, screen.y, style)
-        val tapToDismiss = options.automatic && options.tapToDismissAutoOverlay
+        val view = TranslationOverlayView(this, blocks, screen.x, screen.y, style, selection)
+        val tapToDismiss = blocks.isNotEmpty() && options.automatic && options.tapToDismissAutoOverlay
         if (tapToDismiss) {
             view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             view.contentDescription = ui("Dismiss automatic translation", "إغلاق الترجمة التلقائية")
@@ -1135,7 +1136,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         catch (_: RuntimeException) { false }
     }
 
-    private fun showResultControls(entry: CapturedResult) {
+    private fun showResultControls(entry: CapturedResult, selection: NormalizedRegion?) {
         val result = entry.result
         val output = result.translated?.takeIf { it.isNotBlank() } ?: result.original
         val bar = LinearLayout(this).apply {
@@ -1151,7 +1152,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         add(ui("Text", "النص") + if (!result.warning.isNullOrBlank()) " · !" else "") {
             pauseAutomatic(); cancelCurrentCapture()
             resultExpiresAt = Long.MAX_VALUE
-            showTextResult(result, entry.settings)
+            showTextResult(result, entry.settings, selection)
         }
         add(ui("Copy", "نسخ")) { copyText(output) }
         if (options.automatic) {
@@ -1164,12 +1165,13 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         try {
             windows.addView(bar, overlayParams(width, -2).apply { x = max(0, (screen.x - width) / 2); y = resultY(dp(52), dp(34)) })
             resultPanel = bar
-        } catch (_: RuntimeException) { showTextResult(result, entry.settings) }
+        } catch (_: RuntimeException) { showTextResult(result, entry.settings, selection) }
     }
 
-    private fun showTextResult(result: TranslationResult, settings: UserSettings) {
+    private fun showTextResult(result: TranslationResult, settings: UserSettings, selection: NormalizedRegion? = null) {
         if (stopping) return
         removeResult()
+        if (selection != null) showPositioned(emptyList(), selection)
         val screen = screenSize()
         val panel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL

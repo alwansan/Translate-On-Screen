@@ -261,6 +261,26 @@ class CaptureInstrumentationTest {
         assertEquals(1f, CaptureOptionsStore.bubblePosition(context, false)?.first)
     }
 
+    @Test fun savedAreaBorderDrawsOnlyWhenARegionIsProvided() {
+        instrumentation.runOnMainSync {
+            val bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+            try {
+                val options = CaptureOptions(mode = CaptureMode.FIXED, selectionBorderColor = Color.RED)
+                fun render(selection: NormalizedRegion?) {
+                    bitmap.eraseColor(Color.TRANSPARENT)
+                    val overlay = TranslationOverlayView(context, emptyList(), 200, 200, options, selection)
+                    overlay.layout(0, 0, 200, 200)
+                    overlay.draw(Canvas(bitmap))
+                }
+                render(NormalizedRegion(.25f, .25f, .75f, .75f))
+                assertEquals(Color.RED, bitmap.getPixel(50, 100))
+                assertEquals(Color.TRANSPARENT, bitmap.getPixel(100, 100))
+                render(null)
+                assertEquals(Color.TRANSPARENT, bitmap.getPixel(50, 100))
+            } finally { bitmap.recycle() }
+        }
+    }
+
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()

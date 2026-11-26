@@ -49,6 +49,7 @@ data class CaptureOptions(
     val interactionDelayMs: Int = 650,
     val useManualAppearance: Boolean = false,
     val bubbleEdgeHidePercent: Int = 0,
+    val showFixedRegionBorder: Boolean = false,
 ) {
     val resultFontFamily: String get() = if (mode == CaptureMode.MANGA && mangaFont) "casual" else fontFamily
     val automatic: Boolean get() = mode.automatic
@@ -78,6 +79,7 @@ data class CaptureOptions(
             borderColor = manual.borderColor,
             panelWidthPercent = manual.panelWidthPercent,
             anchorBelowRegion = manual.anchorBelowRegion,
+            showFixedRegionBorder = manual.showFixedRegionBorder,
             outlineText = manual.outlineText,
             uppercaseText = manual.uppercaseText,
         )

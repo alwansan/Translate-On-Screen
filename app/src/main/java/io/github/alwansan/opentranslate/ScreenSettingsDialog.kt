@@ -151,6 +151,8 @@ object ScreenSettingsDialog {
         val selectionColor = color(ui("Selection border color", "لون إطار تحديد المنطقة"), colors, colorNames, old.selectionBorderColor)
         val panelWidth = slider(ui("Result width (%)", "عرض نافذة النتيجة (%)"), 50, 100, old.panelWidthPercent)
         val belowRegion = toggle(ui("Anchor result below selected area", "عرض النتيجة أسفل المنطقة المختارة"), old.anchorBelowRegion)
+        val fixedBorder = toggle(ui("Show saved area border with results", "إظهار إطار المنطقة المحفوظة مع النتائج"),
+            old.showFixedRegionBorder)
         val lines = toggle(ui("Translate lines separately (off: paragraphs)", "ترجمة الأسطر منفصلة (التعطيل: فقرات)"), old.lineByLine)
         val positioned = toggle(ui("Place translation over text", "عرض الترجمة مكان النص"), old.positionedResults)
         val vertical = toggle(ui("Vertical-source OCR for this mode", "قراءة النص العمودي لهذا الوضع"), old.verticalText)
@@ -195,6 +197,8 @@ object ScreenSettingsDialog {
                 mangaBackground.visibility = if (modes[position] == CaptureMode.MANGA) View.VISIBLE else View.GONE
                 mangaFont.visibility = mangaBackground.visibility
                 val profile = ScreenPreferences.read(c, modes[position])
+                fixedBorder.visibility = if (profile.requiresFixedRegion) View.VISIBLE else View.GONE
+                fixedBorder.isChecked = profile.showFixedRegionBorder
                 val manualMode = profile.manualAppearanceMode
                 sharedStyle.visibility = if (manualMode == null) View.GONE else View.VISIBLE
                 sharedStyle.text = if (manualMode == CaptureMode.FULL)
@@ -241,6 +245,7 @@ object ScreenSettingsDialog {
             borderColor = borderColor.valueOrNull() ?: old.borderColor,
             panelWidthPercent = panelWidth.progress + 50,
             anchorBelowRegion = belowRegion.isChecked,
+            showFixedRegionBorder = fixedBorder.isChecked,
             outlineText = outline.isChecked,
             uppercaseText = upper.isChecked,
             mangaFont = mangaFont.isChecked,

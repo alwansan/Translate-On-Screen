@@ -28,11 +28,20 @@ class TranslationOverlayView(
     private val displayWidth: Int,
     private val displayHeight: Int,
     private val options: CaptureOptions,
+    selection: NormalizedRegion? = null,
 ) : View(context) {
     private data class Rendered(val bounds: RectF, val text: StaticLayout, val color: Int)
     private val density = resources.displayMetrics.density
     private val location = IntArray(2)
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val selectionBounds = selection?.let(RegionMath::validated)?.let {
+        RectF(it.left * displayWidth, it.top * displayHeight, it.right * displayWidth, it.bottom * displayHeight)
+    }
+    private val selectionPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = options.selectionBorderColor
+        style = Paint.Style.STROKE
+        strokeWidth = 2 * density
+    }
     private val defaultColor = with(options.backgroundColor) {
         Color.argb(options.backgroundOpacity * 255 / 100, Color.red(this), Color.green(this), Color.blue(this))
     }
@@ -110,6 +119,7 @@ class TranslationOverlayView(
             item.text.draw(canvas)
             canvas.restoreToCount(clipped)
         }
+        selectionBounds?.let { canvas.drawRect(it, selectionPaint) }
         canvas.restoreToCount(save)
     }
 }
