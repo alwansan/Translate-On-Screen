@@ -1,0 +1,34 @@
+{
+  "source": "3aa8458d9bd92c0ba525fd78ce99c1a1203029a3",
+  "host": {
+    "run": 45911858298,
+    "conclusion": "success"
+  },
+  "device": {
+    "run": 45911858296,
+    "conclusion": "failure",
+    "apis": {
+      "29": {
+        "job": 140221851897,
+        "passed": 42,
+        "failed": 0
+      },
+      "35": {
+        "job": 140221851041,
+        "passed": 42,
+        "failed": 0
+      },
+      "35-16k": {
+        "job": 140221850772,
+        "conclusion": "failure",
+        "stage": "AVD creation before APK installation"
+      }
+    }
+  },
+  "verified_case": "nativeChineseAndEnglishWorkWithNetworkDisabled",
+  "radios": {
+    "airplane_mode_on": 1,
+    "wifi_on": 0,
+    "mobile_data": 0
+  }
+}

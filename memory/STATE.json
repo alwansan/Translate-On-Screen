@@ -6,11 +6,11 @@
   "branch": "feature/open-screen-translate",
   "session": "022",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "2faf99203c728775fdd30caff27eaf5b0c9ef7ba",
+  "last_verified_code_commit": "3aa8458d9bd92c0ba525fd78ce99c1a1203029a3",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45911135845,
+  "last_verified_android_ci": 45911858298,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -61,14 +61,10 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45911135970,
-    "head_sha": "2faf99203c728775fdd30caff27eaf5b0c9ef7ba",
-    "conclusion": "success",
-    "apis": [
-      29,
-      35
-    ],
-    "passed_each": 40
+    "run_id": 45911858296,
+    "head_sha": "3aa8458d9bd92c0ba525fd78ce99c1a1203029a3",
+    "conclusion": "failure",
+    "standard_api_results": "42/42 on API 29 and 35; 16 KiB AVD setup failed"
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -82,7 +78,7 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [],
-  "last_verified_code_scope": "40/40 per API 29 and 35, including native en↔ja, region subtitles and vertical Japanese OCR.",
+  "last_verified_code_scope": "Standard API 29 and 35 passed 42/42, including offline Chinese in both directions. The 16 KiB job failed during AVD creation before APK installation.",
   "latest_attempt": {
     "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "host": "success",
@@ -106,7 +102,7 @@
   "acceptance_ready": false,
   "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-2faf992.json",
+  "latest_evidence": "memory/evidence/validation-3aa8458.json",
   "delivery": {
     "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
     "artifact_id": 15101850735,
@@ -119,7 +115,7 @@
     "guide": "docs/ACCEPTANCE_AR.md"
   },
   "remaining_limits": [
-    "Offline translation verified for en<->ar and ja->en; other pairs under review",
+    "Offline translation verified for en<->ar, en<->ja, ko->en, zh->en, and en->zh (Simplified) on standard API 29/35",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",
     "Live paid-provider accounts and OEM physical phones not tested",
     "External camera and speech services depend on installed device providers",
