@@ -42,4 +42,15 @@ class OfflineTranslationInstrumentationTest {
             assertTrue(Regex("[A-Za-z]").containsMatchIn(translated))
         }
     }
+    @Test fun nativeJapaneseToEnglishWorksWithNetworkDisabled() {
+        requireOfflineModels()
+        assertTrue("Pinned ja-en pack missing.", OfflineModelStore.has(context, "ja-en"))
+        TranslationEngine(context).use { engine ->
+            val result = engine.fromText("これは本です。", UserSettings(
+                source = "ja", target = "en", provider = "offline", networkEnabled = false, keepHistory = false))
+            assertNull("Offline translation returned a warning: " + result.warning, result.warning)
+            assertTrue("Native ja-en output missed the expected meaning: " + result.translated,
+                requireNotNull(result.translated).contains("book", ignoreCase = true))
+        }
+    }
 }

@@ -39,7 +39,7 @@ enum class TranslationFailure(val english: String, val arabic: String) {
     RATE_LIMIT("The provider's rate limit was reached. Wait before trying again.", "وصلت إلى حد طلبات المزود. انتظر قبل المحاولة مجدداً."),
     QUOTA("The provider's usage quota was reached.", "وصلت إلى حصة الاستخدام المتاحة لدى المزود."),
     SERVER("The translation server is temporarily unavailable.", "خادم الترجمة غير متاح مؤقتاً."),
-    OFFLINE_PAIR("Local translation currently supports explicit English → Arabic and Arabic → English pairs.", "الترجمة المحلية تدعم حالياً الإنجليزية إلى العربية والعكس مع اختيار المصدر صراحةً."),
+    OFFLINE_PAIR("Choose a supported language pair for offline translation.", "اختر زوج لغات تدعمه الترجمة المحلية."),
     OFFLINE_MISSING("Install this local language pack in Language packs before translating.", "ثبّت حزمة الترجمة المحلية لهذا الزوج من قسم حزم اللغات."),
     OFFLINE_CORRUPT("The local model did not pass verification. Reinstall this language pack.", "فشل التحقق من النموذج المحلي. أعد تثبيت حزمة اللغة."),
     OFFLINE_RUNTIME("The local translation engine could not run. Check device support and available memory.", "تعذر تشغيل محرك الترجمة المحلي. تحقّق من دعم الجهاز والذاكرة المتاحة."),

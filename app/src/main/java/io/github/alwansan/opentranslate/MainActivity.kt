@@ -245,7 +245,7 @@ class MainActivity : Activity() {
             ui.button(details, t("Install reading languages", "تثبيت لغات القراءة")) { showModels() }
         }
         if (OfflineModelStore.find(settings.source, settings.target) != null)
-            ui.button(details, t("Set up offline English ↔ Arabic", "إعداد ترجمة إنكليزية ↔ عربية دون إنترنت")) { setupOffline() }
+            ui.button(details, t("Set up offline translation", "إعداد الترجمة دون إنترنت")) { setupOffline() }
         val quick = ui.card(body, t("More ways to translate", "طرق أخرى للترجمة"))
         ui.button(quick, t("Text, image, camera or voice", "نص أو صورة أو كاميرا أو صوت")) { tab = "translate"; renderPage() }
         ui.button(quick, t("Quick guide", "دليل سريع")) { showGuide() }
@@ -261,15 +261,37 @@ class MainActivity : Activity() {
         val card = ui.card(body)
         val row = ui.row()
         card.addView(row)
-        ui.smallButton(row, languageName(settings.source)) {
-            chooseLanguage(true, settings.source, settings.provider == "offline") { code ->
-                saveSettings(settings.copy(source = code, ocrLanguage = ocrForSource(code, settings.ocrLanguage)))
+        if (settings.provider == "offline") {
+            ui.smallButton(row, languageName(settings.source) + " → " + languageName(settings.target)) {
+                chooseOfflinePair(settings.source, settings.target) { pack ->
+                    saveSettings(settings.copy(source = pack.source, target = pack.target,
+                        ocrLanguage = ocrForSource(pack.source, settings.ocrLanguage)))
+                }
+            }
+            if (OfflineModelStore.find(settings.target, settings.source) != null) {
+                ui.smallButton(row, t("Swap", "تبديل")) { swapLanguages() }
+            }
+        } else {
+            ui.smallButton(row, languageName(settings.source)) {
+                chooseLanguage(true, settings.source) { code ->
+                    saveSettings(settings.copy(source = code, ocrLanguage = ocrForSource(code, settings.ocrLanguage)))
+                }
+            }
+            ui.smallButton(row, t("Swap", "تبديل")) { swapLanguages() }
+            ui.smallButton(row, languageName(settings.target)) {
+                chooseLanguage(false, settings.target) { code -> saveSettings(settings.copy(target = code)) }
             }
         }
-        ui.smallButton(row, t("Swap", "تبديل")) { swapLanguages() }
-        ui.smallButton(row, languageName(settings.target)) {
-            chooseLanguage(false, settings.target, settings.provider == "offline") { code -> saveSettings(settings.copy(target = code)) }
-        }
+    }
+
+    private fun chooseOfflinePair(source: String, target: String, done: (OfflineModelPack) -> Unit) {
+        val packs = OfflineModelStore.packs
+        val selected = packs.indexOfFirst { it.source == source && it.target == target }
+        AlertDialog.Builder(this).setTitle(t("Offline language pair", "زوج لغات الترجمة المحلية"))
+            .setSingleChoiceItems(packs.map { t(it.englishName, it.arabicName) }.toTypedArray(), selected) { dialog, index ->
+                dialog.dismiss()
+                done(packs[index])
+            }.setNegativeButton(R.string.cancel, null).show()
     }
 
     private fun ocrForSource(code: String, fallback: String): String {
@@ -332,12 +354,11 @@ class MainActivity : Activity() {
             }.setNegativeButton(R.string.cancel, null).show()
     }
 
-    private fun chooseLanguage(source: Boolean, current: String, offline: Boolean, done: (String) -> Unit) {
+    private fun chooseLanguage(source: Boolean, current: String, done: (String) -> Unit) {
         val body = ui.column(16)
         val search = ui.field(body, t("Search in Arabic, English or language code", "ابحث بالعربية أو الإنكليزية أو رمز اللغة"))
-        body.addView(ui.secondary(if (offline) t("Offline packs support English and Arabic. Source language must be selected.",
-            "تدعم الحزم المحلية الإنكليزية والعربية، ويجب اختيار اللغة الأصلية.")
-        else t("Translation availability depends on your provider. Reading models are chosen separately. Hold a language to add or remove a favorite.",
+        body.addView(ui.secondary(t(
+            "Translation availability depends on your provider. Reading models are chosen separately. Hold a language to add or remove a favorite.",
             "توفر الترجمة يعتمد على المزوّد. نماذج قراءة الصور مستقلة. اضغط مطولاً لإضافة لغة إلى المفضلة أو إزالتها.")))
         if (source) body.addView(ui.secondary(t("Active reading models: ", "نماذج القراءة الحالية: ") +
             SettingsStore.read(this).ocrLanguage))
@@ -345,8 +366,8 @@ class MainActivity : Activity() {
         body.addView(list, LinearLayout.LayoutParams(-1, ui.dp(330)))
         val dialog = AlertDialog.Builder(this).setTitle(if (source) R.string.source_language else R.string.target_language)
             .setView(body).setNegativeButton(R.string.cancel, null).create()
-        val all = (if (offline) listOf("en", "ar") else Locale.getISOLanguages().toList()).distinct()
-        val candidates = (if (source && !offline) listOf("auto") else emptyList()) + all
+        val all = Locale.getISOLanguages().distinct()
+        val candidates = (if (source) listOf("auto") else emptyList()) + all
         var visible = candidates
         fun refresh() {
             val query = search.text.toString().trim().lowercase(Locale.ROOT)
@@ -543,19 +564,30 @@ class MainActivity : Activity() {
         lateinit var ocrNotice: TextView
         val sourceButton = ui.button(body, t("Source: ", "الأصل: ") + languageName(source)) { }
         val targetButton = ui.button(body, t("Target: ", "الهدف: ") + languageName(target)) { }
-        sourceButton.setOnClickListener {
-            chooseLanguage(true, source, providers[provider.selectedItemPosition].id == "offline") {
-                source = it
-                ocr = ocrForSource(it, ocr)
-                sourceButton.text = t("Source: ", "الأصل: ") + languageName(it)
-                ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
-                ocrNotice.text = readingNotice(source, ocr).orEmpty()
+        fun updateSource(code: String) {
+            source = code
+            ocr = ocrForSource(code, ocr)
+            sourceButton.text = t("Source: ", "الأصل: ") + languageName(code)
+            ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
+            ocrNotice.text = readingNotice(source, ocr).orEmpty()
+        }
+        fun updateTarget(code: String) {
+            target = code
+            targetButton.text = t("Target: ", "الهدف: ") + languageName(code)
+        }
+        fun selectOfflinePair() {
+            chooseOfflinePair(source, target) {
+                updateSource(it.source)
+                updateTarget(it.target)
             }
         }
+        sourceButton.setOnClickListener {
+            if (providers[provider.selectedItemPosition].id == "offline") selectOfflinePair()
+            else chooseLanguage(true, source, ::updateSource)
+        }
         targetButton.setOnClickListener {
-            chooseLanguage(false, target, providers[provider.selectedItemPosition].id == "offline") {
-                target = it; targetButton.text = t("Target: ", "الهدف: ") + languageName(it)
-            }
+            if (providers[provider.selectedItemPosition].id == "offline") selectOfflinePair()
+            else chooseLanguage(false, target, ::updateTarget)
         }
         ocrButton = ui.button(body, t("Image reading: ", "قراءة الصور: ") + ocr) { }
         ocrNotice = ui.secondary(readingNotice(source, ocr).orEmpty())
@@ -627,15 +659,6 @@ class MainActivity : Activity() {
                     it.startsWith("https://") && !it.contains(".example") && !it.contains(" ")
                 } ?: "")
                 network.isChecked = false
-                if (p.id == "offline") {
-                    if (source !in listOf("en", "ar")) source = "en"
-                    if (target !in listOf("en", "ar") || target == source) target = if (source == "en") "ar" else "en"
-                    ocr = ocrForSource(source, ocr)
-                    sourceButton.text = t("Source: ", "الأصل: ") + languageName(source)
-                    targetButton.text = t("Target: ", "الهدف: ") + languageName(target)
-                    ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
-                    ocrNotice.text = readingNotice(source, ocr).orEmpty()
-                }
             }
         }
         endpoint.addTextChangedListener(watcher { key.setText(""); network.isChecked = false })
@@ -654,6 +677,10 @@ class MainActivity : Activity() {
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val p = providers[provider.selectedItemPosition]
+                if (p.id == "offline" && OfflineModelStore.find(source, target) == null) {
+                    selectOfflinePair()
+                    return@setOnClickListener
+                }
                 val next = old.copy(source = source, target = target, ocrLanguage = ocr,
                     provider = p.id, endpoint = if (p.requiresNetwork) endpoint.text.toString().trim() else "",
                     apiKey = if (p.requiresNetwork) key.text.toString().trim() else "",
@@ -741,13 +768,17 @@ class MainActivity : Activity() {
 
     private fun setupOffline() {
         val original = SettingsStore.read(this)
-        if (OfflineModelStore.find(original.source, original.target) == null) { showModels(); return }
-        val missingPacks = OfflineModelStore.packs.filter { !OfflineModelStore.has(this, it.id) }
-        val missingOcr = listOf("eng", "ara").filter { !ModelStore.has(this, it) }
+        val pack = OfflineModelStore.find(original.source, original.target) ?: return
+        val directions = listOfNotNull(pack, OfflineModelStore.find(pack.target, pack.source))
+        val missingPacks = directions.filter { !OfflineModelStore.has(this, it.id) }
+        val missingOcr = directions.map { ocrForSource(it.source, "") }.filter {
+            it.isNotEmpty() && !ModelStore.has(this, it)
+        }.distinct()
         val bytes = missingPacks.sumOf { it.bytes } + ModelStore.models.filter { it.language in missingOcr }.sumOf { it.bytes }
         confirm(t("Set up offline translation", "إعداد الترجمة دون إنترنت"),
-            t("Install English and Arabic reading models and both translation directions. Download needed: ",
-                "ثبّت نماذج القراءة للإنكليزية والعربية واتجاهي الترجمة. التنزيل المطلوب: ") + sizeLabel(bytes) +
+            directions.joinToString("\n") { t(it.englishName, it.arabicName) } +
+                t("\nIncludes reading models for these source languages. Download needed: ",
+                    "\nيشمل نماذج القراءة لهذه اللغات الأصلية. التنزيل المطلوب: ") + sizeLabel(bytes) +
                 t(". Afterwards, text translation works without a server. Translation quality and speed depend on the model and device.",
                     ". بعدها تعمل ترجمة النص دون خادم. تعتمد جودة الترجمة وسرعتها على النموذج والجهاز.")) {
             work(getString(R.string.downloading), {
@@ -765,7 +796,7 @@ class MainActivity : Activity() {
                     saveSettings(current.copy(provider = "offline", networkEnabled = false, endpoint = "", apiKey = "",
                         model = "", providerRegion = "", folderId = "", appId = "", providerAuth = "api_key",
                         ocrLanguage = ocrForSource(current.source, current.ocrLanguage)))
-                    message(t("Offline translation is ready in both directions.", "الترجمة المحلية جاهزة في الاتجاهين."))
+                    message(t("Offline translation is ready for the selected pair.", "الترجمة المحلية جاهزة للزوج المحدد."))
                 } else message(t("Language packs installed. Choose Offline in provider settings when you want to use them.",
                     "ثُبّتت حزم اللغة. اختر المزوّد المحلي من الإعدادات عندما تريد استخدامها."))
             }
@@ -1012,7 +1043,7 @@ class MainActivity : Activity() {
             }
         }
         languageButton.setOnClickListener {
-            chooseLanguage(false, language, false) { language = it; languageButton.text = languageName(it); buildVoiceControls() }
+            chooseLanguage(false, language) { language = it; languageButton.text = languageName(it); buildVoiceControls() }
         }
         buildVoiceControls()
         lateinit var dialog: AlertDialog

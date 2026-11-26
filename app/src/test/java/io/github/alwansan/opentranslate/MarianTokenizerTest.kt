@@ -48,7 +48,7 @@ class MarianTokenizerTest {
     }
     @Test fun allEightPinnedFilesMatchTheirSizeAndSha256() {
         val root = fixtureRoot()
-        assertEquals(2, OfflineModelManifest.packs.size)
+        assertEquals(setOf("en-ar", "ar-en", "ja-en"), OfflineModelManifest.packs.map { it.id }.toSet())
         var checked = 0
         for (pack in OfflineModelManifest.packs) for (entry in pack.files) {
             val file = File(root, "offline_translation/${pack.id}/${entry.fileName}")

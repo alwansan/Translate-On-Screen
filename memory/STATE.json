@@ -4,7 +4,7 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "009",
+  "session": "010",
   "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/009-background-help.md",
+  "session_checkpoint": "memory/sessions/010-japanese-offline.md",
   "environment": {
     "status": "Local Git, Python and GitHub CLI available; Android validation through Actions",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -44,7 +44,7 @@
       "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
     }
   },
-  "observed_branch_head": "5a3314b15957e93fbad8622ddf38e1726f0dbbc3",
+  "observed_branch_head": "99bedf04400c0262f7e0effb5f6b5fb4bc0294bd",
   "latest_observed_android_ci": {
     "run_id": 45896196263,
     "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
@@ -115,7 +115,7 @@
     "guide": "docs/ACCEPTANCE_AR.md"
   },
   "remaining_limits": [
-    "Offline translation en<->ar only",
+    "Offline translation en<->ar verified previously; new ja->en integration pending Android verification; other pairs under review",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",
     "Live paid-provider accounts and OEM physical phones not tested",
     "External camera and speech services depend on installed device providers",
@@ -139,11 +139,11 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "009",
+    "id": "010",
     "matrix": "docs/HM_BEHAVIOR_MATRIX_AR.md",
     "validation": "pending",
-    "prior_host_run": 45898119251,
-    "prior_device_run": 45898119250
+    "prior_host_run": 45898808914,
+    "prior_device_run": 45898808895
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
