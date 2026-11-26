@@ -53,4 +53,15 @@ class OfflineTranslationInstrumentationTest {
                 requireNotNull(result.translated).contains("book", ignoreCase = true))
         }
     }
+    @Test fun nativeEnglishToJapaneseWorksWithNetworkDisabled() {
+        requireOfflineModels()
+        assertTrue("Pinned en-ja pack missing.", OfflineModelStore.has(context, "en-ja"))
+        TranslationEngine(context).use { engine ->
+            val result = engine.fromText("This is a book.", UserSettings(
+                source = "en", target = "ja", provider = "offline", networkEnabled = false, keepHistory = false))
+            assertNull("Offline translation returned a warning: " + result.warning, result.warning)
+            assertTrue("Native en-ja output missed the expected meaning: " + result.translated,
+                requireNotNull(result.translated).contains("書物である"))
+        }
+    }
 }

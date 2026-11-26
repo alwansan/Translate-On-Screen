@@ -31,6 +31,14 @@ class MarianRuntimeTest {
             assertTrue(runtime.translate("これは本です。", gate).contains("book", ignoreCase = true))
         }
     }
+    @Test fun nativeEnglishToJapanesePreservesMeaning() {
+        val (pack, folder) = verifiedPack("en-ja")
+        MarianRuntime(folder, pack).use { runtime ->
+            val translated = runtime.translate("This is a book.", gate)
+            assertTrue(translated, translated.contains("書物である"))
+        }
+    }
+
     @Test fun cancellationAfterEncoderReleasesRequestStateAndCloseIsIdempotent() {
         val (pack, folder) = verifiedPack("en-ar")
         val runtime = MarianRuntime(folder, pack)

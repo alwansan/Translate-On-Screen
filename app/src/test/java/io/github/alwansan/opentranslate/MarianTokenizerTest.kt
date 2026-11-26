@@ -33,7 +33,7 @@ class MarianTokenizerTest {
         val json = JSONObject(source.readText(Charsets.UTF_8))
         assertEquals("sentencepiece 0.2.1", json.getString("generator"))
         val cases = json.getJSONArray("fixtures")
-        assertEquals(40, cases.length())
+        assertEquals(48, cases.length())
         val tokenizers = OfflineModelManifest.packs.associate { pack ->
             val folder = File(root, "offline_translation/${pack.id}")
             pack.id to MarianTokenizer(File(folder, "source.spm"), File(folder, "vocab.json"), pack.vocabularySize, pack.padToken)
@@ -48,7 +48,7 @@ class MarianTokenizerTest {
     }
     @Test fun allPinnedFilesMatchTheirSizeAndSha256() {
         val root = fixtureRoot()
-        assertEquals(setOf("en-ar", "ar-en", "ja-en"), OfflineModelManifest.packs.map { it.id }.toSet())
+        assertEquals(setOf("en-ar", "ar-en", "ja-en", "en-ja"), OfflineModelManifest.packs.map { it.id }.toSet())
         var checked = 0
         for (pack in OfflineModelManifest.packs) for (entry in pack.files) {
             val file = File(root, "offline_translation/${pack.id}/${entry.fileName}")
@@ -66,7 +66,7 @@ class MarianTokenizerTest {
             val actual = digest.digest().joinToString("") { "%02x".format(it.toInt() and 255) }
             assertEquals(entry.sha256, actual); checked++
         }
-        assertEquals(12, checked)
+        assertEquals(16, checked)
     }
     private fun fixtureRoot(): File {
         val path = System.getenv("OFFLINE_MODEL_TEST_ROOT")

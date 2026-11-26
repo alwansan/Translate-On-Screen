@@ -70,13 +70,14 @@ The twelve dictionary JVM tests pass, including consent-before-transport, fixed 
 
 ## Local Marian translation
 
-`offline` runs quantized Marian encoder/merged-decoder models on CPU using **ONNX Runtime Android 1.23.2**. It supports explicit **en→ar**, **ar→en**, and **ja→en**, without an API key or network-translation opt-in. No download occurs during inference.
+`offline` runs quantized Marian encoder/merged-decoder models on CPU using **ONNX Runtime Android 1.23.2**. It supports explicit **en↔ar** and **en↔ja**, without an API key or network-translation opt-in. No download occurs during inference.
 
 | Pack | Immutable converted model | Total bytes | Original model license evidence |
 | --- | --- | ---: | --- |
 | en-ar | [Xenova/opus-mt-en-ar @ 034a684356c19021a187cda4d7f823298b913921](https://huggingface.co/Xenova/opus-mt-en-ar/tree/034a684356c19021a187cda4d7f823298b913921) | 113,896,629 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-en-ar/blob/03087980e8ce753d64b3248ed0a912444545b840/README.md) |
 | ar-en | [Xenova/opus-mt-ar-en @ 09c7556866400dcc53562ba8d7035119e7d9a2c1](https://huggingface.co/Xenova/opus-mt-ar-en/tree/09c7556866400dcc53562ba8d7035119e7d9a2c1) | 114,059,523 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-ar-en/blob/c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1/README.md) |
 | ja-en | [Xenova/opus-mt-ja-en @ 1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16](https://huggingface.co/Xenova/opus-mt-ja-en/tree/1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16) | 111,112,194 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-ja-en/blob/0770961a39ba6bd66305b149c3f4110bcafca2e6/README.md) |
+| en-ja | [Xenova/opus-mt-en-jap @ 9d418190be3aa945eae5bab1bd96bc5e349ad784](https://huggingface.co/Xenova/opus-mt-en-jap/tree/9d418190be3aa945eae5bab1bd96bc5e349ad784) | 96,106,826 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-en-jap/blob/a863894cdd2b80f3bc1c5966734aee9ffec207d1/README.md) |
 
 The source-card pins document licensing, not the exact source commit Xenova originally converted. Converted weights have independent fixed revisions and four SHA-256 digests per pack in [OfflineModelManifest.kt](../app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt).
 
@@ -95,7 +96,7 @@ python3 tools/generate_marian_fixtures.py --cache /path/to/test-models
 OFFLINE_MODEL_TEST_ROOT=/path/to/test-models ./gradlew :app:testDebugUnitTest
 ~~~
 
-Missing models or generated fixtures fail explicitly; there are no model-test skips. The independent reference generator checks source/tokenizer hashes and emits 40 cases covering Arabic, Japanese, Unicode, numbers, whitespace and emoji. Other tests verify all twelve model files, provider protocol/cardinality, cancellation, cache separation and OCR geometry.
+Missing models or generated fixtures fail explicitly; there are no model-test skips. The independent reference generator checks source/tokenizer hashes and emits 48 cases covering Arabic, Japanese, Unicode, numbers, whitespace and emoji. Other tests verify all sixteen model files, provider protocol/cardinality, cancellation, cache separation and OCR geometry.
 
 `MarianRuntimeTest` uses the same production decoder and official JVM JNI 1.23.2 for six known phrase regressions, cancellation after the encoder, reuse after cancellation, interruption preservation and idempotent close. It requires both pinned packs. Network protocol tests use an injected recording transport and no account credentials.
 

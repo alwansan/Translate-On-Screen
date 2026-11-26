@@ -58,6 +58,7 @@ class CaptureInstrumentationTest {
         instrumentation.sendStatus(2, Bundle().apply {
             putString("ost_pid", Process.myPid().toString())
             putString("ost_uid", Process.myUid().toString())
+            putString("ost_heap_limit_bytes", Runtime.getRuntime().maxMemory().toString())
         })
         stopCapture()
         finishLeakedFixtures()

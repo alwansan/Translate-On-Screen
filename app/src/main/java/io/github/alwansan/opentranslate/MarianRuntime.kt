@@ -9,6 +9,9 @@ import java.io.File
 import java.nio.FloatBuffer
 import java.nio.LongBuffer
 
+private const val JAPANESE_CHARACTERS = "[ぁ-ゟァ-ヿ㐀-䶿一-鿿]"
+private val JAPANESE_TOKEN_GAP = Regex("(?<=$JAPANESE_CHARACTERS) +(?=$JAPANESE_CHARACTERS)")
+
 /**
  * CPU Marian encoder + merged decoder with real key/value-cache reuse.
  * This class has no Android dependency and can be exercised with the official JVM runtime.
@@ -115,8 +118,9 @@ internal class MarianRuntime(folder: File, private val pack: OfflineModelPack) :
                 if (best < 0) throw TranslationProblem(TranslationFailure.OFFLINE_RUNTIME)
                 if (best == 0) {
                     check()
-                    return tokenizer.decode(generated).takeIf { it.isNotBlank() }
-                        ?: throw TranslationProblem(TranslationFailure.BAD_RESPONSE)
+                    val decoded = tokenizer.decode(generated)
+                    val translated = if (pack.target == "ja") JAPANESE_TOKEN_GAP.replace(decoded, "") else decoded
+                    return translated.takeIf { it.isNotBlank() } ?: throw TranslationProblem(TranslationFailure.BAD_RESPONSE)
                 }
                 generated.add(best)
                 previousToken = best

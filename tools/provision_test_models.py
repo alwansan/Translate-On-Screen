@@ -165,7 +165,7 @@ def _source_manifest(repo_root: Path, capture_only: bool) -> tuple[dict, dict[st
             if not re.search(r'\bid\s*=\s*"', body):
                 continue  # The data class declaration is not a pack.
             pack_id = _named_string(body, "id")
-            if pack_id not in ("en-ar", "ar-en", "ja-en"):
+            if pack_id not in ("en-ar", "ar-en", "ja-en", "en-ja"):
                 continue
             if pack_id in seen_packs:
                 raise ProvisionError(f"Duplicate offline pack: {pack_id}")
@@ -204,8 +204,8 @@ def _source_manifest(repo_root: Path, capture_only: bool) -> tuple[dict, dict[st
             records.append(record)
             sources[record["path"]] = {"kind": "marker", "content": marker}
             packs.append({"id": pack_id, "repository": repository, "revision": pack_revision, "fingerprint": fingerprint})
-        if seen_packs != {"en-ar", "ar-en", "ja-en"}:
-            raise ProvisionError("All three pinned offline test packs are required.")
+        if seen_packs != {"en-ar", "ar-en", "ja-en", "en-ja"}:
+            raise ProvisionError("All four pinned offline test packs are required.")
     manifest = {"schema": 1, "package": PACKAGE, "ocr_revision": revision, "packs": packs, "files": records}
     return manifest, sources
 
@@ -346,7 +346,7 @@ def prepare_cache(cache: Path, repo_root: Path, allow_download: bool = True, *,
     """Return schema-1 files metadata after verifying/staging every requested file.
 
     --local-ocr sources may be flat, tessdata/, or tesseract/tessdata/.
-    --local-offline sources contain en-ar/, ar-en/, and ja-en/, optionally under
+    --local-offline sources contain en-ar/, ar-en/, ja-en/, and en-ja/, optionally under
     offline_translation/. Both flat files and the upstream onnx/ layout work.
     Bad explicit local files fail closed; missing local files may be downloaded
     only when allow_download is true. No ADB commands are issued here.
@@ -440,7 +440,7 @@ def _validated_files(manifest: dict) -> list[dict]:
     seen: set[str] = set()
     allowed = re.compile(
         r"(?:tesseract/tessdata/(?:eng|ara|jpn_vert)\.traineddata|"
-        r"offline_translation/(?:en-ar|ar-en|ja-en)/(?:encoder_model_quantized\.onnx|"
+        r"offline_translation/(?:en-ar|ar-en|ja-en|en-ja)/(?:encoder_model_quantized\.onnx|"
         r"decoder_model_merged_quantized\.onnx|source\.spm|vocab\.json|complete))"
     )
     for entry in entries:
@@ -453,7 +453,7 @@ def _validated_files(manifest: dict) -> list[dict]:
         result.append(record)
     if not {"tesseract/tessdata/eng.traineddata", "tesseract/tessdata/ara.traineddata", "tesseract/tessdata/jpn_vert.traineddata"}.issubset(seen):
         raise ProvisionError("English, Arabic and vertical Japanese OCR fixtures are required for device provisioning.")
-    for pack in ("en-ar", "ar-en", "ja-en"):
+    for pack in ("en-ar", "ar-en", "ja-en", "en-ja"):
         files = {PurePosixPath(path).name for path in seen if path.startswith(f"offline_translation/{pack}/")}
         if files and files != {"encoder_model_quantized.onnx", "decoder_model_merged_quantized.onnx", "source.spm", "vocab.json", "complete"}:
             raise ProvisionError(f"Incomplete offline pack in device manifest: {pack}")

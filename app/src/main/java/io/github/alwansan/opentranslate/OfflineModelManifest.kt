@@ -54,5 +54,17 @@ internal object OfflineModelManifest {
                 OfflineModelFile("vocab.json", 1_622_775, "a1667b43d021e09c76f385101bd473f20b5691a12cdca7dda43e4a8daff20021"),
             ),
         ),
+        OfflineModelPack(
+            id = "en-ja", source = "en", target = "ja",
+            englishName = "English → Japanese", arabicName = "من الإنكليزية إلى اليابانية",
+            repository = "Xenova/opus-mt-en-jap", revision = "9d418190be3aa945eae5bab1bd96bc5e349ad784",
+            vocabularySize = 46276, padToken = 46275, languageToken = null,
+            files = listOf(
+                OfflineModelFile("onnx/encoder_model_quantized.onnx", 43_312_542, "4062a86cbec1d388e779294f07b784179d87a648c90771e94879b3a28cd96be7"),
+                OfflineModelFile("onnx/decoder_model_merged_quantized.onnx", 50_550_704, "084c7544b640eeea722b4858328f479d804236b916a2bec761442ff062726619"),
+                OfflineModelFile("source.spm", 508_602, "375cbed8885a6d369e0493acfc69a066010a86f98f9bac02430cbeb1726934a6"),
+                OfflineModelFile("vocab.json", 1_734_978, "62f7857585e3cd6150bb420830076edede27caac6304778d8d81be41164e469d"),
+            ),
+        ),
     )
 }

@@ -358,7 +358,11 @@ def main(argv: list[str] | None = None) -> int:
         log_path = output / "app-logcat.txt"
         if verified_emulator and log_path.is_file():
             print("Application UID diagnostic tail:\n" + log_path.read_text(encoding="utf-8")[-16000:])
-    print("DEVICE_TEST_SUMMARY=" + json.dumps(evidence_summary(report, api, test_network, verified_emulator), ensure_ascii=True, separators=(",", ":")))
+    summary = evidence_summary(report, api, test_network, verified_emulator)
+    summary["java_heap_limits_bytes"] = sorted({
+        int(value) for value in re.findall(r"^INSTRUMENTATION_STATUS: ost_heap_limit_bytes=(\d+)$", raw, re.M)
+    })
+    print("DEVICE_TEST_SUMMARY=" + json.dumps(summary, ensure_ascii=True, separators=(",", ":")))
     print("Device tests passed." if report["passed"] else "Device tests failed: " + "; ".join(report["problems"]))
     return 0 if report["passed"] else 1
 
