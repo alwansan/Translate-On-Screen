@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "source_commit": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
+  "run_id": 45779858841,
+  "job_id": 139772400310,
+  "observation": {
+    "service": "https://api.dictionaryapi.dev",
+    "fixture": "hello",
+    "available": true,
+    "scope": "one English public lookup; not an Android transport test",
+    "http_status": 200,
+    "entries": 1,
+    "entry_keys": [
+      "license",
+      "meanings",
+      "phonetics",
+      "sourceUrls",
+      "word"
+    ],
+    "definition_count": 7,
+    "example_count": 5,
+    "source_count": 1,
+    "licenses": [
+      {
+        "name": "CC BY-SA 3.0",
+        "url": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    ]
+  },
+  "scope": "One fixed public English word from a GitHub runner; no production user text, no Android transport or ongoing availability guarantee."
+}

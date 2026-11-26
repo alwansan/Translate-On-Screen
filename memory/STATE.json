@@ -5,7 +5,7 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "dictionary_completion_and_api35_diagnosis",
+  "phase": "dictionary_compile_correction",
   "last_verified_code_commit": "1301701a7d3466469cdfdceb444b3de4e7306085",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
@@ -38,7 +38,7 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "1301701a7d3466469cdfdceb444b3de4e7306085",
+  "observed_branch_head": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
   "latest_observed_android_ci": {
     "run_id": 45777167844,
     "head_sha": "1301701a7d3466469cdfdceb444b3de4e7306085",
@@ -49,7 +49,7 @@
     "lint_errors": 0,
     "lint_warnings": 48
   },
-  "source_checkpoint_parent": "1301701a7d3466469cdfdceb444b3de4e7306085",
+  "source_checkpoint_parent": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
     "host_build_including_release_variant_and_dictionary_tests",
@@ -105,5 +105,23 @@
     "Semantic endpoint-dialog test waits and scoped selectors",
     "Release variant assembly gate"
   ],
-  "last_verified_code_scope": "1301701 host56/56 and API29 29/29 passed; API35 26/29 with three failures. New source in this checkpoint needs its own results."
+  "last_verified_code_scope": "1301701 host56/56 and API29 29/29 passed; API35 26/29 with three failures. New source in this checkpoint needs its own results.",
+  "latest_attempt": {
+    "head_sha": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
+    "host_run": 45779858771,
+    "device_run": 45779858775,
+    "conclusion": "failure_before_runtime",
+    "reason": "DictionaryUi.foreground Int was shadowed by TextView.foreground Drawable inside apply; explicit receiver qualification required",
+    "unit_and_device_tests": "not_executed_to_completion"
+  },
+  "dictionary_service_observation": {
+    "run": 45779858841,
+    "http_status": 200,
+    "fixed_word": "hello",
+    "entries": 1,
+    "definitions": 7,
+    "examples": 5,
+    "license": "CC BY-SA 3.0",
+    "scope": "one public English lookup from runner, not Android transport or availability guarantee"
+  }
 }

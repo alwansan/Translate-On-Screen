@@ -471,7 +471,7 @@ private class DictionaryUi(private val activity: Activity) {
     fun text(value: String, size: Float = 16f, bold: Boolean = false) = TextView(activity).apply {
         text = value
         textSize = size
-        setTextColor(foreground)
+        setTextColor(this@DictionaryUi.foreground)
         setPadding(0, dp(6), 0, dp(6))
         if (bold) setTypeface(typeface, Typeface.BOLD)
     }
