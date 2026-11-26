@@ -26,8 +26,9 @@ val extractOnnxNotices by tasks.registering {
             val bytes = zip.getInputStream(noticeEntry).use { it.readBytes() }
             val destination = generatedNotices.get().file("licenses/ONNX-RUNTIME-THIRD-PARTY.txt").asFile
             destination.parentFile.mkdirs()
-            destination.writeBytes(bytes)
             val digest = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+            check(bytes.size == 333022 && digest == "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6") { "ONNX notice checksum mismatch" }
+            destination.writeBytes(bytes)
             println("Packaged ONNX Runtime notices: bytes=" + bytes.size + ", sha256=" + digest + ", commit=" + commit)
         }
     }
@@ -70,6 +71,7 @@ dependencies {
     add(onnxNotices.name, "com.microsoft.onnxruntime:onnxruntime:1.23.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20260814")
+    testRuntimeOnly("com.microsoft.onnxruntime:onnxruntime:1.23.2")
     androidTestImplementation("androidx.test:core:1.7.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")

@@ -1,6 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <activity android:name=".ImageEditorHarnessActivity" android:exported="false"
+        <activity android:name=".CaptureFixtureActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".ImageEditorHarnessActivity"
+            android:exported="false"
             android:configChanges="orientation|screenSize" />
     </application>
 </manifest>

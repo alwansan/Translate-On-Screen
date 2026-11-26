@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- This activity exists only in the test APK, with a different UID from the app.
+             It detects Android 12+ untrusted-overlay touch blocking that same-UID tests miss. -->
+        <activity android:name="io.github.alwansan.opentranslate.TouchTargetActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:configChanges="orientation|screenSize" />
+    </application>
+</manifest>

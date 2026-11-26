@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "status": "reconstructed_after_executor_outage_requires_new_build_and_runtime_validation",
+  "base_read": "78ae21418b92406269e39ad4c387e34e2f12454b",
+  "files": [
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/BaiduProtocol.kt",
+      "sha": "3c99c2bc0a21a72cd13def6b43bcf4cdc4c301e6",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/EndpointPolicy.kt",
+      "sha": "b4b0dd079617dea8c349f62bcbb6a4a875f127fc",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/EngineMessages.kt",
+      "sha": "e7c8059554a0f87ceb06442f91f2d63a8b8412b3",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/MarianRuntime.kt",
+      "sha": "400bea81800884211e131f05f9a0359888001a63",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/MarianTokenizer.kt",
+      "sha": "6c7fcfd52ac3a7dacdbc98148fa497dabcb4590b",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/ModelStore.kt",
+      "sha": "c7ba3f0a5312fb4521482c69f5ae4f6c5d963f6c",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/NetworkTranslationProviders.kt",
+      "sha": "d8ae21e4a9b2b798e9a6c30f085db8e8b5f98475",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/OcrEngine.kt",
+      "sha": "256a79f46a4562478dba27951db70812f2ad3af4",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/OfflineMarianProvider.kt",
+      "sha": "adeb05aa3b142a7d178486ec66bf986ca89b1366",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt",
+      "sha": "86e9724a93923d24f15cb00dcfb1428f85eabef7",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/OfflineModelStore.kt",
+      "sha": "146120a08db6ce22d6bad63382215b8158901513",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/ProviderCatalog.kt",
+      "sha": "9c1709807478c2d65ddb10f662a56c174ab5f1fd",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/ProviderTransport.kt",
+      "sha": "a4e394d10e24369815ba36a972fde447824c9d30",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/SettingsStore.kt",
+      "sha": "503a5b5c2fee0214be2391cd5d637781c517a992",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/TesseractOcrEngine.kt",
+      "sha": "e461991f9543f328941faacd997455d4c9f28886",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/TranslationBatcher.kt",
+      "sha": "c24bd4e194d3e57464ee9c2037689e3898c68062",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/TranslationEngine.kt",
+      "sha": "4a9febafd184e21aca5c5cc8b369f9501563e3ae",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/TranslationProvider.kt",
+      "sha": "6fe0c6b3e78b5b4e8d8907bc6056067189924951",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/UserSettings.kt",
+      "sha": "1587b8f19caea6ebece1d2fc424b8be4286ab24d",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/MarianRuntimeTest.kt",
+      "sha": "032e4221b17e037bbc94dd4232bac520a1b9a85f",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/MarianTokenizerTest.kt",
+      "sha": "88d5a0d76f2195fcf1a438c1b4d16a1ee7d4082f",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/OcrGeometryTest.kt",
+      "sha": "db1d3d47c8fc43fa8beb4ec6f326618242e3eedc",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/ProviderEndpointTest.kt",
+      "sha": "b57a65802b48a6d003858806e59b0831232dd15b",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/ProviderProtocolsTest.kt",
+      "sha": "929d0a828e079e2b389bec9055c194a9169e96ce",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/TranslationBatcherTest.kt",
+      "sha": "c896dcdf22d3e8d9bd8195826967bd9d1e491b20",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/OFFLINE_AND_PROVIDER_CONTRACTS.md",
+      "sha": "8d6ef23fec950441094be6a5e9d46ee93b8ae517",
+      "type": "blob",
+      "mode": "100644"
+    },
+    {
+      "path": "tools/generate_marian_fixtures.py",
+      "sha": "5636d1c3dd344817287d7644abfdcda95a41548f",
+      "type": "blob",
+      "mode": "100644"
+    }
+  ]
+}

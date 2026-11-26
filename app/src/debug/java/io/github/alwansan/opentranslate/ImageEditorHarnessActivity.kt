@@ -33,7 +33,7 @@ class ImageEditorHarnessActivity : Activity() {
         @Suppress("DEPRECATION")
         startActivityForResult(Intent(this, ImageEditorActivity::class.java)
             .putExtra(Intent.EXTRA_STREAM, uri)
-            .setClipData(ClipData.newRawUri("Synthetic test image", uri))
+            .apply { clipData = ClipData.newRawUri("Synthetic test image", uri) }
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION), REQUEST_EDITOR)
     }
 

@@ -107,6 +107,18 @@
       "git_blob_sha": "a009fb7841a7900362de5c0b30b6b5aac44f7b28",
       "content_saved": "complete UTF-8 text, not a description",
       "characters": 12704
+    },
+    {
+      "path": "tools/provision_test_models.py",
+      "git_blob_sha": "f38c32e176294ca87c096c38eaab1cf1785c0c12",
+      "content_saved": "complete UTF-8 source, newly reconstructed from the verified contracts; not byte-identical restoration",
+      "characters": 27916
+    },
+    {
+      "path": "tools/test_provision_test_models.py",
+      "git_blob_sha": "57a91286c7ed1bd45dd727ccfccb411c1d8bbb72",
+      "content_saved": "complete UTF-8 source, newly reconstructed from the verified contracts; not byte-identical restoration",
+      "characters": 12020
     }
   ],
   "recovered_by_other_agent": [
@@ -178,5 +190,67 @@
       "Cross-UID URI permission revocation not proven by in-process provider tests",
       "SAF grant lifetime, process death and memory pressure require further execution evidence"
     ]
+  },
+  "provisioner_reconstruction": {
+    "python": "3.10+ standard library",
+    "source_blobs": {
+      "ModelStore": "c7ba3f0a5312fb4521482c69f5ae4f6c5d963f6c",
+      "OfflineModelManifest": "86e9724a93923d24f15cb00dcfb1428f85eabef7"
+    },
+    "api": [
+      "prepare_cache(cache: Path, repo_root: Path, allow_download: bool = True, *, capture_only: bool = False, local_ocr: Path | None = None, local_offline: Path | None = None) -> dict",
+      "provision_device(adb_prefix: list[str], cache: Path, manifest: dict) -> None"
+    ],
+    "cli_options": [
+      "--cache",
+      "--repo-root",
+      "--local-ocr",
+      "--local-offline",
+      "--no-download",
+      "--download-only",
+      "--capture-only",
+      "--adb",
+      "--serial"
+    ],
+    "checks": [
+      "immutable revision URLs and size/SHA from actual Kotlin declarations",
+      "HTTPS-only redirects, bounded size and timeouts",
+      "atomic verified host staging, source symlinks allowed, destination symlinks refused",
+      "run-as exact package with numeric UID",
+      "all device data SHA/size verified before completion markers",
+      "staging cleanup in finally"
+    ],
+    "tests": {
+      "count": 10,
+      "execution_status": "not executed in unavailable local executor; CI validation required",
+      "command": "python -m unittest discover -s tools -p 'test_provision_test_models.py' -v"
+    }
+  },
+  "main_activity_review": {
+    "reviewed_blob": "069bfb24df3757f3aeff6e767d31e45d9ba12e7d",
+    "ownership": "read-only; findings sent to root; root owns application fixes",
+    "findings": [
+      {
+        "anchor": "handleIncoming / renderResult",
+        "issue": "New text intent keeps an old result, which can be returned by ACTION_PROCESS_TEXT.",
+        "suggestion": "Clear result when accepting a new text intent and reset request-scoped return eligibility for other incoming actions."
+      },
+      {
+        "anchor": "finishExport",
+        "issue": "Cancellation during serialization can still open/truncate the destination later.",
+        "suggestion": "Check interruption before/after serialization and before opening output; check between bounded writes. Already opened provider files cannot be generically rolled back."
+      },
+      {
+        "anchor": "onSaveInstanceState",
+        "issue": "Result original is truncated to 12000 and translation to 24000 despite image result contract allowing 48000 each.",
+        "suggestion": "Use result bounds 48000 per field, retaining 12000 only for editable draft."
+      },
+      {
+        "anchor": "work result callback",
+        "issue": "alive/generation check omits isFinishing/isDestroyed before dialog-producing callbacks.",
+        "suggestion": "Add lifecycle finish/destroy checks before done(value)."
+      }
+    ],
+    "status": "reported; this record does not claim root changes applied or tested"
   }
 }
