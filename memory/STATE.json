@@ -4,7 +4,7 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "018",
+  "session": "019",
   "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "908118564cfcf83c8d15cd9ff0cd9ecda9556a27",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/018-16k-emulator.md",
+  "session_checkpoint": "memory/sessions/019-chinese-english.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -143,11 +143,12 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "018",
+    "id": "019",
     "validation": "pending",
-    "prior_host_run": 45911340769,
-    "prior_device_run": 45911340829,
-    "expected_native_page_size_bytes": 16384
+    "prior_host_run": 45911550994,
+    "prior_device_run": 45911551008,
+    "pinned_fixtures": 38,
+    "independent_tokenization_cases": 64
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

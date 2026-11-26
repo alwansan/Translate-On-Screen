@@ -15,7 +15,7 @@ data class OfflineModelPack(
     fun url(file: OfflineModelFile): String = "https://huggingface.co/$repository/resolve/$revision/${file.path}"
 }
 
-/** Immutable Apache-2.0 OPUS models, independently converted by Xenova to quantized ONNX. */
+/** Immutable openly licensed OPUS models, independently converted by Xenova to quantized ONNX. */
 internal object OfflineModelManifest {
     val packs = listOf(
         OfflineModelPack(
@@ -76,6 +76,30 @@ internal object OfflineModelManifest {
                 OfflineModelFile("onnx/decoder_model_merged_quantized.onnx", 60_212_803, "e131732653a6d3cec42a8b65f8844980042b036bdaca931446bc4b3530bc3506"),
                 OfflineModelFile("source.spm", 841_805, "c9496f7c2be9aecb84c751ae9f35a875915dde8e3892f652a5c76811ab2a0f49"),
                 OfflineModelFile("vocab.json", 1_849_870, "97197044d4803c664a37f8ca2ced9c3405b8a3df6b262a12da22d990b0d756cd"),
+            ),
+        ),
+        OfflineModelPack(
+            id = "zh-en", source = "zh", target = "en",
+            englishName = "Chinese → English", arabicName = "من الصينية إلى الإنكليزية",
+            repository = "Xenova/opus-mt-zh-en", revision = "39d480d52a9ea3065a1f117adfe4dbc55de10e6f",
+            vocabularySize = 65001, padToken = 65000, languageToken = null,
+            files = listOf(
+                OfflineModelFile("onnx/encoder_model_quantized.onnx", 52_899_742, "84d5e171b626bc8b6b220d022ac58696e9528c25deeacca62b5cbf4364547a99"),
+                OfflineModelFile("onnx/decoder_model_merged_quantized.onnx", 60_212_804, "c6b7f04ff1ba0fbd1bf6852599b4c0cad6fe512d57cd887f44ef36cf705424cb"),
+                OfflineModelFile("source.spm", 804_677, "e27a3a1b539f4959ec72ea60e453f49156289f95d4e6000b29332efc45616203"),
+                OfflineModelFile("vocab.json", 1_747_906, "08a119a1defd522fa047cb5e3bfe3e89633e96caa38ced0dc9cee7ef1021a011"),
+            ),
+        ),
+        OfflineModelPack(
+            id = "en-zh", source = "en", target = "zh",
+            englishName = "English → Simplified Chinese", arabicName = "من الإنكليزية إلى الصينية المبسطة",
+            repository = "Xenova/opus-mt-en-zh", revision = "046f55aec303cdee3e0318604406d4df20f1e8ea",
+            vocabularySize = 65001, padToken = 65000, languageToken = 5, // >>cmn_Hans<<
+            files = listOf(
+                OfflineModelFile("onnx/encoder_model_quantized.onnx", 52_899_742, "d3b7912bf6a9bd27e4c074c2df91d4ff3d5b4bc5f7f6c8d7cc9c805c98fbafee"),
+                OfflineModelFile("onnx/decoder_model_merged_quantized.onnx", 60_212_804, "023be4f841f4c47cd65fffcbaa81c0d99d7f7e0138f7ba0e03fa220a4e688aff"),
+                OfflineModelFile("source.spm", 806_435, "5775ddc9e3ff2fae91554da56468ad35ff56edaba870fea74447bc7234bfdaa8"),
+                OfflineModelFile("vocab.json", 1_747_795, "22c957348eed495ee925afc40a36da3e387c8a34a734c8486967c2dca271613e"),
             ),
         ),
     )

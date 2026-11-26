@@ -75,4 +75,19 @@ class OfflineTranslationInstrumentationTest {
                 requireNotNull(result.translated).contains("book", ignoreCase = true))
         }
     }
+    @Test fun nativeChineseAndEnglishWorkWithNetworkDisabled() {
+        requireOfflineModels()
+        assertTrue("Pinned zh-en pack missing.", OfflineModelStore.has(context, "zh-en"))
+        assertTrue("Pinned en-zh pack missing.", OfflineModelStore.has(context, "en-zh"))
+        TranslationEngine(context).use { engine ->
+            val settings = UserSettings(source = "zh", target = "en", provider = "offline",
+                networkEnabled = false, keepHistory = false)
+            val english = engine.fromText("这是一本书。", settings)
+            assertNull(english.warning)
+            assertTrue(requireNotNull(english.translated).contains("book", ignoreCase = true))
+            val chinese = engine.fromText("This is a book.", settings.copy(source = "en", target = "zh"))
+            assertNull(chinese.warning)
+            assertTrue(requireNotNull(chinese.translated).contains("书"))
+        }
+    }
 }

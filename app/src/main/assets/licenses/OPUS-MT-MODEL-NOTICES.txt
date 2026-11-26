@@ -2,8 +2,7 @@ OPTIONAL OPUS-MT LOCAL TRANSLATION MODEL NOTICES
 
 Model providers: Helsinki-NLP / OPUS-MT.
 ONNX conversions: Xenova.
-The original model cards declare Apache License, Version 2.0.
-Complete terms are provided in APACHE-2.0.txt beside this notice.
+Model licenses are listed per direction. Apache-2.0 terms are provided in APACHE-2.0.txt beside this notice.
 
 ENGLISH TO ARABIC
 Downloaded converted-model revision:
@@ -39,6 +38,22 @@ https://huggingface.co/Xenova/opus-mt-ko-en/tree/d9fa1ac6008242100fecb4fff9b0a59
 Pinned source card with license: apache-2.0:
 https://huggingface.co/Helsinki-NLP/opus-mt-ko-en/blob/e42d1f41b66194e6d10512f8a27bebc1f4f5097e/README.md
 
+CHINESE TO ENGLISH — CC BY 4.0
+Creator: Language Technology Research Group, University of Helsinki (Helsinki-NLP / OPUS-MT).
+Source model and attribution:
+https://huggingface.co/Helsinki-NLP/opus-mt-zh-en/blob/cf109095479db38d6df799875e34039d4938aaa6/README.md
+Creative Commons Attribution 4.0 International:
+https://creativecommons.org/licenses/by/4.0/
+Changes: Xenova converted the model to ONNX and quantized the weights.
+Downloaded converted-model revision:
+https://huggingface.co/Xenova/opus-mt-zh-en/tree/39d480d52a9ea3065a1f117adfe4dbc55de10e6f
+
+ENGLISH TO SIMPLIFIED CHINESE — APACHE-2.0
+Downloaded converted-model revision:
+https://huggingface.co/Xenova/opus-mt-en-zh/tree/046f55aec303cdee3e0318604406d4df20f1e8ea
+Pinned source card:
+https://huggingface.co/Helsinki-NLP/opus-mt-en-zh/blob/408d9bc410a388e1d9aef112a2daba955b945255/README.md
+
 Each language pair downloads encoder_model_quantized.onnx,
 decoder_model_merged_quantized.onnx, source.spm and vocab.json.
 The application's OfflineModelManifest.kt specifies all file sizes and SHA-256
@@ -51,5 +66,5 @@ converted-model cards identify their corresponding base-model repositories.
 
 The application independently implements the tokenizer in Kotlin. The
 SentencePiece and protobuf software runtimes are not included in the app.
-The optional models' Apache-2.0 terms, ONNX Runtime's MIT terms and the new
-application code's Apache-2.0 terms are separate license grants.
+The model licenses, ONNX Runtime's MIT terms and the application code's
+Apache-2.0 terms are separate license grants.

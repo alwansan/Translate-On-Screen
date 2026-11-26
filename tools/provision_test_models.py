@@ -131,7 +131,7 @@ def pack_fingerprint(pack_id: str, revision: str, hashes: list[str]) -> str:
     return digest.hexdigest()
 
 
-OFFLINE_TEST_PACKS = ("en-ar", "ar-en", "ja-en", "en-ja", "ko-en")
+OFFLINE_TEST_PACKS = ("en-ar", "ar-en", "ja-en", "en-ja", "ko-en", "zh-en", "en-zh")
 
 
 def _source_manifest(repo_root: Path, capture_only: bool) -> tuple[dict, dict[str, dict]]:

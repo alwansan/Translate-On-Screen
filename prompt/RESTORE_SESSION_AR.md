@@ -17,6 +17,7 @@
 - دفعة 016 قلّلت تخصيصات تهيئة قاموس Marian وشجرة التقطيع. راجع `memory/sessions/016-tokenizer-memory.md` وتابع جولات الجهاز قبل اعتبار مشكلة الذاكرة مغلقة.
 - دفعة 017 أضافت ko→en. تابع نتائج الاستدلال وراجع `memory/sessions/017-korean-english.md`.
 - دفعة 018 أضافت فحص تشغيل Android 35 بصفحات 16 KiB على محاكي x86_64. راجع `memory/sessions/018-16k-emulator.md` ونتيجة الجولة.
+- دفعة 019 أضافت zh→en وen→zh بصينية مبسطة. مرحلة Android قيد المتابعة. راجع `memory/sessions/019-chinese-english.md`.
 - حدّث الأدلة وSTATE والخطة وهذه الرسالة مع كل دفعة. أبقِ `completion_claim=false` إلى أن ينتهي التنفيذ والتحقق والقبول النهائي.
 
 ## التفويض والمراجع

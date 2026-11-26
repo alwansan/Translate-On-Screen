@@ -27,6 +27,14 @@ SOURCES = {
         "source.spm": "c9496f7c2be9aecb84c751ae9f35a875915dde8e3892f652a5c76811ab2a0f49",
         "vocab.json": "97197044d4803c664a37f8ca2ced9c3405b8a3df6b262a12da22d990b0d756cd",
     },
+    "zh-en": {
+        "source.spm": "e27a3a1b539f4959ec72ea60e453f49156289f95d4e6000b29332efc45616203",
+        "vocab.json": "08a119a1defd522fa047cb5e3bfe3e89633e96caa38ced0dc9cee7ef1021a011",
+    },
+    "en-zh": {
+        "source.spm": "5775ddc9e3ff2fae91554da56468ad35ff56edaba870fea74447bc7234bfdaa8",
+        "vocab.json": "22c957348eed495ee925afc40a36da3e387c8a34a734c8486967c2dca271613e",
+    },
 }
 CASES = {
     "en-ar": [
@@ -57,6 +65,9 @@ CASES = {
         "이것은 책입니다.", "오늘은 날씨가 좋습니다.", "역은 어디에 있습니까?", "안녕하세요.",
         "ＡＢＣ １２３", "한국어와 English", "번역\n테스트", "값은 12,500원입니다.",
     ],
+    "zh-en": ["这是一本书。", "這是一本書。", "火车站在哪里？", "中文 mixed with English １２３"],
+    "en-zh": ["This is a book.", "Where is the library?", "Tomorrow, 12:30.", "Chinese 中文 and English"],
+
 }
 
 def main():
@@ -77,8 +88,8 @@ def main():
         for text in CASES[pack]:
             pieces = processor.encode(text, out_type=str)
             fixtures.append({"pack": pack, "text": text, "ids": [vocabulary.get(piece, vocabulary["<unk>"]) for piece in pieces]})
-    if len(fixtures) != 56:
-        raise SystemExit("Expected 56 independent fixtures")
+    if len(fixtures) != 64:
+        raise SystemExit("Expected 64 independent fixtures")
     output = args.cache / "marian-tokenizer-cases.json"
     temporary = output.with_suffix(".json.part")
     temporary.write_text(json.dumps({"generator": "sentencepiece 0.2.1", "sources": SOURCES, "fixtures": fixtures}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

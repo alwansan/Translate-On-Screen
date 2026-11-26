@@ -43,7 +43,7 @@ The 18 offered OCR model files (`eng`, `ara`, `fra`, `deu`, `spa`, `ita`, `por`,
 
 ## Optional local translation packs
 
-The English → Arabic, Arabic → English, Japanese → English, English → Japanese and Korean → English packs use Helsinki-NLP/OPUS-MT models converted to ONNX by Xenova. The source model cards declare Apache-2.0. The converted-model cards identify the corresponding Helsinki-NLP base model. The model license is separate from ONNX Runtime's MIT license and from the app's own source license.
+The English → Arabic, Arabic → English, Japanese → English, English → Japanese, Korean → English, Chinese → English and English → Simplified Chinese packs use Helsinki-NLP/OPUS-MT models converted to ONNX by Xenova. The source model cards linked below state the license for each model. The converted-model cards identify the corresponding Helsinki-NLP base model. The model license is separate from ONNX Runtime's MIT license and from the app's own source license.
 
 | Pair | Pinned downloaded-model revision | Pinned source-card license evidence |
 | --- | --- | --- |
@@ -52,6 +52,8 @@ The English → Arabic, Arabic → English, Japanese → English, English → Ja
 | Japanese → English | [Xenova/opus-mt-ja-en](https://huggingface.co/Xenova/opus-mt-ja-en/tree/1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16) | [Helsinki-NLP card](https://huggingface.co/Helsinki-NLP/opus-mt-ja-en/blob/0770961a39ba6bd66305b149c3f4110bcafca2e6/README.md) |
 | English → Japanese | [Xenova/opus-mt-en-jap](https://huggingface.co/Xenova/opus-mt-en-jap/tree/9d418190be3aa945eae5bab1bd96bc5e349ad784) | [Helsinki-NLP card](https://huggingface.co/Helsinki-NLP/opus-mt-en-jap/blob/a863894cdd2b80f3bc1c5966734aee9ffec207d1/README.md) |
 | Korean → English | [Xenova/opus-mt-ko-en](https://huggingface.co/Xenova/opus-mt-ko-en/tree/d9fa1ac6008242100fecb4fff9b0a5917a1be81f) | [Helsinki-NLP card](https://huggingface.co/Helsinki-NLP/opus-mt-ko-en/blob/e42d1f41b66194e6d10512f8a27bebc1f4f5097e/README.md) |
+| Chinese → English | [Xenova/opus-mt-zh-en](https://huggingface.co/Xenova/opus-mt-zh-en/tree/39d480d52a9ea3065a1f117adfe4dbc55de10e6f) | [University of Helsinki source and attribution](https://huggingface.co/Helsinki-NLP/opus-mt-zh-en/blob/cf109095479db38d6df799875e34039d4938aaa6/README.md), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Xenova converted and quantized the weights. |
+| English → Simplified Chinese | [Xenova/opus-mt-en-zh](https://huggingface.co/Xenova/opus-mt-en-zh/tree/046f55aec303cdee3e0318604406d4df20f1e8ea) | [Helsinki-NLP card, Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-en-zh/blob/408d9bc410a388e1d9aef112a2daba955b945255/README.md) |
 
 Each pack downloads two quantized ONNX files, `source.spm` and `vocab.json`. [OfflineModelManifest.kt](app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt) records all eight file hashes and sizes. These are optional explicit downloads, not APK assets. The source-card pins above identify the inspected licensing statements; they do not claim that the conversion was performed from those exact source revisions. The app's tokenizer is independently authored Kotlin code; SentencePiece and protobuf runtimes are not redistributed. Attribution and model provenance are also available offline in `OPUS-MT-MODEL-NOTICES.txt`, alongside the Apache license text.
 

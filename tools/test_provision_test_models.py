@@ -45,7 +45,7 @@ class ProvisionTestModelsTest(unittest.TestCase):
             "vocab.json",
         ]
         packs = []
-        for pack, revision in (("en-ar", "b" * 40), ("ar-en", "c" * 40), ("ja-en", "d" * 40), ("en-ja", "e" * 40), ("ko-en", "f" * 40)):
+        for pack, revision in (("en-ar", "b" * 40), ("ar-en", "c" * 40), ("ja-en", "d" * 40), ("en-ja", "e" * 40), ("ko-en", "f" * 40), ("zh-en", "1" * 40), ("en-zh", "2" * 40)):
             files = []
             for source_path in self.source_paths:
                 data = (f"synthetic {pack} bytes: {source_path}").encode("utf-8")
@@ -83,8 +83,8 @@ class ProvisionTestModelsTest(unittest.TestCase):
         network.assert_not_called()
         self.assertEqual(manifest["schema"], 1)
         self.assertEqual(manifest["package"], provision.PACKAGE)
-        self.assertEqual(len(manifest["files"]), 28)
-        self.assertEqual({pack["id"] for pack in manifest["packs"]}, {"en-ar", "ar-en", "ja-en", "en-ja", "ko-en"})
+        self.assertEqual(len(manifest["files"]), 38)
+        self.assertEqual({pack["id"] for pack in manifest["packs"]}, {"en-ar", "ar-en", "ja-en", "en-ja", "ko-en", "zh-en", "en-zh"})
         self.assertFalse((self.cache / "tesseract/tessdata/eng.traineddata").is_symlink())
         for record in manifest["files"]:
             actual = (self.cache / record["path"]).read_bytes()
@@ -183,12 +183,12 @@ class ProvisionTestModelsTest(unittest.TestCase):
             provision.provision_device(["adb", "-s", "test-device"], self.cache, manifest)
         published = [command[-1] for command in commands
                      if command[:3] == ["run-as", provision.PACKAGE, "mv"]]
-        self.assertEqual(len(published), 28)
-        self.assertTrue(all(not path.endswith("/complete") for path in published[:-5]))
-        self.assertTrue(all(path.endswith("/complete") for path in published[-5:]))
+        self.assertEqual(len(published), 38)
+        self.assertTrue(all(not path.endswith("/complete") for path in published[:-7]))
+        self.assertTrue(all(path.endswith("/complete") for path in published[-7:]))
         digests = [command for command in commands
                    if command[:3] == ["run-as", provision.PACKAGE, "sha256sum"]]
-        self.assertEqual(len(digests), 56)  # Before and after each atomic rename.
+        self.assertEqual(len(digests), 76)  # Before and after each atomic rename.
         self.assertEqual(commands[-1][:2], ["rm", "-rf"])
         self.assertTrue(commands[-1][-1].startswith("/data/local/tmp/ost-test-"))
 
@@ -199,7 +199,7 @@ class ProvisionTestModelsTest(unittest.TestCase):
             with self.assertRaisesRegex(provision.ProvisionError, "checksum mismatch"):
                 provision.provision_device(["adb", "-s", "test-device"], self.cache, manifest)
         self.assertFalse(any(command[:3] == ["run-as", provision.PACKAGE, "mv"] for command in commands))
-        for pack in ("en-ar", "ar-en", "ja-en", "en-ja", "ko-en"):
+        for pack in ("en-ar", "ar-en", "ja-en", "en-ja", "ko-en", "zh-en", "en-zh"):
             removals = [
                 command for command in commands
                 if command == ["run-as", provision.PACKAGE, "rm", "-f", f"files/offline_translation/{pack}/complete"]

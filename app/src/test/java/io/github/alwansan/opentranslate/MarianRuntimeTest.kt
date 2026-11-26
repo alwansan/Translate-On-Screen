@@ -47,6 +47,19 @@ class MarianRuntimeTest {
         }
     }
 
+    @Test fun nativeChineseAndEnglishPreserveMeaningInBothDirections() {
+        val (fromChinese, chineseFolder) = verifiedPack("zh-en")
+        MarianRuntime(chineseFolder, fromChinese).use { runtime ->
+            val translated = runtime.translate("这是一本书。", gate)
+            assertTrue(translated, translated.contains("book", ignoreCase = true))
+        }
+        val (fromEnglish, englishFolder) = verifiedPack("en-zh")
+        MarianRuntime(englishFolder, fromEnglish).use { runtime ->
+            val translated = runtime.translate("This is a book.", gate)
+            assertTrue(translated, translated.contains("书"))
+        }
+    }
+
     @Test fun cancellationAfterEncoderReleasesRequestStateAndCloseIsIdempotent() {
         val (pack, folder) = verifiedPack("en-ar")
         val runtime = MarianRuntime(folder, pack)
