@@ -2,9 +2,37 @@
 
 Updated: **2026-11-26**. Current development version: `0.2.0-dev`. Results are tied to commits and scope; a failed overall build is not a passing app release.
 
+## Current acceptance build: all required gates passed
+
+Source [`f0388b2ac928482e73c82de8115ec10ce9aade4d`](https://github.com/alwansan/Translate-On-Screen/commit/f0388b2ac928482e73c82de8115ec10ce9aade4d) is ready for **one consolidated owner acceptance trial**. Implementation of the documented scope is complete; physical-phone acceptance is pending. The sections below retain historical checkpoints, including unsuccessful attempts, and must not be read as the current gate status.
+
+| Gate | Verified result |
+| --- | --- |
+| [Host run 45787527099](https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099), job 139797984523 | **68/68 JVM**, no failures or skipped cases |
+| Python tools | Audit 8/8, model provisioner 10/10, device parser 7/7 |
+| Android lint | **0 errors, 49 warnings** |
+| Assembly | Debug APK, Android-test APK and unsigned release variant succeeded |
+| Delivered package | Debug signature, ZIP/ELF 16 KiB static alignment and packaged notices passed; 12 native libraries |
+| [Device run 45787527216](https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527216), API 29 job 139797985085 | **32/32**, no failures, skipped/assumed cases, missing suites or runner errors |
+| Same device run, API 35 job 139797984581 | **32/32**, with the same strict gate conditions |
+
+Both workflow runs completed successfully on attempt 1 for this commit. All seven required suites ran on each emulator. The radio settings recorded during device tests were airplane mode 1, Wi-Fi 0 and mobile data 0. Real Android framework consent/capture, native OCR, local translation in both directions, crop reuse, rotation, interaction/pause, deadlines, screen-off cancellation, image editing, data integrity, dictionary consent and UI state were exercised. These are x86_64 emulator results using synthetic fixtures, not tests on every physical/OEM device.
+
+The new selector Back case passed on both systems. After one key injection the selector disappeared, the bubble remained, the original activity regained focus, the authorized capture session continued and neither portrait nor landscape regions were saved. API 35 also executed a system-edge Back gesture because its measured left gesture inset was positive. Both runs recorded `contentEventObserved=false`; actual cancellation postconditions passed. The final commit changed the test observation gate only; production selector code is the code built at b511262. No fallback Back injection, failed-case retry, skipped case or relaxed expected behavior was used.
+
+Full case names, warnings, observations and summaries are committed in [validation-f0388b2.json](../memory/evidence/validation-f0388b2.json). The 49 lint warnings comprise 31 UnusedResources, 12 SetTextI18n, one OldTargetApi, one AndroidGradlePluginVersion, one GradleDependency, two NewerVersionAvailable and one UseRequiresApi. The latter concerns an annotation recommendation on a private SDK-guarded helper; there is no corresponding missing-runtime-guard error.
+
+### Deliverable and practical scope
+
+[Download the acceptance bundle](https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735). The APK is `open-screen-translate-0.2.0-dev.apk`, **59,776,566 bytes**, SHA256 `366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1`. [ACCEPTANCE_BUILD.json](ACCEPTANCE_BUILD.json) records source tree, artifact ID, ZIP digest, expiration and signing. ZIP and APK digests are different quantities. The bundle also contains its JSON metadata, checksum and Arabic acceptance instructions.
+
+The artifact is retained until **2027-02-24**; short-lived CI report artifacts have a separate 14-day retention. Permanent structured evidence is committed here. The source can be rebuilt after expiration, but a rebuild's signature and bytes need not match this APK. Device jobs built from the same source separately; they did not install the exact bytes from the host download artifact. Release assembly succeeded **unsigned**; the delivered APK is debug-signed, not a store-signed release.
+
+Offline translation is en↔ar only, while OCR model availability is broader. Definition lookup is English with disclosed external links for other languages. Live paid-provider accounts, every external camera/speech service, OEM restrictions, independent CJK quality and actual 16 KiB-page execution remain outside this automated evidence. The fixed public dictionary lookup observation is separately scoped below. See [the acceptance guide](ACCEPTANCE_AR.md) for the single owner trial.
+
 ## Source and recovery
 
-The local execution environment became unavailable before the planned Android device run. Full source was then reconstructed and committed via GitHub. This source needs its own CI evidence. Earlier local host results are not reused as proof of the reconstructed implementation.
+The local execution environment became unavailable before the planned Android device run. Full source was then reconstructed and committed via GitHub, and subsequently received its own CI evidence as recorded above. Earlier local host results are not reused as proof of the reconstructed implementation.
 
 - Aggregate implementation: [51cc5343c90e02bbdc8f27aab89d8e16b19b019a](https://github.com/alwansan/Translate-On-Screen/commit/51cc5343c90e02bbdc8f27aab89d8e16b19b019a).
 - Device and native-test integration: [3189a8f84d523aa1e8b853b82fb5048886c255da](https://github.com/alwansan/Translate-On-Screen/commit/3189a8f84d523aa1e8b853b82fb5048886c255da).

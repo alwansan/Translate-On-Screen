@@ -5,12 +5,12 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "back_test_postcondition_correction",
-  "last_verified_code_commit": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+  "phase": "awaiting_owner_acceptance",
+  "last_verified_code_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45785926190,
+  "last_verified_android_ci": 45787527099,
   "last_verified_inventory_ci": 45784175402,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -19,11 +19,7 @@
     "23_ui_screenshots"
   ],
   "active_tracks": [
-    "reference_binary_and_visual_audit",
-    "capture_modes_and_block_overlay",
-    "ocr_and_translation_providers",
-    "ui_and_memory",
-    "android_emulator_validation"
+    "owner_final_acceptance"
   ],
   "completion_claim": false,
   "ask_owner_for_microtests": false,
@@ -36,12 +32,12 @@
     "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
     "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
     "available_execution_path": "GitHub connector and GitHub Actions",
-    "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
+    "unsynced_work": "Current reconstructed source, evidence and documentation are committed remotely. Inaccessible earlier local files are not the current source; if recovered, preserve and compare them without reset."
   },
-  "observed_branch_head": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+  "observed_branch_head": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "latest_observed_android_ci": {
-    "run_id": 45785926190,
-    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+    "run_id": 45787527099,
+    "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "conclusion": "success",
     "jvm_tests": 68,
     "failed": 0,
@@ -54,50 +50,43 @@
       "debugAndroidTest"
     ]
   },
-  "source_checkpoint_parent": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+  "source_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "host_and32_case_device_gate_after_test_synchronization_correction",
-    "final_docs_and_acceptance_bundle",
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45785926305,
-    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
-    "conclusion": "failure",
+    "run_id": 45787527216,
+    "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "conclusion": "success",
     "api29": {
-      "job": 139792544723,
+      "job": 139797985085,
       "started": 32,
       "finished": 32,
-      "passed": 31,
-      "failed": 1,
+      "passed": 32,
+      "failed": 0,
       "skipped": 0,
-      "failures": [
-        {
-          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
-          "status": -2
-        }
-      ]
+      "missing_suites": [],
+      "runner_errors": 0
     },
     "api35": {
-      "job": 139792545067,
+      "job": 139797984581,
       "started": 32,
       "finished": 32,
-      "passed": 31,
-      "failed": 1,
+      "passed": 32,
+      "failed": 0,
       "skipped": 0,
-      "failures": [
-        {
-          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
-          "status": -2
-        }
-      ]
+      "missing_suites": [],
+      "runner_errors": 0
+    },
+    "network_state": {
+      "airplane_mode_on": "1",
+      "wifi_on": "0",
+      "mobile_data": "0"
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45785926190,
+    "run_id": 45787527099,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
@@ -107,16 +96,13 @@
     "device_parser_tests": 7,
     "jvm_tests": 68
   },
-  "current_fix_batch": [
-    "Inject Back once, record UiAutomator content-event observation separately, then require existing strict cancellation/source/session/region postconditions",
-    "No production code change, fallback key injection, case retry, skipped or relaxed behavior assertions"
-  ],
-  "last_verified_code_scope": "b511 host68/68 and all31 prior device cases pass on both APIs; new case stopped before its functional assertions, leaving32-case gate failed.",
+  "current_fix_batch": [],
+  "last_verified_code_scope": "Host68/68 and Android32/32 on both API29 and API35, with all7 required suites and no failed/skipped/missing cases. Back cancellation postconditions pass.",
   "latest_attempt": {
-    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+    "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "host": "success",
-    "device": "failure",
-    "scope": "All31 prior cases pass; new Back case stops at UiDevice.pressBack boolean before cancellation postconditions. No evidence yet that cancellation itself failed."
+    "device": "success",
+    "scope": "Complete available gates; debug acceptance bundle ready; one consolidated owner device trial remains."
   },
   "dictionary_service_observation": {
     "run": 45779858841,
@@ -127,5 +113,34 @@
     "examples": 5,
     "license": "CC BY-SA 3.0",
     "scope": "one public English lookup from runner, not Android transport or availability guarantee"
-  }
+  },
+  "last_verified_code_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
+  "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+  "implementation_complete": true,
+  "available_validation_gates_passed": true,
+  "acceptance_ready": true,
+  "completion_condition": "Record the owner's one consolidated final device trial; resolve any reported defect before final closure.",
+  "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
+  "latest_evidence": "memory/evidence/validation-f0388b2.json",
+  "delivery": {
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
+    "artifact_id": 15101850735,
+    "apk": "open-screen-translate-0.2.0-dev.apk",
+    "sha256": "366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1",
+    "bytes": 59776566,
+    "source_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "signing": "debug",
+    "expires_at": "2027-02-24T08:57:08Z",
+    "guide": "docs/ACCEPTANCE_AR.md"
+  },
+  "remaining_limits": [
+    "Offline translation en<->ar only",
+    "In-app definition lookup is English; other languages use disclosed external dictionary links",
+    "Live paid-provider accounts and OEM physical phones not tested",
+    "External camera and speech services depend on installed device providers",
+    "CJK quality has not been independently benchmarked",
+    "16 KiB native alignment is a static check, not execution on a 16 KiB-page device",
+    "Release variant compiled unsigned; no production signing or store publication",
+    "Artifact retention ends at the listed expiration; committed evidence and source remain available"
+  ]
 }

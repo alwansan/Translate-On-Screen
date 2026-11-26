@@ -1,0 +1,1484 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-26T09:05:43Z",
+  "source_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+  "source_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
+  "version": "0.2.0-dev",
+  "acceptance_ready": true,
+  "owner_acceptance": "pending",
+  "host": {
+    "run_id": 45787527099,
+    "job_id": 139797984523,
+    "conclusion": "success",
+    "validation": {
+      "jvm_tests": {
+        "total": 68,
+        "passed": 68,
+        "failed": 0,
+        "skipped": 0,
+        "cases": [
+          {
+            "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+            "name": "cropMappingUsesRoundedPhysicalCropAndRejectsInvalidBoxes",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+            "name": "interactionHasFiniteDebounceAndDoesNotBypassMinimumSpacing",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+            "name": "slowWorkDoesNotOverlapOrCreateCatchUpRequests",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+            "name": "changedTextAndDimensionChangesInvalidateFingerprint",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+            "name": "regionAndAutomaticModesRemainDistinct",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+            "name": "corruptedNumericSettingsAreBoundedWithoutChangingRequestedMode",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+            "name": "legacyDeadlineApiNeverSchedulesBeyondEnd",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+            "name": "disabledGesturesSurvivePreferenceNormalization",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "cancellationDisconnectsBlockedIoAndDiscardsLateBody",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "consentAndCancellationAreCheckedBeforeOpeningATransport",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "redirectsAndRemoteErrorBodiesAreNeverFollowedOrExposed",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "approvedRequestUsesOnlyFixedPublicHostAndCleansUp",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "declaredAndStreamedLimitsAreBothEnforced",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryClientTest",
+            "name": "unsupportedPayloadAndSocketTimeoutReturnSafeErrors",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "referenceLinksCannotBecomeAnUntrustedNavigationTarget",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "malformedUtf8TypesTrailingDataAndStatusCodesHaveSafeErrors",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "realWireShapeKeepsMeaningsExamplesPhoneticsAndAttribution",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "requestEncodesOnePathSegmentAndRejectsUrlInjection",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "limitsOmitWholeExtraDefinitionsAndNeverShortenRetainedText",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryProtocolTest",
+            "name": "missingLicenseAndSourcesAreExplicitInCopiedAttribution",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+            "name": "acceptsHttpsServerAndDeploymentPrefix",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+            "name": "preventsCredentialsAndSensitiveQueryParametersFromBecomingUrls",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+            "name": "rejectsCleartextMissingHostsAndInvalidPorts",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+            "name": "nativeArabicToEnglishMatchesSixPhraseRegressionHalf",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+            "name": "nativeEnglishToArabicMatchesSixPhraseRegressionHalf",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+            "name": "cancellationAfterEncoderReleasesRequestStateAndCloseIsIdempotent",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+            "name": "viterbiOptimizesTheWholePathNotTheLongestPiece",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+            "name": "malformedProtobufLengthsAndVarintsAreRejected",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+            "name": "allEightPinnedFilesMatchTheirSizeAndSha256",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+            "name": "modelsMatchThirtyTwoIndependentSentencePieceFixtures",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+            "name": "unknownSurfacesFuseWithoutFusingNormalPiecesMissingFromSharedVocab",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OcrGeometryTest",
+            "name": "boxesAreClippedAndDegenerateOrBlankBoxesAreRejected",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OcrGeometryTest",
+            "name": "xyxyCoordinatesAreScaleInvariantInsideTheCrop",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+            "name": "credentialsQueriesAndEncodedProxyAmbiguityAreRejected",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+            "name": "modelIdentifiersCannotInjectPathsOrQueries",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+            "name": "redirectsAndQuotaErrorsAreTypedWithoutEchoingRemoteBodies",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+            "name": "deploymentPrefixesAndOfficialApiPathsArePreserved",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "baiduSignsRawTextBeforeEncodingAndChecksReturnedOrder",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "llmResponsesUseUniqueIdsNotResponsePosition",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "azureKeepsKeyAndRegionOutOfTheLanguageQuery",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "libreAndDeeplPreserveCardinalityAndSourceAuto",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "googleUsesHeaderAuthenticationAndDecodesEscapesOnce",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "yandexServiceAccountAndUserIamHaveDifferentFolderRules",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "revokedConsentAndMalformedHeadersCannotReachTransport",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+            "name": "llmPromptsCarryTextAsDataAndNotCredentials",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "screenCoordinatesMapToTheDownsampledCapture",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "fractionalCropEnclosesSelectedPixelsAndStaysWithinBounds",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "fullCaptureAndTinyCornerSelectionAreNeverZeroSized",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "zeroAreaInvalidDisplayAndNonFiniteCoordinatesAreRejected",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "malformedNormalizedSelectionIsRejected",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "reverseDragHasTheSameCropAsForwardDrag",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.RegionMathTest",
+            "name": "offscreenDragIsClippedWithoutReadingOutsideTheImage",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+            "name": "rejectsOffsetsOutsideTheFileOrInsideItsHeader",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+            "name": "acceptsTheLstmOffsetTableFormat",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+            "name": "rejectsTruncatedFileAndMissingLstmComponent",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+            "name": "rejectsBackwardsComponentOffsets",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+            "name": "rejectsAnHtmlErrorPageInsteadOfPassingItToNativeOcr",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "cancellationStopsTheNextBatchAndDoesNotCachePartialResults",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "theLruCacheIsBoundedAndCanBeCleared",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "outputLimitIncludesNewlinesBetweenTranslatedBlocks",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "duplicateBlocksAreSentOnceAndRestoredInOrder",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "interruptionIsNotClearedByProductionCode",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "utf8LimitsSplitArabicWithoutCuttingText",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+            "name": "configurationChangesSeparateCachedText",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.UserSettingsPrivacyTest",
+            "name": "diagnosticRepresentationDoesNotExposeCredentialsOrServerAddress",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+            "name": "importRejectsNonDictionaryAndIncompleteEntries",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+            "name": "importRejectsOversizedWordsBeforePersistence",
+            "status": "passed",
+            "message": ""
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+            "name": "roundTripPreservesArabicMultilineAndQuotesWithoutExecutingContents",
+            "status": "passed",
+            "message": ""
+          }
+        ]
+      },
+      "lint": {
+        "errors": 0,
+        "warnings": 49,
+        "issues": [
+          {
+            "id": "OldTargetApi",
+            "severity": "Warning",
+            "message": "Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+          },
+          {
+            "id": "AndroidGradlePluginVersion",
+            "severity": "Warning",
+            "message": "A newer version of Gradle than 8.13 is available: 8.14.8"
+          },
+          {
+            "id": "GradleDependency",
+            "severity": "Warning",
+            "message": "A newer version of androidx.test.uiautomator:uiautomator than 2.3.0 is available: 2.4.1"
+          },
+          {
+            "id": "NewerVersionAvailable",
+            "severity": "Warning",
+            "message": "A newer version of com.microsoft.onnxruntime:onnxruntime-android than 1.23.2 is available: 1.32.0"
+          },
+          {
+            "id": "NewerVersionAvailable",
+            "severity": "Warning",
+            "message": "A newer version of com.microsoft.onnxruntime:onnxruntime than 1.23.2 is available: 1.32.0"
+          },
+          {
+            "id": "UseRequiresApi",
+            "severity": "Warning",
+            "message": "Use `@RequiresApi(33) instead of `@TargetApi` to propagate the requirement to users of `Api33`"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.tagline` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.preview_notice` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.screen_title` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.screen_help` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.start_screen` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.stop_screen` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.import_image` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.text_title` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.setup_title` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.models` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.privacy_summary` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.detect_language` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.ocr_language` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.ocr_help` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.server_url` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.api_key` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.network_disclosure` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.enable_network` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.enable_history` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.models_help` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.download` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.download_again` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.import_model` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.delete_model` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.invalid_image` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.original` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.translation` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.result` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.copy` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.speak` appears to be unused"
+          },
+          {
+            "id": "UnusedResources",
+            "severity": "Warning",
+            "message": "The resource `R.string.screen_options` appears to be unused"
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "String literal in `setText` can not be translated. Use Android resources instead."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          },
+          {
+            "id": "SetTextI18n",
+            "severity": "Warning",
+            "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+          }
+        ]
+      },
+      "note": "Missing reports are not a passing result; workflow gates remain authoritative."
+    },
+    "python_tests": {
+      "audit": 8,
+      "model_provisioner": 10,
+      "device_parser": 7
+    },
+    "built_variants": [
+      "debug",
+      "debugAndroidTest",
+      "release_unsigned"
+    ],
+    "package": {
+      "apk": "app-debug.apk",
+      "bytes": 59776566,
+      "sha256": "366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1",
+      "native_libraries": 12,
+      "static_package_checks": "PASS",
+      "onnx_notices_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+    },
+    "apk_signature_check": "PASS",
+    "zip_alignment_16_kib": "PASS"
+  },
+  "device_run": {
+    "run_id": 45787527216,
+    "conclusion": "success",
+    "api29": {
+      "job_id": 139797985085,
+      "summary": {
+        "schema": 1,
+        "passed": true,
+        "api": 29,
+        "emulator": true,
+        "network_state_during_tests": {
+          "airplane_mode_on": "1",
+          "wifi_on": "0",
+          "mobile_data": "0"
+        },
+        "final_code": -1,
+        "started": 32,
+        "finished": 32,
+        "passed_cases": 32,
+        "failed_cases": 0,
+        "ignored_or_assumed_cases": 0,
+        "started_cases": [
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticDeadlineEndsProjectionInsteadOfOnlyPausing"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "positionedTranslationAllowsTouchToReachAnotherUid"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "actualConsentFullCaptureRotationAndStop"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "fixedAreaIsSavedAndReusedWithoutOutsideText"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticChangedFramesPauseAndScreenLockStopsSession"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "suppliedWordDoesNotLookupUntilConfirmationAndCancelKeepsItLocal"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "unsupportedLanguageUsesBrowserAndRecreationNeverStartsLookup"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutWaitsForAuthorizedCommitThenBlocksAnyLaterAppend"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "maximumLengthUnicodeResultRoundTripsWithoutTruncation"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutCommittedDuringReadPreventsThePendingAppend"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "byteBudgetCountsJsonEscapingAndEvictsWholeOldestResults"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "corruptUtf8SchemaAndOversizedFilesRemainUnchangedUntilExplicitClear"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutAndInterruptedNoOpReturnFalseWithoutCreatingAHistoryFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "entryLimitEvictsOldestWholeEntriesInNewestFirstOrder"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "providerRejectsTraversalQueryParametersAndCreationOfUnknownFiles"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cancelImmediatelyAfterStartingOcrReturnsOneCancellationAndDeletesTheFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "systemBackCancelsPreviewAndRemovesItsTemporaryCameraUri"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "changingServiceAddressClearsCredentialsAndRevokesNetworkConsent"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "swapUpdatesOcrAndDraftSurvivesTabsAndRecreation"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "arabicDarkInterfaceKeepsTranslationLanguagesIndependent"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeEnglishToArabicWorksWithNetworkDisabled"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeArabicToEnglishWorksWithNetworkDisabled"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "duplicatesKeepExistingTranslationAndNotesAndCountOnlyNewUniqueWords"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "oversizedSavedDataBlocksEveryMutationWithoutTruncatingTheFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "entryLimitRejectsEntireImportWithoutLosingOrRewritingExistingEntries"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "combinedByteLimitRejectsImportBeforeAnyAtomicFileWrite"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "corruptSavedDataBlocksEveryMutationUntilExplicitClear"
+          }
+        ],
+        "finished_cases": [
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticDeadlineEndsProjectionInsteadOfOnlyPausing",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "positionedTranslationAllowsTouchToReachAnotherUid",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "actualConsentFullCaptureRotationAndStop",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "fixedAreaIsSavedAndReusedWithoutOutsideText",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticChangedFramesPauseAndScreenLockStopsSession",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "suppliedWordDoesNotLookupUntilConfirmationAndCancelKeepsItLocal",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "unsupportedLanguageUsesBrowserAndRecreationNeverStartsLookup",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutWaitsForAuthorizedCommitThenBlocksAnyLaterAppend",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "maximumLengthUnicodeResultRoundTripsWithoutTruncation",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutCommittedDuringReadPreventsThePendingAppend",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "byteBudgetCountsJsonEscapingAndEvictsWholeOldestResults",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "corruptUtf8SchemaAndOversizedFilesRemainUnchangedUntilExplicitClear",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutAndInterruptedNoOpReturnFalseWithoutCreatingAHistoryFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "entryLimitEvictsOldestWholeEntriesInNewestFirstOrder",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "providerRejectsTraversalQueryParametersAndCreationOfUnknownFiles",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cancelImmediatelyAfterStartingOcrReturnsOneCancellationAndDeletesTheFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "systemBackCancelsPreviewAndRemovesItsTemporaryCameraUri",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "changingServiceAddressClearsCredentialsAndRevokesNetworkConsent",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "swapUpdatesOcrAndDraftSurvivesTabsAndRecreation",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "arabicDarkInterfaceKeepsTranslationLanguagesIndependent",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeEnglishToArabicWorksWithNetworkDisabled",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeArabicToEnglishWorksWithNetworkDisabled",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "duplicatesKeepExistingTranslationAndNotesAndCountOnlyNewUniqueWords",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "oversizedSavedDataBlocksEveryMutationWithoutTruncatingTheFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "entryLimitRejectsEntireImportWithoutLosingOrRewritingExistingEntries",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "combinedByteLimitRejectsImportBeforeAnyAtomicFileWrite",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "corruptSavedDataBlocksEveryMutationUntilExplicitClear",
+            "status": 0
+          }
+        ],
+        "required_suites": [
+          "CaptureInstrumentationTest",
+          "DictionaryActivityInstrumentationTest",
+          "HistoryStoreInstrumentationTest",
+          "ImageEditorInstrumentationTest",
+          "MainUiInstrumentationTest",
+          "OfflineTranslationInstrumentationTest",
+          "WordbookImportInstrumentationTest"
+        ],
+        "missing_suites": [],
+        "failures": [],
+        "runner_error_count": 0
+      },
+      "observations": [
+        {
+          "reason": "selector_back_key; contentEventObserved=false; fixture=RESUMED,finishing=false,destroyed=false,focus=true,view=1080x1920"
+        },
+        {
+          "reason": "region_selection_input; gestureInsets=0,63,0,126; drag=75,652->1004,1344; display=1080x1920; fixture=RESUMED,finishing=false,destroyed=false,focus=false,view=1080x1920"
+        }
+      ]
+    },
+    "api35": {
+      "job_id": 139797984581,
+      "summary": {
+        "schema": 1,
+        "passed": true,
+        "api": 35,
+        "emulator": true,
+        "network_state_during_tests": {
+          "airplane_mode_on": "1",
+          "wifi_on": "0",
+          "mobile_data": "0"
+        },
+        "final_code": -1,
+        "started": 32,
+        "finished": 32,
+        "passed_cases": 32,
+        "failed_cases": 0,
+        "ignored_or_assumed_cases": 0,
+        "started_cases": [
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticDeadlineEndsProjectionInsteadOfOnlyPausing"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "positionedTranslationAllowsTouchToReachAnotherUid"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "actualConsentFullCaptureRotationAndStop"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "fixedAreaIsSavedAndReusedWithoutOutsideText"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticChangedFramesPauseAndScreenLockStopsSession"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "suppliedWordDoesNotLookupUntilConfirmationAndCancelKeepsItLocal"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "unsupportedLanguageUsesBrowserAndRecreationNeverStartsLookup"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutWaitsForAuthorizedCommitThenBlocksAnyLaterAppend"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "maximumLengthUnicodeResultRoundTripsWithoutTruncation"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutCommittedDuringReadPreventsThePendingAppend"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "byteBudgetCountsJsonEscapingAndEvictsWholeOldestResults"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "corruptUtf8SchemaAndOversizedFilesRemainUnchangedUntilExplicitClear"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutAndInterruptedNoOpReturnFalseWithoutCreatingAHistoryFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "entryLimitEvictsOldestWholeEntriesInNewestFirstOrder"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "providerRejectsTraversalQueryParametersAndCreationOfUnknownFiles"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cancelImmediatelyAfterStartingOcrReturnsOneCancellationAndDeletesTheFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "systemBackCancelsPreviewAndRemovesItsTemporaryCameraUri"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "changingServiceAddressClearsCredentialsAndRevokesNetworkConsent"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "swapUpdatesOcrAndDraftSurvivesTabsAndRecreation"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "arabicDarkInterfaceKeepsTranslationLanguagesIndependent"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeEnglishToArabicWorksWithNetworkDisabled"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeArabicToEnglishWorksWithNetworkDisabled"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "duplicatesKeepExistingTranslationAndNotesAndCountOnlyNewUniqueWords"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "oversizedSavedDataBlocksEveryMutationWithoutTruncatingTheFile"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "entryLimitRejectsEntireImportWithoutLosingOrRewritingExistingEntries"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "combinedByteLimitRejectsImportBeforeAnyAtomicFileWrite"
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "corruptSavedDataBlocksEveryMutationUntilExplicitClear"
+          }
+        ],
+        "finished_cases": [
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticDeadlineEndsProjectionInsteadOfOnlyPausing",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "positionedTranslationAllowsTouchToReachAnotherUid",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "actualConsentFullCaptureRotationAndStop",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "fixedAreaIsSavedAndReusedWithoutOutsideText",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "automaticChangedFramesPauseAndScreenLockStopsSession",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+            "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "suppliedWordDoesNotLookupUntilConfirmationAndCancelKeepsItLocal",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.DictionaryActivityInstrumentationTest",
+            "name": "unsupportedLanguageUsesBrowserAndRecreationNeverStartsLookup",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutWaitsForAuthorizedCommitThenBlocksAnyLaterAppend",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "maximumLengthUnicodeResultRoundTripsWithoutTruncation",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutCommittedDuringReadPreventsThePendingAppend",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "byteBudgetCountsJsonEscapingAndEvictsWholeOldestResults",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "corruptUtf8SchemaAndOversizedFilesRemainUnchangedUntilExplicitClear",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "optOutAndInterruptedNoOpReturnFalseWithoutCreatingAHistoryFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.HistoryStoreInstrumentationTest",
+            "name": "entryLimitEvictsOldestWholeEntriesInNewestFirstOrder",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "providerRejectsTraversalQueryParametersAndCreationOfUnknownFiles",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "cancelImmediatelyAfterStartingOcrReturnsOneCancellationAndDeletesTheFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.ImageEditorInstrumentationTest",
+            "name": "systemBackCancelsPreviewAndRemovesItsTemporaryCameraUri",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "changingServiceAddressClearsCredentialsAndRevokesNetworkConsent",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "swapUpdatesOcrAndDraftSurvivesTabsAndRecreation",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.MainUiInstrumentationTest",
+            "name": "arabicDarkInterfaceKeepsTranslationLanguagesIndependent",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeEnglishToArabicWorksWithNetworkDisabled",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.OfflineTranslationInstrumentationTest",
+            "name": "nativeArabicToEnglishWorksWithNetworkDisabled",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "duplicatesKeepExistingTranslationAndNotesAndCountOnlyNewUniqueWords",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "oversizedSavedDataBlocksEveryMutationWithoutTruncatingTheFile",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "entryLimitRejectsEntireImportWithoutLosingOrRewritingExistingEntries",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "combinedByteLimitRejectsImportBeforeAnyAtomicFileWrite",
+            "status": 0
+          },
+          {
+            "class": "io.github.alwansan.opentranslate.WordbookImportInstrumentationTest",
+            "name": "corruptSavedDataBlocksEveryMutationUntilExplicitClear",
+            "status": 0
+          }
+        ],
+        "required_suites": [
+          "CaptureInstrumentationTest",
+          "DictionaryActivityInstrumentationTest",
+          "HistoryStoreInstrumentationTest",
+          "ImageEditorInstrumentationTest",
+          "MainUiInstrumentationTest",
+          "OfflineTranslationInstrumentationTest",
+          "WordbookImportInstrumentationTest"
+        ],
+        "missing_suites": [],
+        "failures": [],
+        "runner_error_count": 0
+      },
+      "observations": [
+        {
+          "reason": "selector_back_key; contentEventObserved=false; fixture=RESUMED,finishing=false,destroyed=false,focus=true,view=1080x1920"
+        },
+        {
+          "reason": "region_selection_input; gestureInsets=78,63,78,84; drag=120,652->960,1344; display=1080x1920; fixture=RESUMED,finishing=false,destroyed=false,focus=false,view=1080x1920"
+        }
+      ]
+    }
+  },
+  "delivery": {
+    "schema": 1,
+    "status": "ready_for_owner_acceptance",
+    "updated_date": "2026-11-26",
+    "timezone": "Asia/Baghdad",
+    "repository": "alwansan/Translate-On-Screen",
+    "branch": "feature/open-screen-translate",
+    "source_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "source_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
+    "version_name": "0.2.0-dev",
+    "version_code": 2,
+    "application_id": "io.github.alwansan.opentranslate",
+    "apk": {
+      "filename": "open-screen-translate-0.2.0-dev.apk",
+      "bytes": 59776566,
+      "sha256": "366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1",
+      "signing": "Android debug; not a production release key",
+      "min_sdk": 26,
+      "target_sdk": 36,
+      "abis": [
+        "arm64-v8a",
+        "x86_64"
+      ]
+    },
+    "artifact": {
+      "id": 15101850735,
+      "name": "open-screen-translate-debug-f0388b2ac928482e73c82de8115ec10ce9aade4d",
+      "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
+      "zip_bytes": 23985688,
+      "zip_digest": "sha256:88d1b2435e2b697a054fa021cccf9abcfa5c8aa009aacef14efdb8a9131ae6ae",
+      "expires_at": "2027-02-24T08:57:08Z",
+      "contents": [
+        "open-screen-translate-0.2.0-dev.apk",
+        "APK-INFO.json",
+        "SHA256SUMS.txt",
+        "ACCEPTANCE-AR.md"
+      ],
+      "download_note": "GitHub login may be required. Extract the APK from the ZIP. The ZIP digest is different from the APK SHA256."
+    },
+    "host": {
+      "run_id": 45787527099,
+      "job_id": 139797984523,
+      "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099",
+      "conclusion": "success",
+      "jvm_tests": {
+        "passed": 68,
+        "failed": 0,
+        "skipped": 0
+      },
+      "python_tests": {
+        "audit": 8,
+        "model_provisioner": 10,
+        "device_parser": 7
+      },
+      "lint": {
+        "errors": 0,
+        "warnings": 49
+      },
+      "variants": [
+        "debug",
+        "debugAndroidTest",
+        "release_unsigned"
+      ],
+      "signature_check": "PASS",
+      "static_package_checks": "PASS"
+    },
+    "devices": {
+      "run_id": 45787527216,
+      "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527216",
+      "conclusion": "success",
+      "api29": {
+        "job_id": 139797985085,
+        "passed": 32,
+        "failed": 0,
+        "skipped": 0
+      },
+      "api35": {
+        "job_id": 139797984581,
+        "passed": 32,
+        "failed": 0,
+        "skipped": 0
+      },
+      "required_suites": 7,
+      "network_state_during_tests": {
+        "airplane_mode_on": "1",
+        "wifi_on": "0",
+        "mobile_data": "0"
+      },
+      "scope": "Separate debug builds from the same source commit were exercised on x86_64 emulators. This is not a claim that the downloadable host-built APK bytes were installed by the device jobs."
+    },
+    "evidence": "memory/evidence/validation-f0388b2.json",
+    "acceptance_guide": "docs/ACCEPTANCE_AR.md",
+    "owner_acceptance": "pending",
+    "limitations": [
+      "Offline translation en<->ar only",
+      "In-app definition lookup is English; other languages use disclosed external dictionary links",
+      "Live paid-provider accounts and OEM physical phones not tested",
+      "External camera and speech services depend on installed device providers",
+      "CJK quality has not been independently benchmarked",
+      "16 KiB native alignment is a static check, not execution on a 16 KiB-page device",
+      "Release variant compiled unsigned; no production signing or store publication",
+      "Artifact retention ends at the listed expiration; committed evidence and source remain available"
+    ]
+  },
+  "scope_notes": [
+    "Both workflows completed successfully on their first attempt for f0388b2. No skipped/assumed device cases, missing suites, retry-based pass or runner error.",
+    "The final test-only change records UiAutomator's content-event boolean and checks actual behavior. Both booleans were false, while the selector closed and source focus returned with the authorized service/bubble preserved and no saved region.",
+    "The Back test executes a genuine horizontal system-edge gesture when a left gesture inset is available; API35 reports a 78px left inset. API29 reports 0px and exercises the key path.",
+    "The APK in the host artifact and device-job APKs share the source commit; byte identity across independent debug builds is not claimed.",
+    "The old local emulator boot is not counted as an app test.",
+    "Full warning details, case names and unsuccessful prior checkpoints remain committed; no claim of zero lint warnings or exhaustive visual/OEM/provider coverage."
+  ]
+}
