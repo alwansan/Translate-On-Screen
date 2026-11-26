@@ -5,7 +5,7 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "implementation_in_progress",
+  "phase": "implementation_and_environment_recovery",
   "last_verified_code_commit": "3bca5754ed5d149b420c4af17f8243a5ef2340bd",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
@@ -29,6 +29,20 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/002-evidence-checkpoint.md",
-  "environment": "JDK and Kotlin local; no Android SDK, adb, emulator or /dev/kvm; direct GitHub DNS unavailable; GitHub connector available"
+  "session_checkpoint": "memory/sessions/002-environment-recovery.md",
+  "environment": {
+    "status": "unavailable",
+    "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
+    "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
+    "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
+    "available_execution_path": "GitHub connector and GitHub Actions",
+    "unsynced_work": "Substantial 0.2 development existed locally. Its exact file contents are not yet confirmed recoverable. Reconstruct source with review and new CI; do not claim the remote head contains it."
+  },
+  "observed_branch_head": "78ae21418b92406269e39ad4c387e34e2f12454b",
+  "latest_observed_android_ci": {
+    "run_id": 45768672996,
+    "head_sha": "78ae21418b92406269e39ad4c387e34e2f12454b",
+    "conclusion": "failure",
+    "reason": "CaptureService.kt:581 extra closing parenthesis; corrective commit pending verification"
+  }
 }

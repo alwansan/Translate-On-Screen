@@ -578,7 +578,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         if (bubbleY < 0) bubbleY = screen.y / 2
         val params = overlayParams(bubbleSize, bubbleSize).apply {
             x = bubbleX.coerceIn(0, max(0, screen.x - bubbleSize))
-            y = bubbleY.coerceIn(dp(30), max(dp(30), screen.y - bubbleSize)))
+            y = bubbleY.coerceIn(dp(30), max(dp(30), screen.y - bubbleSize))
         }
         val view = TextView(this).apply {
             text = if (automatic != null) "■" else options.bubbleSymbol
