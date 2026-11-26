@@ -5,7 +5,7 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "003",
-  "phase": "awaiting_owner_acceptance",
+  "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
@@ -126,7 +126,7 @@
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "implementation_complete": true,
   "available_validation_gates_passed": true,
-  "acceptance_ready": true,
+  "acceptance_ready": false,
   "completion_condition": "Record the owner's one consolidated final device trial; resolve any reported defect before final closure.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
   "latest_evidence": "memory/evidence/validation-f0388b2.json",
@@ -163,5 +163,6 @@
     "device": 45787527216,
     "artifact": 15101850735,
     "expired": false
-  }
+  },
+  "owner_acceptance_requested": false
 }

@@ -163,6 +163,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private var boxesPanel: View? = null
     private var menuPanel: View? = null
     private var autoControl: Button? = null
+    private var pendingDock: Runnable? = null
     private var dimBubble: Runnable? = null
     private var resultHideTimer: Runnable? = null
     private var resultExpiresAt = Long.MAX_VALUE
@@ -906,6 +907,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         ignoreInteractions()
+                        cancelPendingDock()
                         dimBubble?.let(main::removeCallbacks); dimBubble = null
                         view.alpha = options.bubbleOpacity / 100f
                         startX = event.rawX; startY = event.rawY
@@ -930,12 +932,32 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         if (dragging && bubble === view) {
-                            val bounds = screenSize()
-                            if (options.bubbleAutoDock) params.x = if (params.x + size / 2 < bounds.x / 2) 0 else max(0, bounds.x - size)
-                            bubbleX = params.x; bubbleY = params.y
-                            runCatching { windows.updateViewLayout(view, params) }
-                            CaptureOptionsStore.saveBubblePosition(this, bounds.x > bounds.y,
-                                params.x.toFloat() / max(1, bounds.x - size), params.y.toFloat() / max(1, bounds.y - size))
+                            fun persistPosition() {
+                                val bounds = screenSize()
+                                bubbleX = params.x
+                                bubbleY = params.y
+                                CaptureOptionsStore.saveBubblePosition(this, bounds.x > bounds.y,
+                                    params.x.toFloat() / max(1, bounds.x - size),
+                                    params.y.toFloat() / max(1, bounds.y - size))
+                            }
+                            persistPosition()
+                            if (options.bubbleAutoDock && event.actionMasked == MotionEvent.ACTION_UP) {
+                                val dock = Runnable {
+                                    pendingDock = null
+                                    if (bubble !== view) return@Runnable
+                                    val width = screenSize().x
+                                    params.x = if (params.x + size / 2 < width / 2) 0 else max(0, width - size)
+                                    windows.updateViewLayout(view, params)
+                                    persistPosition()
+                                }
+                                val regionAssigned = listOf(options.single, options.long, options.double).any {
+                                    it == BubbleAction.REGION || (it == BubbleAction.DEFAULT && options.mode == CaptureMode.REGION)
+                                }
+                                if (regionAssigned) {
+                                    pendingDock = dock
+                                    main.postDelayed(dock, 5_000)
+                                } else dock.run()
+                            }
                         } else detector.onTouchEvent(event)
                         armBubbleDim()
                     }
@@ -1384,7 +1406,13 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private fun removeRegion() {
         regionPanel?.let { runCatching { windows.removeViewImmediate(it) } }; regionPanel = null
     }
+    private fun cancelPendingDock() {
+        pendingDock?.let(main::removeCallbacks)
+        pendingDock = null
+    }
+
     private fun removeBubble() {
+        cancelPendingDock()
         dimBubble?.let(main::removeCallbacks); dimBubble = null
         bubble?.let { runCatching { windows.removeViewImmediate(it) } }; bubble = null
         bubbleParams = null
