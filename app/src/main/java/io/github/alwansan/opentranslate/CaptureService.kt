@@ -974,9 +974,18 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val screen = screenSize()
         phase = Phase.SELECTING
         removeAllOverlays()
-        val root = FrameLayout(this)
+        lateinit var root: SelectionOverlayLayout
+        root = SelectionOverlayLayout(this) {
+            if (regionPanel === root && phase == Phase.SELECTING && isRunning && !stopping) {
+                removeRegion()
+                phase = Phase.IDLE
+                showBubble()
+            }
+        }
         lateinit var selection: RegionSelectionView
         selection = RegionSelectionView(this, options.selectionBorderColor) { rect ->
+            if (regionPanel !== root || phase != Phase.SELECTING || stopping || !isRunning ||
+                !root.finishSelection()) return@RegionSelectionView
             val offset = IntArray(2)
             selection.getLocationOnScreen(offset)
             val selected = RegionMath.fromScreen(rect.left + offset[0], rect.top + offset[1],
@@ -1004,14 +1013,13 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
         toolbar.addView(text(if (saveFixed) ui("Drag to save an area", "اسحب لحفظ منطقة") else ui("Drag around the text", "اسحب حول النص"), 16f),
             LinearLayout.LayoutParams(0, -2, 1f))
-        toolbar.addView(button(ui("Cancel", "إلغاء")) {
-            removeRegion(); phase = Phase.IDLE; showBubble()
-        })
+        toolbar.addView(button(ui("Cancel", "إلغاء")) { root.cancelSelection() })
         root.addView(toolbar, FrameLayout.LayoutParams(-1, -2, Gravity.TOP).apply {
             topMargin = dp(36); leftMargin = dp(12); rightMargin = dp(12)
         })
         val params = overlayParams(-1, -1).apply {
-            flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            flags = (flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()) or
+                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             if (Build.VERSION.SDK_INT >= 28) layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
         try { windows.addView(root, params); regionPanel = root }

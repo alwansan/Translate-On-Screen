@@ -5,13 +5,13 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "capture_reuse_foreground_diagnosis",
-  "last_verified_code_commit": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
+  "phase": "selector_back_completion",
+  "last_verified_code_commit": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45782204567,
-  "last_verified_inventory_ci": 45779858713,
+  "last_verified_android_ci": 45784175541,
+  "last_verified_inventory_ci": 45784175402,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
     "original_apk",
@@ -38,71 +38,52 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
+  "observed_branch_head": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
   "latest_observed_android_ci": {
-    "run_id": 45782204567,
-    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
+    "run_id": 45784175541,
+    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
     "conclusion": "success",
     "jvm_tests": 68,
     "failed": 0,
     "skipped": 0,
     "lint_errors": 0,
-    "lint_warnings": 48,
+    "lint_warnings": 46,
     "variants": [
       "debug",
       "release_unsigned",
       "debugAndroidTest"
     ]
   },
-  "source_checkpoint_parent": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
+  "source_checkpoint_parent": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "capture_fixture_corrections_build_and_device_revalidation",
-    "source_evidence_and_delivery_checkpoint",
-    "final_owner_acceptance_trial"
+    "host_and_api29_api35_revalidation_for_selector_back_change_expected32_device_cases",
+    "final_evidence_matrix_restore_and_acceptance_bundle",
+    "owner_final_acceptance_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45782204779,
-    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
-    "conclusion": "failure",
+    "run_id": 45784175416,
+    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+    "conclusion": "success",
     "api29": {
-      "job": 139780142818,
+      "job": 139786667188,
       "started": 31,
       "finished": 31,
-      "passed": 30,
-      "failed": 1,
-      "skipped": 0,
-      "failures": [
-        {
-          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
-          "status": -2
-        }
-      ]
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0
     },
     "api35": {
-      "job": 139780142540,
+      "job": 139786666632,
       "started": 31,
       "finished": 31,
-      "passed": 29,
-      "failed": 2,
-      "skipped": 0,
-      "failures": [
-        {
-          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "fixedAreaIsSavedAndReusedWithoutOutsideText",
-          "status": -2
-        },
-        {
-          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
-          "status": -2
-        }
-      ]
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45782204567,
+    "run_id": 45784175541,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
@@ -113,19 +94,19 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [
-    "Require result panel only for first outside-touch; assert it disappears after pause",
-    "Choose region drag from actual system-gesture insets and compare saved normalized geometry with those coordinates",
-    "Assert fixture lifecycle and foreground before text replacement and repeated capture without relaunching it",
-    "Bound/resize diagnostic images so complex synthetic frames are not silently dropped"
+    "Make temporary region selector focusable without IME connection",
+    "Consume legacy Back DOWN/UP and register API33 callback with attach/detach cleanup",
+    "Unify button/back/selection completion with identity and idempotence guards",
+    "Add one Android case for Back key and available system Back gesture preserving source activity/session and stored-region state"
   ],
-  "last_verified_code_scope": "68/68 host and debug/release/test compilation passed;31 device cases finished on each API,30/31 and29/31. Fresh landscape consent now passes. No OCR change justified by remaining fixture failures.",
+  "last_verified_code_scope": "75cf776:68/68 JVM,31/31 Android cases on each API, no failures/skips/missing suites; all package gates pass. Subsequent Back change remains unverified.",
   "latest_attempt": {
-    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
+    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
     "host": "success",
-    "device": "failure",
-    "host_run": 45782204567,
-    "device_run": 45782204779,
-    "remaining": "Pause correctly hides the result panel but the second-touch helper requires it; API35 fixed-area reuse failure shows Launcher at failure time, requiring foreground/gesture evidence."
+    "device": "success",
+    "host_run": 45784175541,
+    "device_run": 45784175416,
+    "scope": "All existing68 JVM and31 Android cases pass on both APIs; next candidate adds a focused selector Back fix and one new Android case."
   },
   "dictionary_service_observation": {
     "run": 45779858841,

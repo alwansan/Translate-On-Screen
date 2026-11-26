@@ -189,6 +189,51 @@ class CaptureInstrumentationTest {
         assertEquals(region, CaptureOptionsStore.readRegion(context, selectedLandscape))
     }
 
+    @Test fun backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus() {
+        configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
+        authorize()
+        awaitFixtureForeground("opening the selector cancellation fixture")
+        fun openSelector() {
+            action(CaptureService.ACTION_SELECT_REGION)
+            await(10_000, "Area selector did not open and take input focus") {
+                var sourceLostFocus = false
+                instrumentation.runOnMainSync {
+                    fixture?.let { source ->
+                        sourceLostFocus = !source.isFinishing && !source.isDestroyed &&
+                            !source.window.decorView.hasWindowFocus()
+                    }
+                }
+                device.hasObject(By.desc("Drag to select an area to translate")) && sourceLostFocus
+            }
+        }
+        fun assertCancelled() {
+            await(5_000, "Back did not close only the area selector and restore its bubble") {
+                !device.hasObject(By.desc("Drag to select an area to translate")) &&
+                    device.hasObject(By.descStartsWith("Translation bubble."))
+            }
+            awaitFixtureForeground("returning from selector cancellation")
+            assertTrue("Cancelling an area stopped the authorized screen-sharing session", CaptureService.isRunning)
+            assertFalse(CaptureService.isAutoRunning)
+            assertNull("Cancel saved a portrait area", CaptureOptionsStore.readRegion(context, false))
+            assertNull("Cancel saved a landscape area", CaptureOptionsStore.readRegion(context, true))
+        }
+
+        openSelector()
+        assertTrue("Could not press system Back", device.pressBack())
+        assertCancelled()
+
+        val gestures = systemGestureInsets()
+        if (gestures.left > 0) {
+            // Exercise the actual system Back gesture where this navigation mode provides it.
+            // A purely horizontal drag cannot satisfy the selector's minimum-area height.
+            openSelector()
+            val y = device.displayHeight / 2
+            assertTrue("Could not inject the system Back gesture",
+                device.swipe(maxOf(1, gestures.left / 2), y, device.displayWidth / 2, y, 35))
+            assertCancelled()
+        }
+    }
+
     @Test fun automaticChangedFramesPauseAndScreenLockStopsSession() {
         CaptureOptionsStore.saveRegion(context, false, NormalizedRegion(.05f, .30f, .95f, .72f))
         configure(CaptureOptions(mode = CaptureMode.AUTO_REGION, intervalSeconds = 1, stopMinutes = 2,
@@ -353,15 +398,20 @@ class CaptureInstrumentationTest {
     }
 
     @Suppress("DEPRECATION") // Android 29 exposes gesture insets through the legacy accessor.
-    private fun safeSelectionGesture(): Rect {
-        var left = 0; var top = 0; var right = 0; var bottom = 0
+    private fun systemGestureInsets(): Rect {
+        var result = Rect()
         instrumentation.runOnMainSync {
             val insets = requireNotNull(fixture).window.decorView.rootWindowInsets
             val gestures = if (Build.VERSION.SDK_INT >= 30) insets?.getInsets(WindowInsets.Type.systemGestures())
                 else if (Build.VERSION.SDK_INT >= 29) insets?.systemGestureInsets else null
-            left = gestures?.left ?: 0; top = gestures?.top ?: 0
-            right = gestures?.right ?: 0; bottom = gestures?.bottom ?: 0
+            result = Rect(gestures?.left ?: 0, gestures?.top ?: 0, gestures?.right ?: 0, gestures?.bottom ?: 0)
         }
+        return result
+    }
+
+    private fun safeSelectionGesture(): Rect {
+        val gestures = systemGestureInsets()
+        val left = gestures.left; val top = gestures.top; val right = gestures.right; val bottom = gestures.bottom
         val width = device.displayWidth
         val height = device.displayHeight
         val margin = (16 * context.resources.displayMetrics.density).toInt()

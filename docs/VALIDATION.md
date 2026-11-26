@@ -110,3 +110,13 @@ Source `a5ea588c56353ac5403ff1c4c78ed8d9adefbe39` passed [host45782204567](https
 On both systems, the first outside touch reached the source and triggered new OCR before the periodic timer. The second helper call, after pause, incorrectly required the result panel that pause had correctly hidden; second-touch/no-restart assertions did not execute. On35 fixed-area initial OCR and region persistence passed, then repeated capture lacked SAVED AREA. The failure-time screenshot shows Launcher behind the result; the pre-OCR image was not emitted. An edge/system-back gesture is a hypothesis, not a proved cause. The next test records actual gesture insets, checks foreground lifecycle without reopening the fixture, and keeps normalized-region and OCR assertions.
 
 Exact summaries: [validation-a5ea588.json](../memory/evidence/validation-a5ea588.json). No new production OCR defect is inferred from a screenshot of a different foreground screen.
+
+## 75cf776: all existing host and Android gates pass
+
+Source `75cf77653d0a57b5f65fe3ba89b20163a252cb97` passed [host45784175541](https://github.com/alwansan/Translate-On-Screen/actions/runs/45784175541): **68/68 JVM**,0 failed/skipped, lint **0 errors/46 warnings**, and debug/test/release assembly. Debug APK59,776,566 bytes; SHA256 `7ab13dfe1d569e1c3dbc32d0989544c684dca7e93e0b7e9320a470dcf19e3d91`; signature, license and static native checks passed.
+
+[Device45784175416](https://github.com/alwansan/Translate-On-Screen/actions/runs/45784175416) passed **31/31 on API29 and31/31 on API35**, with no failures, skipped/assumed cases, missing suites or runner errors. This includes real consent in portrait/landscape, native OCR, region reuse, outside-touch update and pause, cancellation/deadline/screen-off, image editing, dictionary, UI, history/wordbook and both local translation directions with network disabled.
+
+The measured API35 system-gesture left inset is78px. The former75px drag origin lay inside that zone; the new120px origin and repeated crop passed with resumed/focused source checks. API29 has zero horizontal gesture insets and retained the75px origin successfully. This supports the interference explanation; no event trace of the old Back gesture was captured. Raw observations and all case names are in [validation-75cf776.json](../memory/evidence/validation-75cf776.json).
+
+Source review also found a separate usability defect: the temporary full-screen selector inherited NOT_FOCUSABLE, allowing Back to reach the underlying window. The next candidate makes only that selector focusable without IME connection and unifies its Back/Cancel completion, with a new Android case. Expected device count32 is pending for that new source; do not transfer this31-case pass to the added behavior.
