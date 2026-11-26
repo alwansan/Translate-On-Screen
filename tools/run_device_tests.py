@@ -281,6 +281,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--capture-only", action="store_true")
     parser.add_argument("--timeout", type=int, default=1500)
+    parser.add_argument("--expected-page-size", type=int, choices=(4096, 16384))
     args = parser.parse_args(argv)
     adb = [args.adb] + (["-s", args.serial] if args.serial else [])
     output = args.output.resolve()
@@ -290,6 +291,7 @@ def main(argv: list[str] | None = None) -> int:
     previous: dict[str, str] = {}
     uid = None
     api = None
+    page_size = None
     test_network: dict[str, str] = {}
     raw = ""
     report = {"passed": False, "tests": [], "problems": [], "final_code": None}
@@ -300,6 +302,10 @@ def main(argv: list[str] | None = None) -> int:
         verified_emulator = True
         sdk = command(adb + ["shell", "getprop", "ro.build.version.sdk"]).stdout.strip()
         api = int(sdk) if sdk.isdigit() else None
+        page = command(adb + ["shell", "getconf", "PAGE_SIZE"], check=False).stdout.strip()
+        page_size = int(page) if page.isdigit() else None
+        if args.expected_page_size is not None and page_size != args.expected_page_size:
+            raise RuntimeError(f"Expected {args.expected_page_size}-byte pages, measured {page_size}.")
         if not args.apk.is_file() or not args.test_apk.is_file():
             raise RuntimeError("Build assembleDebug and assembleDebugAndroidTest first; APK missing.")
         command(adb + ["install", "-r", "-t", str(args.apk.resolve())], timeout=180)
@@ -346,6 +352,7 @@ def main(argv: list[str] | None = None) -> int:
         validate_coverage(report, args.capture_only)
         save_evidence(output, report)
         (output / "instrumentation.txt").write_text(raw, encoding="utf-8")
+        report["page_size_bytes"] = page_size
         (output / "result.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         write_junit(output / "results.xml", report)
     if not report["passed"]:
@@ -359,6 +366,7 @@ def main(argv: list[str] | None = None) -> int:
         if verified_emulator and log_path.is_file():
             print("Application UID diagnostic tail:\n" + log_path.read_text(encoding="utf-8")[-16000:])
     summary = evidence_summary(report, api, test_network, verified_emulator)
+    summary["page_size_bytes"] = page_size
     summary["java_heap_limits_bytes"] = sorted({
         int(value) for value in re.findall(r"^INSTRUMENTATION_STATUS: ost_heap_limit_bytes=(\d+)$", raw, re.M)
     })

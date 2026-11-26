@@ -1,8 +1,15 @@
 """No device/network required: reject plausible false-positive instrumentation output."""
+import contextlib
+import io
+import json
+import subprocess
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from unittest.mock import patch
+
+import run_device_tests
 
 from run_device_tests import parse_instrumentation, validate_coverage, write_junit
 
@@ -71,6 +78,24 @@ class InstrumentationVerdictTest(unittest.TestCase):
             root = ET.parse(destination).getroot()
             self.assertEqual("testsuite", root.tag)
             self.assertEqual(1, len(root.findall("./testcase/failure")))
+
+
+    def test_wrong_page_size_fails_before_app_installation(self):
+        values = {"ro.kernel.qemu": "1", "ro.build.version.sdk": "35", "PAGE_SIZE": "4096"}
+
+        def emulator_command(args, **_kwargs):
+            return subprocess.CompletedProcess(args, 0, values[args[-1]] + "\n", "")
+
+        with tempfile.TemporaryDirectory() as directory, contextlib.redirect_stdout(io.StringIO()):
+            with patch.object(run_device_tests, "command", side_effect=emulator_command) as command:
+                with patch.object(run_device_tests, "diagnostics"):
+                    status = run_device_tests.main(["--model-cache", directory, "--output", directory,
+                                                    "--expected-page-size", "16384"])
+            self.assertEqual(1, status)
+            self.assertEqual(3, command.call_count)
+            report = json.loads((Path(directory) / "result.json").read_text())
+            self.assertEqual(4096, report["page_size_bytes"])
+            self.assertIn("Expected 16384-byte pages, measured 4096.", report["problems"])
 
 
 if __name__ == "__main__":
