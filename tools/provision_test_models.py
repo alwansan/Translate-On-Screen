@@ -141,7 +141,7 @@ def _source_manifest(repo_root: Path, capture_only: bool) -> tuple[dict, dict[st
     sources: dict[str, dict] = {}
     seen_ocr: set[str] = set()
     for body in _calls(ocr, "OcrModel"):
-        found = re.match(r'\s*"(eng|ara)"\s*,\s*"([0-9a-f]{64})"\s*,\s*([0-9_]+)L?\s*[,)]?', body)
+        found = re.match(r'\s*"(eng|ara|jpn_vert)"\s*,\s*"([0-9a-f]{64})"\s*,\s*([0-9_]+)L?\s*[,)]?', body)
         if found is None:
             continue
         code, digest, raw_size = found.groups()
@@ -154,8 +154,8 @@ def _source_manifest(repo_root: Path, capture_only: bool) -> tuple[dict, dict[st
             "kind": "ocr", "code": code,
             "url": f"https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/{revision}/{code}.traineddata",
         }
-    if seen_ocr != {"eng", "ara"}:
-        raise ProvisionError("Both eng and ara must have literal SHA-256 and byte counts.")
+    if seen_ocr != {"eng", "ara", "jpn_vert"}:
+        raise ProvisionError("The English, Arabic and vertical Japanese models must declare SHA-256 and byte counts.")
 
     packs: list[dict] = []
     if not capture_only:
@@ -439,7 +439,7 @@ def _validated_files(manifest: dict) -> list[dict]:
     result: list[dict] = []
     seen: set[str] = set()
     allowed = re.compile(
-        r"(?:tesseract/tessdata/(?:eng|ara)\.traineddata|"
+        r"(?:tesseract/tessdata/(?:eng|ara|jpn_vert)\.traineddata|"
         r"offline_translation/(?:en-ar|ar-en|ja-en)/(?:encoder_model_quantized\.onnx|"
         r"decoder_model_merged_quantized\.onnx|source\.spm|vocab\.json|complete))"
     )
@@ -451,8 +451,8 @@ def _validated_files(manifest: dict) -> list[dict]:
             raise ProvisionError("Unexpected or duplicate device model path.")
         seen.add(record["path"])
         result.append(record)
-    if not {"tesseract/tessdata/eng.traineddata", "tesseract/tessdata/ara.traineddata"}.issubset(seen):
-        raise ProvisionError("Both OCR fixtures are required for device provisioning.")
+    if not {"tesseract/tessdata/eng.traineddata", "tesseract/tessdata/ara.traineddata", "tesseract/tessdata/jpn_vert.traineddata"}.issubset(seen):
+        raise ProvisionError("English, Arabic and vertical Japanese OCR fixtures are required for device provisioning.")
     for pack in ("en-ar", "ar-en", "ja-en"):
         files = {PurePosixPath(path).name for path in seen if path.startswith(f"offline_translation/{pack}/")}
         if files and files != {"encoder_model_quantized.onnx", "decoder_model_merged_quantized.onnx", "source.spm", "vocab.json", "complete"}:

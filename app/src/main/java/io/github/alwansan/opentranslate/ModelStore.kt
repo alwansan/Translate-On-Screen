@@ -49,6 +49,12 @@ object ModelStore {
         OcrModel("kor_vert", "c28f19dee36927baba5215fb793a3c00fff3ef2cfbcaa100122401d8f4374869", 1113715, "Korean (vertical)", "الكورية (عمودي)"),
     )
     val languages: List<String> = models.map { it.language }
+    internal fun languagesForLayout(configured: String, pageMode: String): List<String> =
+        configured.split('+').map { language ->
+            val vertical = language + "_vert"
+            if (pageMode == OcrPageModes.VERTICAL && vertical in languages) vertical else language
+        }.distinct()
+
     private val writeLock = Any()
     private val revision = AtomicLong()
 

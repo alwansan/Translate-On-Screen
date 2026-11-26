@@ -18,7 +18,7 @@ internal class TesseractOcrEngine(context: Context) : OcrEngine {
         if (bitmap.isRecycled || bitmap.width <= 0 || bitmap.height <= 0) {
             throw OcrProblem("The image is unavailable. Try again.", "الصورة غير متاحة. حاول مرة أخرى.")
         }
-        val languages = settings.ocrLanguage.split('+').distinct()
+        val languages = ModelStore.languagesForLayout(settings.ocrLanguage, settings.ocrPageMode)
         if (languages.isEmpty() || languages.any { it !in ModelStore.languages }) {
             throw OcrProblem("Choose supported OCR models in reading settings.", "اختر نماذج قراءة مدعومة من الإعدادات.")
         }

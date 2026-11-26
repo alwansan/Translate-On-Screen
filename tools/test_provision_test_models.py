@@ -30,7 +30,7 @@ class ProvisionTestModelsTest(unittest.TestCase):
         kotlin.mkdir(parents=True)
         self.ocr_revision = "a" * 40
         models = []
-        for code in ("eng", "ara"):
+        for code in ("eng", "ara", "jpn_vert"):
             data = ("synthetic OCR bytes: " + code).encode("utf-8")
             (self.ocr / (code + ".traineddata")).write_bytes(data)
             models.append(f'OcrModel("{code}", "{hashlib.sha256(data).hexdigest()}", {len(data)}, "label", "اسم")')
@@ -83,7 +83,7 @@ class ProvisionTestModelsTest(unittest.TestCase):
         network.assert_not_called()
         self.assertEqual(manifest["schema"], 1)
         self.assertEqual(manifest["package"], provision.PACKAGE)
-        self.assertEqual(len(manifest["files"]), 17)
+        self.assertEqual(len(manifest["files"]), 18)
         self.assertEqual({pack["id"] for pack in manifest["packs"]}, {"en-ar", "ar-en", "ja-en"})
         self.assertFalse((self.cache / "tesseract/tessdata/eng.traineddata").is_symlink())
         for record in manifest["files"]:
@@ -130,7 +130,7 @@ class ProvisionTestModelsTest(unittest.TestCase):
     def test_capture_only_does_not_require_offline_manifest(self):
         (self.repo / provision.KOTLIN_ROOT / "OfflineModelManifest.kt").unlink()
         manifest = self.prepare(capture_only=True)
-        self.assertEqual(len(manifest["files"]), 2)
+        self.assertEqual(len(manifest["files"]), 3)
         self.assertEqual(manifest["packs"], [])
 
     def test_cache_internal_symlink_is_rejected_without_writing_through_it(self):
@@ -183,12 +183,12 @@ class ProvisionTestModelsTest(unittest.TestCase):
             provision.provision_device(["adb", "-s", "test-device"], self.cache, manifest)
         published = [command[-1] for command in commands
                      if command[:3] == ["run-as", provision.PACKAGE, "mv"]]
-        self.assertEqual(len(published), 17)
+        self.assertEqual(len(published), 18)
         self.assertTrue(all(not path.endswith("/complete") for path in published[:-3]))
         self.assertTrue(all(path.endswith("/complete") for path in published[-3:]))
         digests = [command for command in commands
                    if command[:3] == ["run-as", provision.PACKAGE, "sha256sum"]]
-        self.assertEqual(len(digests), 34)  # Before and after each atomic rename.
+        self.assertEqual(len(digests), 36)  # Before and after each atomic rename.
         self.assertEqual(commands[-1][:2], ["rm", "-rf"])
         self.assertTrue(commands[-1][-1].startswith("/data/local/tmp/ost-test-"))
 

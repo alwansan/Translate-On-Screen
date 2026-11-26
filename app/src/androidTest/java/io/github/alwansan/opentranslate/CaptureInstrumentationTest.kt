@@ -456,6 +456,34 @@ class CaptureInstrumentationTest {
         } finally { colors.recycle() }
     }
 
+    @Test fun japaneseVerticalLayoutUsesVerticalModelAndPreservesReadingOrder() {
+        assertTrue("Pinned Japanese vertical fixture model missing.", ModelStore.has(context, "jpn_vert"))
+        val sample = "日本語の本です"
+        val bitmap = Bitmap.createBitmap(440, 780, Bitmap.Config.ARGB_8888)
+        try {
+            val canvas = Canvas(bitmap).apply { drawColor(Color.WHITE) }
+            val ink = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.BLACK
+                textAlign = Paint.Align.CENTER
+                textLocale = java.util.Locale.JAPANESE
+                textSize = 76f
+            }
+            sample.forEachIndexed { index, glyph ->
+                canvas.drawText(glyph.toString(), 220f, 110f + index * 86f, ink)
+            }
+            TranslationEngine(context).use { engine ->
+                val settings = UserSettings(source = "ja", target = "ja", ocrLanguage = "jpn", ocrPageMode = OcrPageModes.VERTICAL)
+                val result = engine.fromBitmap(bitmap, settings)
+                if (!result.original.filterNot(Char::isWhitespace).contains(sample)) {
+                    recordBitmapEvidence("japanese_vertical_fixture", bitmap)
+                }
+                assertTrue("Japanese vertical OCR did not preserve reading order: " + result.original + "; " + result.warning,
+                    result.original.filterNot(Char::isWhitespace).contains(sample))
+                assertGeometry(result)
+            }
+        } finally { bitmap.recycle() }
+    }
+
     private fun textBitmap(value: String, rtl: Boolean = false): Bitmap {
         val bitmap = Bitmap.createBitmap(1400, 400, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)

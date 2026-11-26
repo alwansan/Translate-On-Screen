@@ -239,7 +239,7 @@ class MainActivity : Activity() {
         ui.button(details, t("Capture mode: ", "وضع الالتقاط: ") + modeLabel(ScreenPreferences.read(this).mode)) { chooseMode() }
         details.addView(ui.secondary(t("Screen and image reading: ", "قراءة الشاشة والصور: ") + settings.ocrLanguage))
         readingNotice(settings.source, settings.ocrLanguage)?.let { details.addView(ui.secondary(it)) }
-        val missing = ModelStore.missing(this, settings.ocrLanguage)
+        val missing = missingScreenReadingModels(settings)
         if (missing.isNotEmpty()) {
             details.addView(ui.secondary(t("Reading models needed: ", "نماذج القراءة المطلوبة: ") + missing.joinToString(", ")))
             ui.button(details, t("Install reading languages", "تثبيت لغات القراءة")) { showModels() }
@@ -613,8 +613,8 @@ class MainActivity : Activity() {
         val page = ui.select(body, t("Text layout in images", "تخطيط النص في الصور"),
             listOf(t("Scattered text", "نص متفرق"), t("Text block", "كتلة نص"), t("Vertical CJK", "نص شرق آسيوي عمودي")),
             pageModes.indexOf(old.ocrPageMode))
-        body.addView(ui.secondary(t("Changing the source selects its reading model where available. Install missing models in the model manager. Vertical reading needs a compatible vertical model.",
-            "يختار تبديل اللغة الأصلية نموذج قراءتها عند توفره. ثبّت النماذج المفقودة من مدير النماذج. القراءة العمودية تحتاج نموذجاً عمودياً متوافقاً.")))
+        body.addView(ui.secondary(t("Changing the source selects its reading model where available. Install missing models in the model manager. Vertical reading selects the corresponding vertical CJK model.",
+            "يختار تبديل اللغة الأصلية نموذج قراءتها عند توفره. ثبّت النماذج المفقودة من مدير النماذج. تختار القراءة العمودية نموذج شرق آسيا العمودي المقابل.")))
         val networkGroup = ui.column()
         body.addView(networkGroup)
         val endpoint = ui.field(networkGroup, t("Service URL (HTTPS)", "عنوان الخدمة (HTTPS)"), old.endpoint)
@@ -693,7 +693,7 @@ class MainActivity : Activity() {
                     singleAppCapture = Build.VERSION.SDK_INT >= 34 && single.isChecked, ocrPageMode = pageModes[page.selectedItemPosition])
                 runCatching { SettingsStore.save(this, next) }.onSuccess {
                     cancelWork(false); notifySettingsChanged(); dialog.dismiss(); renderPage()
-                    val missing = ModelStore.missing(this, next.ocrLanguage)
+                    val missing = ModelStore.missing(this, ModelStore.languagesForLayout(next.ocrLanguage, next.ocrPageMode))
                     message(listOfNotNull(getString(R.string.settings_saved),
                         readingNotice(next.source, next.ocrLanguage),
                         missing.takeIf { it.isNotEmpty() }?.let {
@@ -1195,6 +1195,11 @@ class MainActivity : Activity() {
                 "افتح الإعدادات السريعة في Android، واضغط تعديل، ثم اسحب بلاطة ترجمة الشاشة المفتوحة إلى البلاطات الفعالة."))
     }
 
+    private fun missingScreenReadingModels(settings: UserSettings): List<String> {
+        val pageMode = if (ScreenPreferences.read(this).verticalText) OcrPageModes.VERTICAL else settings.ocrPageMode
+        return ModelStore.missing(this, ModelStore.languagesForLayout(settings.ocrLanguage, pageMode))
+    }
+
     private fun startCapture() {
         if (busy) { message(t("Finish or cancel the current task first.", "أكمل المهمة الحالية أو ألغها أولاً.")); return }
         if (!Settings.canDrawOverlays(this)) {
@@ -1205,7 +1210,7 @@ class MainActivity : Activity() {
             return
         }
         val settings = SettingsStore.read(this)
-        if (ModelStore.missing(this, settings.ocrLanguage).isNotEmpty()) { showModels(); return }
+        if (missingScreenReadingModels(settings).isNotEmpty()) { showModels(); return }
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTIFICATIONS)
         } else requestProjection()

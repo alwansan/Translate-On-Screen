@@ -4,13 +4,13 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "012",
+  "session": "013",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+  "last_verified_code_commit": "ca2d54bedb92b2258bd96cf3ce092ab79dd95f1c",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45899477091,
+  "last_verified_android_ci": 45900383102,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/012-automatic-appearance-and-edge.md",
+  "session_checkpoint": "memory/sessions/013-vertical-ocr.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -61,17 +61,13 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45899477061,
-    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+    "run_id": 45900383069,
+    "head_sha": "ca2d54bedb92b2258bd96cf3ce092ab79dd95f1c",
     "conclusion": "success",
     "apis": [
       29,
       35
-    ],
-    "jobs": {
-      "29": 140181474029,
-      "35": 140181473911
-    }
+    ]
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -146,11 +142,10 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "012",
-    "matrix": "docs/HM_BEHAVIOR_MATRIX_AR.md",
+    "id": "013",
     "validation": "pending",
-    "prior_host_run": 45899477091,
-    "prior_device_run": 45899477061
+    "local_python_passed": 25,
+    "local_verified_fixture_files": 18
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
