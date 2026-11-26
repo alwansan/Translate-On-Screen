@@ -292,6 +292,7 @@ def main(argv: list[str] | None = None) -> int:
     uid = None
     api = None
     page_size = None
+    heap_properties: dict[str, str] = {}
     test_network: dict[str, str] = {}
     raw = ""
     report = {"passed": False, "tests": [], "problems": [], "final_code": None}
@@ -306,6 +307,8 @@ def main(argv: list[str] | None = None) -> int:
         page_size = int(page) if page.isdigit() else None
         if args.expected_page_size is not None and page_size != args.expected_page_size:
             raise RuntimeError(f"Expected {args.expected_page_size}-byte pages, measured {page_size}.")
+        for key in ("dalvik.vm.heapgrowthlimit", "dalvik.vm.heapsize", "ro.config.low_ram"):
+            heap_properties[key] = command(adb + ["shell", "getprop", key], check=False).stdout.strip()
         if not args.apk.is_file() or not args.test_apk.is_file():
             raise RuntimeError("Build assembleDebug and assembleDebugAndroidTest first; APK missing.")
         command(adb + ["install", "-r", "-t", str(args.apk.resolve())], timeout=180)
@@ -353,6 +356,7 @@ def main(argv: list[str] | None = None) -> int:
         save_evidence(output, report)
         (output / "instrumentation.txt").write_text(raw, encoding="utf-8")
         report["page_size_bytes"] = page_size
+        report["heap_properties"] = heap_properties
         (output / "result.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         write_junit(output / "results.xml", report)
     if not report["passed"]:
@@ -367,6 +371,7 @@ def main(argv: list[str] | None = None) -> int:
             print("Application UID diagnostic tail:\n" + log_path.read_text(encoding="utf-8")[-16000:])
     summary = evidence_summary(report, api, test_network, verified_emulator)
     summary["page_size_bytes"] = page_size
+    summary["heap_properties"] = heap_properties
     summary["java_heap_limits_bytes"] = sorted({
         int(value) for value in re.findall(r"^INSTRUMENTATION_STATUS: ost_heap_limit_bytes=(\d+)$", raw, re.M)
     })
