@@ -41,8 +41,16 @@ internal class TesseractOcrEngine(context: Context) : OcrEngine {
             })
             api.setImage(working)
             InterruptedRequestGate.check()
-            val text = api.getUTF8Text().orEmpty().trim()
+            var text = api.getUTF8Text().orEmpty().trim()
             InterruptedRequestGate.check()
+            if (text.isEmpty() && settings.ocrPageMode == OcrPageModes.SPARSE) {
+                // Sparse segmentation can reject all lines even when the frame has readable text.
+                api.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO)
+                api.setImage(working)
+                InterruptedRequestGate.check()
+                text = api.getUTF8Text().orEmpty().trim()
+                InterruptedRequestGate.check()
+            }
             val level = if (settings.ocrBlockMode == "paragraph") TessBaseAPI.PageIteratorLevel.RIL_PARA
                 else TessBaseAPI.PageIteratorLevel.RIL_TEXTLINE
             val blocks = ArrayList<OcrBlock>()

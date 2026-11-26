@@ -76,9 +76,8 @@ jobs:
         run: |
           image='system-images;android-35;google_apis_ps16k;x86_64'
           sdkmanager "$image"
-          export ANDROID_AVD_HOME="$RUNNER_TEMP/ost-avd"
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
           mkdir -p "$ANDROID_AVD_HOME"
-          echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
           printf 'no\n' | avdmanager create avd --name ost-16k --package "$image" --device pixel_2
       - name: Run native behavior with networking disabled
         uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
