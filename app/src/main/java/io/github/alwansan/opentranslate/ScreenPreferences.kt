@@ -21,8 +21,12 @@ object ScreenPreferences {
         val p = prefs(context)
         return try {
             val mode = requestedMode ?: choice(p.getString("mode", null), CaptureMode.FULL)
-            val d = if (mode == CaptureMode.MANGA) CaptureOptions(mode = mode, fontBold = true, textColor = 0xff000000.toInt(),
-                backgroundColor = 0xffffffff.toInt(), centerText = true) else CaptureOptions(mode = mode)
+            val d = when (mode) {
+                CaptureMode.MANGA -> CaptureOptions(mode = mode, fontBold = true, textColor = 0xff000000.toInt(),
+                    backgroundColor = 0xffffffff.toInt(), centerText = true)
+                CaptureMode.SUBTITLE -> CaptureOptions(mode = mode, intervalSeconds = 2)
+                else -> CaptureOptions(mode = mode)
+            }
             val prefix = "style_" + mode.name + "_"
             fun int(key: String, fallback: Int) = p.getInt(if (p.contains(prefix + key)) prefix + key else key, fallback)
             fun bool(key: String, fallback: Boolean) = p.getBoolean(if (p.contains(prefix + key)) prefix + key else key, fallback)

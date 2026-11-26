@@ -359,6 +359,31 @@ class CaptureInstrumentationTest {
         assertRemains(1_500, "Sharing resumed after wake without consent") { !CaptureService.isRunning }
     }
 
+    @Test fun subtitleModeReadsTheSavedAreaAndUsesLocalTranslationWhenProvisioned() {
+        assertEquals(2, ScreenPreferences.read(context, CaptureMode.SUBTITLE).intervalSeconds)
+        // The capture-only runner deliberately installs OCR models without translation packs.
+        val offline = OfflineModelStore.has(context, "en-ar")
+        if (offline) SettingsStore.save(context, UserSettings(source = "en", target = "ar", ocrLanguage = "eng",
+            provider = "offline", networkEnabled = false, keepHistory = false))
+        CaptureOptionsStore.saveRegion(context, false, NormalizedRegion(.05f, .30f, .95f, .72f))
+        configure(ScreenPreferences.read(context, CaptureMode.SUBTITLE).copy(displaySeconds = 0))
+        replaceText("THIS IS A BOOK")
+        authorize()
+        val controls = By.desc("Translation overlay controls")
+        await(40_000, "Subtitle overlay did not appear") { device.hasObject(controls) }
+        val text = if (offline) By.text("Text") else By.textStartsWith("Text")
+        await(10_000, "Subtitle details control was unavailable") {
+            device.findObject(controls)?.findObject(text) != null
+        }
+        requireNotNull(device.findObject(controls)?.findObject(text)).click()
+        if (offline) await(10_000, "Subtitle details did not contain Arabic output") {
+            Regex("[\u0600-\u06ff]").containsMatchIn(currentOutput())
+        } else awaitOutput("THIS IS A BOOK")
+        assertTrue(device.hasObject(By.textContains("THIS IS A BOOK")))
+        assertFalse(device.hasObject(By.textContains("OUTSIDE REGION")))
+        assertFalse(CaptureService.isAutoRunning)
+    }
+
     @Test fun automaticDeadlineEndsProjectionInsteadOfOnlyPausing() {
         configure(CaptureOptions(mode = CaptureMode.AUTO_FULL, intervalSeconds = 60, stopMinutes = 1,
             displaySeconds = 0, positionedResults = false))
