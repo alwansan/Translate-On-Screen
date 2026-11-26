@@ -5,13 +5,13 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "dictionary_compile_correction",
-  "last_verified_code_commit": "1301701a7d3466469cdfdceb444b3de4e7306085",
+  "phase": "capture_fixture_isolation_correction",
+  "last_verified_code_commit": "ab97daa0d5387fdd90f98b95f07459bb13889291",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45777167844,
-  "last_verified_inventory_ci": 45777167733,
+  "last_verified_android_ci": 45780322928,
+  "last_verified_inventory_ci": 45779858713,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
     "original_apk",
@@ -38,56 +38,71 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
+  "observed_branch_head": "ab97daa0d5387fdd90f98b95f07459bb13889291",
   "latest_observed_android_ci": {
-    "run_id": 45777167844,
-    "head_sha": "1301701a7d3466469cdfdceb444b3de4e7306085",
+    "run_id": 45780322928,
+    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
     "conclusion": "success",
-    "jvm_tests": 56,
+    "jvm_tests": 68,
     "failed": 0,
     "skipped": 0,
     "lint_errors": 0,
-    "lint_warnings": 48
+    "lint_warnings": 48,
+    "variants": [
+      "debug",
+      "release_unsigned",
+      "debugAndroidTest"
+    ]
   },
-  "source_checkpoint_parent": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
+  "source_checkpoint_parent": "ab97daa0d5387fdd90f98b95f07459bb13889291",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "host_build_including_release_variant_and_dictionary_tests",
-    "android_api29_and_api35_all_required_suites",
-    "resolve_api35_rotated_capture_with_actual_frame_evidence",
-    "confirm_api35_consent_scrolling_and_endpoint_dialog_save",
-    "acceptance_apk_and_final_owner_trial"
+    "capture_fixture_corrections_build_and_device_revalidation",
+    "source_evidence_and_delivery_checkpoint",
+    "final_owner_acceptance_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45777167852,
-    "head_sha": "1301701a7d3466469cdfdceb444b3de4e7306085",
+    "run_id": 45780322908,
+    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
     "conclusion": "failure",
     "api29": {
-      "job": 139763512785,
-      "conclusion": "success",
-      "started": 29,
-      "finished": 29,
-      "passed": 29,
-      "failed": 0,
-      "skipped": 0
+      "job": 139773922378,
+      "started": 31,
+      "finished": 31,
+      "passed": 30,
+      "failed": 1,
+      "skipped": 0,
+      "failures": [
+        {
+          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+          "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
+          "status": -2
+        }
+      ]
     },
     "api35": {
-      "job": 139763512423,
-      "conclusion": "failure",
-      "started": 29,
-      "finished": 29,
-      "passed": 26,
-      "failed": 3,
+      "job": 139773921976,
+      "started": 31,
+      "finished": 31,
+      "passed": 29,
+      "failed": 2,
       "skipped": 0,
-      "known_failures": [
-        "CaptureInstrumentationTest.actualConsentFullCaptureRotationAndStop",
-        "CaptureInstrumentationTest.fixedAreaIsSavedAndReusedWithoutOutsideText",
-        "MainUiInstrumentationTest.changingServiceAddressClearsCredentialsAndRevokesNetworkConsent"
+      "failures": [
+        {
+          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+          "name": "fixedAreaIsSavedAndReusedWithoutOutsideText",
+          "status": -2
+        },
+        {
+          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+          "name": "automaticChangedFramesPauseAndScreenLockStopsSession",
+          "status": -2
+        }
       ]
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45777167844,
+    "run_id": 45780322928,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
@@ -95,24 +110,22 @@
     "onnx_notice_bytes": 333022,
     "onnx_notice_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
     "device_parser_tests": 7,
-    "jvm_tests": 56
+    "jvm_tests": 68
   },
   "current_fix_batch": [
-    "English lexical dictionary with per-request consent, attribution and explicit other-language browser links",
-    "Separate original/translation sharing",
-    "Display-ID rotation controls and scrollable system projection consent in API35 test",
-    "Failure-only synthetic pre-OCR frame evidence in opt-in debug probe; release no-op",
-    "Semantic endpoint-dialog test waits and scoped selectors",
-    "Release variant assembly gate"
+    "Choose actual outside-overlay touch coordinate after taller scrollable result panel",
+    "Check fixture orientation after launch and preserve fixed-region orientation assertions",
+    "Scroll real consent dialog using visible geometry",
+    "Clean external fixture/chooser before ActivityScenario close; preserve original failure evidence"
   ],
-  "last_verified_code_scope": "1301701 host56/56 and API29 29/29 passed; API35 26/29 with three failures. New source in this checkpoint needs its own results.",
+  "last_verified_code_scope": "Host68/68,release compilation and package checks pass; device31 cases all finished:API29 30/31,API35 29/31; only Capture cases failed.",
   "latest_attempt": {
-    "head_sha": "b639d1db26c46623d1ccdcefc3d15bbb6a72e971",
-    "host_run": 45779858771,
-    "device_run": 45779858775,
-    "conclusion": "failure_before_runtime",
-    "reason": "DictionaryUi.foreground Int was shadowed by TextView.foreground Drawable inside apply; explicit receiver qualification required",
-    "unit_and_device_tests": "not_executed_to_completion"
+    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+    "host_run": 45780322928,
+    "device_run": 45780322908,
+    "host": "success",
+    "device": "failure",
+    "scope": "All non-capture suites pass on both systems; capture fixture coordinate/orientation/consent fixes pending"
   },
   "dictionary_service_observation": {
     "run": 45779858841,

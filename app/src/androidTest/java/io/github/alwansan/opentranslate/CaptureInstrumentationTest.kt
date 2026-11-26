@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Build
 import android.view.Display
 import android.view.Surface
+import android.view.accessibility.AccessibilityNodeInfo
 import android.os.Process
 import android.text.Layout
 import android.text.StaticLayout
@@ -29,7 +30,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
-import androidx.test.uiautomator.Direction
 import java.util.regex.Pattern
 import org.junit.After
 import org.junit.Assert.*
@@ -70,7 +70,6 @@ class CaptureInstrumentationTest {
             !context.getSystemService(KeyguardManager::class.java).isKeyguardLocked
         }
         device.pressHome()
-        orientToPortrait()
         device.executeShellCommand("appops set " + context.packageName + " SYSTEM_ALERT_WINDOW allow")
         AppPreferences.save(context, AppAppearance("en", "light"))
         assertTrue("Install the pinned eng model with tools/provision_test_models.py before device tests.", ModelStore.has(context, "eng"))
@@ -89,17 +88,26 @@ class CaptureInstrumentationTest {
             throw error
         }
         await(10_000, "Debug capture fixture did not open") { device.hasObject(By.desc("Authorize test capture")) }
+        // Home can impose portrait while leaving the next app's rotation unchanged.
+        // Set and verify orientation only after the actual fixture is foreground.
+        orientToPortrait(expectFixture = true)
     }
 
     @After fun restore() {
         try { stopCapture() } finally { CaptureDebugProbe.stop() }
+        // Close only system UI opened by this synthetic test, then finish the source fixture.
+        if (device.hasObject(By.res("android", "chooser_header")) ||
+            device.hasObject(By.res("com.android.intentresolver", "chooser_header")) ||
+            device.hasObject(By.res("com.android.systemui", "screen_share_permission_dialog"))) device.pressBack()
         if (touchFixtureStarted) {
             device.executeShellCommand("am start -W -n " + instrumentation.context.packageName + "/" +
                 TouchTargetActivity::class.java.name + " --ez finish_fixture true")
         }
+        // ActivityScenario.close requires a steady lifecycle state. An external chooser can
+        // leave this activity STARTED; explicitly finish it and await DESTROYED before close.
+        finishLeakedFixtures()
         val closeFailure = runCatching { scenario?.close() }.exceptionOrNull()
         scenario = null
-        finishLeakedFixtures()
         fixture = null
         if (::oldSettings.isInitialized) SettingsStore.save(context, oldSettings)
         if (::oldAppearance.isInitialized) AppPreferences.save(context, oldAppearance)
@@ -133,7 +141,8 @@ class CaptureInstrumentationTest {
         if (Build.VERSION.SDK_INT >= 30) device.setOrientationLeft(Display.DEFAULT_DISPLAY)
         else device.setOrientationLeft()
         await(10_000, "Rotation did not reach landscape") {
-            device.displayRotation == Surface.ROTATION_90 && device.displayWidth > device.displayHeight
+            device.displayRotation == Surface.ROTATION_90 && device.displayWidth > device.displayHeight &&
+                fixtureHasOrientation(portrait = false)
         }
         replaceText("ROTATED SCREEN CONTENT")
         // Wait until the projection resize callback has settled, then request a fresh surface.
@@ -146,24 +155,30 @@ class CaptureInstrumentationTest {
         // Service actions are not consent tokens and cannot silently restart sharing.
         action(CaptureService.ACTION_CAPTURE)
         assertRemains(1_000, "Capture restarted without fresh system consent") { !CaptureService.isRunning }
+        // Keep landscape and exercise the real, scrollable SystemUI consent dialog too.
+        authorize()
+        stopCapture()
     }
 
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()
+        val selectedLandscape = device.displayWidth > device.displayHeight
         action(CaptureService.ACTION_SELECT_REGION)
         await(10_000, "Area selector did not open") { device.hasObject(By.desc("Drag to select an area to translate")) }
         device.swipe((device.displayWidth * .07f).toInt(), (device.displayHeight * .34f).toInt(),
             (device.displayWidth * .93f).toInt(), (device.displayHeight * .70f).toInt(), 45)
         awaitOutput("OPEN SCREEN")
         assertFalse("Crop included text outside the selected area", currentOutput().contains("OUTSIDE"))
-        val region = requireNotNull(CaptureOptionsStore.readRegion(context, false))
+        val saved = CaptureOptionsStore.readRegion(context, selectedLandscape)
+        if (saved == null) recordUiEvidence("Selected area was not saved for the active orientation")
+        val region = requireNotNull(saved)
         assertTrue(region.left in .04f.. .10f && region.bottom in .67f.. .73f)
         replaceText("SAVED AREA REUSED")
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("SAVED AREA")
         assertFalse(currentOutput().contains("OUTSIDE"))
-        assertEquals(region, CaptureOptionsStore.readRegion(context, false))
+        assertEquals(region, CaptureOptionsStore.readRegion(context, selectedLandscape))
     }
 
     @Test fun automaticChangedFramesPauseAndScreenLockStopsSession() {
@@ -221,13 +236,13 @@ class CaptureInstrumentationTest {
         action(CaptureService.ACTION_APPLY_OPTIONS)
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("OPEN SCREEN TOUCH")
-        // Outside the detail panel and bubble. A source-app click changes the generated pixels.
-        device.click(device.displayWidth / 2, (device.displayHeight * .84f).toInt())
+        // Derive an actual free margin; OCR text length can make the detail panel taller.
+        clickOutsideResult()
         await(5_000, "Outside touch did not reach the source app") { device.hasObject(By.desc("Source tap count 1")) }
         awaitOutput("TOUCH REACHED", 30_000) // Must beat the 60-second periodic interval.
         action(CaptureService.ACTION_PAUSE_AUTO)
         await(5_000, "Auto did not pause") { !CaptureService.isAutoRunning }
-        device.click(device.displayWidth / 2, (device.displayHeight * .84f).toInt())
+        clickOutsideResult()
         await(5_000, "Second source click was not delivered") { device.hasObject(By.desc("Source tap count 2")) }
         assertRemains(2_500, "Outside touch restarted paused capture") { !currentOutput().contains("SECOND TOUCH") && !CaptureService.isAutoRunning }
     }
@@ -286,11 +301,23 @@ class CaptureInstrumentationTest {
     }
 
     private fun finishLeakedFixtures() {
+        val ending = mutableListOf<CaptureFixtureActivity>()
         instrumentation.runOnMainSync {
             val monitor = ActivityLifecycleMonitorRegistry.getInstance()
-            listOf(Stage.CREATED, Stage.STARTED, Stage.RESUMED, Stage.PAUSED, Stage.STOPPED)
-                .flatMap { monitor.getActivitiesInStage(it) }.distinct()
-                .filterIsInstance<CaptureFixtureActivity>().forEach { if (!it.isFinishing) it.finish() }
+            ending.addAll(listOf(Stage.CREATED, Stage.STARTED, Stage.RESUMED, Stage.PAUSED, Stage.STOPPED)
+                .flatMap { monitor.getActivitiesInStage(it) }.distinct().filterIsInstance<CaptureFixtureActivity>())
+            ending.forEach {
+                it.finishActivity(101) // Cancel only this fixture's pending MediaProjection consent.
+                if (!it.isFinishing) it.finish()
+            }
+        }
+        await(10_000, "Capture fixture did not reach DESTROYED after explicit finish") {
+            var destroyed = false
+            instrumentation.runOnMainSync {
+                val monitor = ActivityLifecycleMonitorRegistry.getInstance()
+                destroyed = ending.all { monitor.getLifecycleStageOf(it) == Stage.DESTROYED }
+            }
+            destroyed
         }
         instrumentation.waitForIdleSync()
     }
@@ -347,15 +374,47 @@ class CaptureInstrumentationTest {
         instrumentation.waitForIdleSync()
     }
 
-    private fun orientToPortrait() {
-        // The display-specific API uses WindowManager's explicit display rotation command.
-        // Unlike a request followed immediately by unfreeze, confirm the visible orientation.
+    private fun fixtureHasOrientation(portrait: Boolean): Boolean {
+        var matches = false
+        instrumentation.runOnMainSync {
+            val view = fixture?.window?.decorView
+            matches = if (view == null || view.width <= 0 || view.height <= 0) false
+                else if (portrait) view.height > view.width else view.width > view.height
+        }
+        return matches
+    }
+
+    private fun orientToPortrait(expectFixture: Boolean = false) {
         if (Build.VERSION.SDK_INT >= 30) device.setOrientationNatural(Display.DEFAULT_DISPLAY)
         else device.setOrientationNatural()
-        await(10_000, "Default display did not return to portrait") {
-            device.displayRotation == Surface.ROTATION_0 && device.displayHeight > device.displayWidth
+        await(10_000, "Default display and foreground fixture did not return to portrait") {
+            device.displayRotation == Surface.ROTATION_0 && device.displayHeight > device.displayWidth &&
+                (!expectFixture || fixtureHasOrientation(portrait = true))
         }
         instrumentation.waitForIdleSync()
+    }
+
+    private fun clickOutsideResult() {
+        val panel = requireNotNull(device.findObject(By.pkg(context.packageName).clazz("android.widget.ScrollView"))).visibleBounds
+        val bubble = requireNotNull(device.findObject(By.descStartsWith("Translation bubble."))).visibleBounds
+        val y = device.displayHeight / 2
+        val candidates = listOf(panel.left / 2, (panel.right + device.displayWidth) / 2)
+        val x = candidates.firstOrNull { it > 0 && it < device.displayWidth && !panel.contains(it, y) && !bubble.contains(it, y) }
+        assertNotNull("No visible source-app margin was available outside the result and bubble", x)
+        assertTrue("Could not inject the source-app touch", device.click(requireNotNull(x), y))
+    }
+
+    @Suppress("DEPRECATION") // Recycle node copies on older platform versions.
+    private fun scrollSystemConsentForward(): Boolean {
+        val root = instrumentation.uiAutomation.rootInActiveWindow ?: return false
+        val nodes = root.findAccessibilityNodeInfosByViewId("com.android.systemui:id/screen_share_permission_dialog")
+        try {
+            return nodes.firstOrNull { it.packageName?.toString() == "com.android.systemui" }
+                ?.performAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD.id) == true
+        } finally {
+            nodes.forEach { it.recycle() }
+            root.recycle()
+        }
     }
 
     private fun consentButton(): UiObject2? =
@@ -373,12 +432,13 @@ class CaptureInstrumentationTest {
         // its affirmative action can start below the visible viewport.
         var scrolls = 0
         while (consentButton() == null && scrolls < 3) {
-            val panel = device.findObject(By.res("com.android.systemui", "screen_share_permission_dialog")) ?: break
-            if (!panel.isScrollable) break
-            val more = panel.scroll(Direction.DOWN, .8f)
+            val titleBefore = device.findObject(By.res("com.android.systemui", "screen_share_dialog_title"))?.visibleBounds?.top
+            if (!scrollSystemConsentForward()) break
             scrolls++
-            device.waitForIdle()
-            if (!more && consentButton() == null) break
+            await(3_000, "System consent accepted scroll but its content did not move") {
+                consentButton() != null ||
+                    device.findObject(By.res("com.android.systemui", "screen_share_dialog_title"))?.visibleBounds?.top != titleBefore
+            }
         }
         await(5_000, "System consent dialog appeared but its Start action was not reachable") { consentButton() != null }
         requireNotNull(consentButton()).click()
