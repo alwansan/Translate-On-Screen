@@ -4,7 +4,7 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "007",
+  "session": "008",
   "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/007-manga-and-docking.md",
+  "session_checkpoint": "memory/sessions/008-comic-font.md",
   "environment": {
     "status": "unavailable",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -44,7 +44,7 @@
       "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
     }
   },
-  "observed_branch_head": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
+  "observed_branch_head": "74ae4f47befd79a3f95497f3e666b44292a2ee3e",
   "latest_observed_android_ci": {
     "run_id": 45896196263,
     "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

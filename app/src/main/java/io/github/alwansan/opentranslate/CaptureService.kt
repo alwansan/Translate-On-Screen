@@ -1160,7 +1160,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         if (output.isNotBlank()) {
             content.addView(text(if (options.uppercaseText) output.uppercase(Locale.getDefault()) else output, options.textSize.toFloat()).apply {
                 setTextColor(options.textColor)
-                typeface = Typeface.create(options.fontFamily, if (options.fontBold) Typeface.BOLD else Typeface.NORMAL)
+                typeface = Typeface.create(options.resultFontFamily, if (options.fontBold) Typeface.BOLD else Typeface.NORMAL)
                 if (options.centerText) gravity = Gravity.CENTER
                 if (options.outlineText) setShadowLayer(dp(2).toFloat(), 0f, 0f, if (Color.luminance(options.textColor) > .4f) Color.BLACK else Color.WHITE)
                 setTextIsSelectable(true)

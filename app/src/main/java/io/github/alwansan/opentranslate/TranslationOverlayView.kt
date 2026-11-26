@@ -55,7 +55,7 @@ class TranslationOverlayView(
             val availableHeight = max(1f, rect.height() - 2 * padding)
             val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = item.palette?.textColor ?: options.textColor
-                typeface = Typeface.create(options.fontFamily, if (options.fontBold) Typeface.BOLD else Typeface.NORMAL)
+                typeface = Typeface.create(options.resultFontFamily, if (options.fontBold) Typeface.BOLD else Typeface.NORMAL)
                 textSize = min(sp(options.textSize.toFloat()), max(sp(10f), availableHeight))
             }
             val output = if (options.uppercaseText) item.text.take(5000).uppercase(Locale.getDefault()) else item.text.take(5000)

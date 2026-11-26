@@ -45,7 +45,9 @@ data class CaptureOptions(
     val anchorBelowRegion: Boolean = false,
     val outlineText: Boolean = false,
     val uppercaseText: Boolean = false,
+    val mangaFont: Boolean = false,
 ) {
+    val resultFontFamily: String get() = if (mode == CaptureMode.MANGA && mangaFont) "casual" else fontFamily
     val automatic: Boolean get() = mode.automatic
     val requiresFixedRegion: Boolean get() = mode in setOf(CaptureMode.FIXED, CaptureMode.AUTO_REGION, CaptureMode.SUBTITLE)
     val autoIntervalMs: Long get() = intervalSeconds * 1_000L

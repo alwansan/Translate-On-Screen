@@ -42,7 +42,7 @@ object ScreenPreferences {
                 fontBold = bool("bold", d.fontBold), backgroundBorder = bool("border", false),
                 borderColor = int("border_color", d.borderColor), selectionBorderColor = p.getInt("selection_color", d.selectionBorderColor),
                 panelWidthPercent = int("panel_width", d.panelWidthPercent), anchorBelowRegion = bool("below_region", false),
-                outlineText = bool("outline", false), uppercaseText = bool("uppercase", false),
+                outlineText = bool("outline", false), uppercaseText = bool("uppercase", false), mangaFont = bool("manga_font", false),
             ).safe()
         } catch (_: ClassCastException) { CaptureOptions(mode = requestedMode ?: CaptureMode.FULL) }
     }
@@ -69,7 +69,8 @@ object ScreenPreferences {
             .putInt(prefix + "border_color", v.borderColor).putInt(prefix + "panel_width", v.panelWidthPercent)
             .putBoolean(prefix + "below_region", v.anchorBelowRegion)
             .putString(prefix + "font", v.fontFamily).putBoolean(prefix + "outline", v.outlineText)
-            .putBoolean(prefix + "uppercase", v.uppercaseText).commit()
+            .putBoolean(prefix + "uppercase", v.uppercaseText)
+            .putBoolean(prefix + "manga_font", v.mangaFont).commit()
     }
 }
 

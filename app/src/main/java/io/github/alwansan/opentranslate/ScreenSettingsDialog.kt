@@ -155,6 +155,7 @@ object ScreenSettingsDialog {
         val outline = toggle(ui("Text outline", "حدود حول النص"), old.outlineText)
         val upper = toggle(ui("Uppercase output", "أحرف لاتينية كبيرة"), old.uppercaseText)
         val smart = toggle(ui("Sample text background colors", "مطابقة ألوان خلفية النص"), old.smartColors)
+        val mangaFont = toggle(ui("Comic-style font", "خط القصص المصوّرة"), old.mangaFont)
         val mangaBackground = Button(c).apply {
             text = ui("Apply manga background", "تطبيق خلفية المانغا")
             isAllCaps = false
@@ -165,6 +166,7 @@ object ScreenSettingsDialog {
                 positioned.isChecked = true
                 smart.isChecked = true
                 border.isChecked = false
+                outline.isChecked = false
                 refreshPreview?.invoke()
             }
         }
@@ -185,7 +187,9 @@ object ScreenSettingsDialog {
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mangaBackground.visibility = if (modes[position] == CaptureMode.MANGA) View.VISIBLE else View.GONE
+                mangaFont.visibility = mangaBackground.visibility
                 val profile = ScreenPreferences.read(c, modes[position])
+                mangaFont.isChecked = profile.mangaFont
                 interval.progress = profile.intervalSeconds - 1
                 display.progress = profile.displaySeconds
                 stop.progress = profile.stopMinutes - 1
@@ -217,7 +221,9 @@ object ScreenSettingsDialog {
                 if (upper.isChecked) it.uppercase(Locale.getDefault()) else it
             }
             previewText.textSize = (textSize.progress + 12).toFloat()
-            previewText.typeface = Typeface.create(fonts[font.selectedItemPosition], if (bold.isChecked) Typeface.BOLD else Typeface.NORMAL)
+            val previewFont = old.copy(mode = modes[mode.selectedItemPosition],
+                fontFamily = fonts[font.selectedItemPosition], mangaFont = mangaFont.isChecked).resultFontFamily
+            previewText.typeface = Typeface.create(previewFont, if (bold.isChecked) Typeface.BOLD else Typeface.NORMAL)
             previewText.setTextColor(textInk)
             previewText.gravity = if (centered.isChecked) Gravity.CENTER else Gravity.START
             if (outline.isChecked) previewText.setShadowLayer(dp(2).toFloat(), 0f, 0f, if (Color.luminance(textInk) > .4f) Color.BLACK else Color.WHITE)
@@ -276,6 +282,7 @@ object ScreenSettingsDialog {
                     selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),panelWidthPercent=panelWidth.progress+50,anchorBelowRegion=belowRegion.isChecked,
                     fontFamily=fonts[font.selectedItemPosition],lineByLine=lines.isChecked,positionedResults=positioned.isChecked,
                     verticalText=vertical.isChecked,outlineText=outline.isChecked,uppercaseText=upper.isChecked,smartColors=smart.isChecked,
+                    mangaFont=mangaFont.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,
                     tapToDismissAutoOverlay=clearOverlay.isChecked,
                     bubbleAutoDock=dock.isChecked,bubbleAutoDim=dim.isChecked,bubbleLocked=locked.isChecked)

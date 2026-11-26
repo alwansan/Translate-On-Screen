@@ -4,6 +4,13 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class CaptureOptionsTest {
+    @Test fun comicFontOverridesOnlyMangaAndPreservesCustomFont() {
+        val manga = CaptureOptions(mode = CaptureMode.MANGA, fontFamily = "serif", mangaFont = true).safe()
+        assertEquals("casual", manga.resultFontFamily)
+        assertEquals("serif", manga.copy(mangaFont = false).resultFontFamily)
+        assertEquals("serif", manga.copy(mode = CaptureMode.FULL).resultFontFamily)
+    }
+
     @Test fun regionAndAutomaticModesRemainDistinct() {
         assertTrue(CaptureMode.FIXED.needsRegion)
         assertFalse(CaptureMode.FIXED.automatic)
