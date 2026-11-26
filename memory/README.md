@@ -23,3 +23,5 @@
 - راجع `memory/ISSUES_AR.md` و`memory/evidence/UI_REVIEW_AR.md` و`memory/evidence/reference-artifacts.json` قبل إعادة طلب الأصل.
 
 ملفات `memory/recovery/` تحفظ لقطات وblobs تاريخية لإعادة البناء عند الانقطاع؛ قد تحتوي مسودات عولجت لاحقاً. مصدر العمل الحالي هو ملفات أحدث رأس في فرع التنفيذ، ونتائج كل اختبار مرتبطة بمصدرها في STATE وVALIDATION. لا تستبدل ملفاً حديثاً تلقائياً بـblob قديم من ملف استعادة.
+
+إعادة فحص المرفقات في الدفعة 003: `memory/evidence/reference-artifact-recheck-003.json` هو الدليل الأحدث لعد DEX ومساراتها وبصمات الصور. يبقى سجل reference-verification-recovery.json تاريخياً لحدود التوقيع.

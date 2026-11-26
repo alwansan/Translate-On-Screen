@@ -4,10 +4,10 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "002",
+  "session": "003",
   "phase": "awaiting_owner_acceptance",
   "last_verified_code_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-  "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
+  "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
   "last_verified_android_ci": 45787527099,
@@ -25,16 +25,24 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/002-environment-recovery.md",
+  "session_checkpoint": "memory/sessions/003-reference-evidence-recheck.md",
   "environment": {
     "status": "unavailable",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
     "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
     "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
     "available_execution_path": "GitHub connector and GitHub Actions",
-    "unsynced_work": "Current reconstructed source, evidence and documentation are committed remotely. Inaccessible earlier local files are not the current source; if recovered, preserve and compare them without reset."
+    "unsynced_work": "Current reconstructed source, evidence and documentation are committed remotely. Inaccessible earlier local files are not the current source; if recovered, preserve and compare them without reset.",
+    "current_session": {
+      "status": "restricted Python/container available",
+      "reference_attachments": "All three mounted files read; full hashes verified",
+      "android_sdk": "adb, emulator, sdkmanager, apksigner, aapt2 absent; no /dev/kvm; download host DNS failure",
+      "old_workspace": "not present at recorded scratch path",
+      "source_work": "No app source changed; documentation-only evidence checkpoint via GitHub connector",
+      "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
+    }
   },
-  "observed_branch_head": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+  "observed_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "latest_observed_android_ci": {
     "run_id": 45787527099,
     "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
@@ -142,5 +150,18 @@
     "16 KiB native alignment is a static check, not execution on a 16 KiB-page device",
     "Release variant compiled unsigned; no production signing or store publication",
     "Artifact retention ends at the listed expiration; committed evidence and source remain available"
-  ]
+  ],
+  "reference_artifact_recheck": "memory/evidence/reference-artifact-recheck-003.json",
+  "reference_dex_count_resolution": {
+    "root": 4,
+    "all_paths": 5,
+    "extra": "assets/audience_network/classes.dex"
+  },
+  "latest_acceptance_metadata_recheck": {
+    "date": "2026-11-26",
+    "host": 45787527099,
+    "device": 45787527216,
+    "artifact": 15101850735,
+    "expired": false
+  }
 }

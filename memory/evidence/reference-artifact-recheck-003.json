@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "observation_date": "2026-11-26",
+  "session": "003",
+  "record_kind": "fresh read-only inspection of mounted attachments, cross-checked against pinned GitHub image directory",
+  "starting_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
+  "reference": {
+    "package": "com.recognize_text.translate.screen",
+    "version": "1.188",
+    "version_code": 188,
+    "min_sdk": 32,
+    "target_sdk": 36,
+    "decoded_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
+    "screenshots_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308"
+  },
+  "files": [
+    {
+      "name": "Translate+On+Screen_1.188_APKPure_apks.apk",
+      "bytes": 94332979,
+      "sha256": "87bb9419cc58f630aebc9993415c338f998e7415f0d7307891f0d45cffb67afb",
+      "library_id": "libfile_490a71224d3c8191b51f0c75e8a2b6b9",
+      "zip_entries": 1756,
+      "abis": [
+        "arm64-v8a"
+      ],
+      "root_dex_count": 4,
+      "all_dex_count": 5,
+      "sha256_verified_against_attachment": true
+    },
+    {
+      "name": "Translate+On+Screen_1.188_APKPure.xapk",
+      "bytes": 94242338,
+      "sha256": "7bd4949257470fe6c5af3dedaf339490c99c335e33f1134bb605ef6d0dcdc955",
+      "library_id": "libfile_a52bf8c71f7c8191a864e8a7d34083bf",
+      "splits": [
+        {
+          "name": "com.recognize_text.translate.screen.apk",
+          "bytes": 56240414,
+          "sha256": "6283506e0c7eec2bb2dc306db94db130d26057c53f7a915777cb7f2be839ee2f",
+          "zip_entries": 1647,
+          "sha256_verified_against_attachment": true
+        },
+        {
+          "name": "config.arm64_v8a.apk",
+          "bytes": 37889567,
+          "sha256": "e5f357b965abf6766d4daf08b2e9b16c5729a7f75b18aab85cf87d7f3273fbda",
+          "zip_entries": 20,
+          "sha256_verified_against_attachment": true
+        },
+        {
+          "name": "config.xxhdpi.apk",
+          "bytes": 107930,
+          "sha256": "4ac26e4865df8b4f29705501f4ec90fc267835fa4696db54cd16239663cf2070",
+          "zip_entries": 94,
+          "sha256_verified_against_attachment": true
+        }
+      ],
+      "outer_zip_entries": 4,
+      "sha256_verified_against_attachment": true
+    },
+    {
+      "name": "img.zip",
+      "bytes": 5754886,
+      "sha256": "e465664b2f67a63fc1dee1ee9264ab9dc5336619998e4348e469656de5d685df",
+      "library_id": "libfile_1a7b32277e94819180967d4bec36d738",
+      "jpg_count": 23,
+      "github_path": "https://github.com/alwansan/Translate-On-Screen/tree/b4f80b12d7efafdd992d54f51ffba65c01ec6308/img",
+      "zip_entries": 24,
+      "sha256_verified_against_attachment": true
+    }
+  ],
+  "method": "Python hashlib SHA-256 of complete archives, zipfile in-memory reading and SHA-256 of every non-directory entry, Pillow JPEG dimensions, Git SHA-1 of blob header and bytes; no extraction, execution or original backend contact. File-level digests below were observed locally and transcribed; archive digests match the earlier index.",
+  "comparison": {
+    "merged_unique_file_paths": 1756,
+    "split_union_unique_file_paths": 1756,
+    "identical_across_all_copies": 1754,
+    "merged_only": [],
+    "split_only": [],
+    "differing_paths": {
+      "AndroidManifest.xml": {
+        "merged": "fad45612bb2505fd3b9da61f30abf80cc8f5d76aacaaa549c190d0a2e1a6052c",
+        "base": "ba6843c1129ea184c0946f4f0a8b0c551da548d42c073caf2904687eae01375b",
+        "arm64": "d6591dec9d172eec21c46420d36a928ff90a1dff5b693e47ced29fed030621b1",
+        "xxhdpi": "b88f88a9b58991004802196532d939b83a287ad1e5b64ca07396e0adb672b3df"
+      },
+      "resources.arsc": {
+        "merged": "5bb69a7b35df7db6bf0f48572509b948358e0c889be6210997467a17e498be53",
+        "base": "d50b1f01cd8b11ed520ae14e65158668f190864f8607392fc00c0b5ab018da33",
+        "xxhdpi": "9a5bd310a45cf24b0b72ad194f7899f6ea039bf11a1764893a34a7cf6d1b1f27"
+      }
+    },
+    "root_dex_count": 4,
+    "all_dex_paths_count": 5,
+    "native_count": 18,
+    "dex_and_native_all_match": true,
+    "dex_sha256": {
+      "assets/audience_network/classes.dex": "215dbef81a8373f008ab324db1d90458ccd44273b3621c331fa1f42374b6a70a",
+      "classes.dex": "341f83b13cb26909d22acaa3a5dbd48adb081d76bac956035cd23816ece31fd7",
+      "classes2.dex": "10a3cf09037df146aaffa3a87a2f03d741adf2cdc5d873336fd37be51cc0c4cb",
+      "classes3.dex": "e7fc78d7c7b7421964682877eb95d4cce30e85532f296a879bd27394aeebb65f",
+      "classes4.dex": "28302a2eca68fa1c7e774bbeddaee10b770a6174164fe4dd212a38f5db755351"
+    },
+    "native_sha256": {
+      "lib/arm64-v8a/libapminsighta.so": "4da62be9b09106a077481a376365b861f1ffdc10b03e25362c24bc7c5efafb0c",
+      "lib/arm64-v8a/libapminsightb.so": "229c907fc65dffbf7742ed9a4b83418ac984267da3d81af3c5a5509ef1f3a5c2",
+      "lib/arm64-v8a/libbuffer_pgl.so": "d416381c202993e4a03fd6ae0c5b407f1531f61fc45f518ad5b7f4620d5a2133",
+      "lib/arm64-v8a/libdatastore_shared_counter.so": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "lib/arm64-v8a/libfile_lock_pgl.so": "d14096b150b4b2f21263fdb4f1c61eea3fcd76804c776de2395b13dfbe1d8ca0",
+      "lib/arm64-v8a/libimage_processing_util_jni.so": "f0e4611db0d6b68942d8ba6977519f3dd1cdbffa87b7fc16d8006696ba954af4",
+      "lib/arm64-v8a/libjpeg.so": "8d47a5da2e9c19e09c260ad0c4824c1d78157df2ea86293d4086f82767fbe03d",
+      "lib/arm64-v8a/libleptonica.so": "062cd4aea4dc652ac3c089d25942676775f28c0ff761d9d7c87bc4f60fc0fc72",
+      "lib/arm64-v8a/libmlkit_google_ocr_pipeline.so": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "lib/arm64-v8a/libnms.so": "6f980556f17ed029c4c6918027dab07069ebcfb3f0e70b14c4be4e5f1c170b9b",
+      "lib/arm64-v8a/libpairipcore.so": "575b86aff7ab4fd63b3c51936a4e94d2423d94c92556b9d9b1f45d70f35aa321",
+      "lib/arm64-v8a/libpglarmor.so": "69218eb7accd450feb707bfe9fa6533c390a2c0bf63b5c685c5548c18a0fe716",
+      "lib/arm64-v8a/libpngx.so": "e70d48e405b56f1df06921c4ebbee0612140a8f2c7b0a2641fbbf6fea53eda4c",
+      "lib/arm64-v8a/libsurface_util_jni.so": "6cb2eac3c68e6a82ce2a5ea5aba86749eb8c609914392e125f6cdfbc208992f8",
+      "lib/arm64-v8a/libtesseract.so": "ebeb398a354ddaa2c05bbc596949dc18047a8b3cace5906f6f2457b3fc032b74",
+      "lib/arm64-v8a/libtranslate_jni.so": "35b3d0366291347e3f25e80e809ee398d716aea49cd03278007fedd526a1496f",
+      "lib/arm64-v8a/libtt_ugen_layout.so": "6356784adf27dac5d18cd14a052d4ab9c161fb74eb4df3d4107d00f2549edeb2",
+      "lib/arm64-v8a/libunitycoherencenative.so": "19ca71817e9aeee4a8e2449588cb112324869aab0cf828a8a320abe7b9c7e6c6"
+    }
+  },
+  "screenshot_index": {
+    "ordering": "Chronological filename order as in UI_REVIEW_AR.md; REF IDs are sequence IDs, not proof of installed APK identity.",
+    "github_ref": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
+    "matched": 23,
+    "files": [
+      {
+        "id": "REF-001",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٢-٢٣-٦٠٦_com.recognize_text.translate.screen.jpg",
+        "bytes": 403621,
+        "width": 1080,
+        "height": 3071,
+        "sha256": "f276b1364509008771d0dd62212e2ca8293ee4b8c96ee8a89c1e9d21d752150f",
+        "git_blob_sha1": "b99cc59811a672341ccc6f2b1ac06c7c6ce94b19",
+        "github_match": true
+      },
+      {
+        "id": "REF-002",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٢-٣٤-٦٨٨_com.recognize_text.translate.screen.jpg",
+        "bytes": 263996,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "27e838a563de623d5b0a70570ae2aa99dd299a24328f47792e89974b4812331f",
+        "git_blob_sha1": "30490427c86428981dae9f0bfd769c0f6dd1aec6",
+        "github_match": true
+      },
+      {
+        "id": "REF-003",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٢-٤١-٠٩٥_com.recognize_text.translate.screen.jpg",
+        "bytes": 222556,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "87b788ca9963f90ee188349be674dfa5c1c9c1e41d90b477760cd4ad41ad68fa",
+        "git_blob_sha1": "2ff0b889688951fb4bd9c668fe716a23c27b9306",
+        "github_match": true
+      },
+      {
+        "id": "REF-004",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٢-٥٠-٥١٨_com.recognize_text.translate.screen.jpg",
+        "bytes": 243294,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "850d6f03d53a33cb409ba428bde71f01424b52d70336e1f445005ce7a68884d1",
+        "git_blob_sha1": "477c9dfa9d3c88233572cf4af9c4eae4917c4344",
+        "github_match": true
+      },
+      {
+        "id": "REF-005",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-١٠-٧٨١_com.recognize_text.translate.screen.jpg",
+        "bytes": 221979,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "98665412c53c843853495570b0f59e665860dfbd758753a737b2e5c2628c38f1",
+        "git_blob_sha1": "7bafe71525768765a54db30c00232e2c62c45197",
+        "github_match": true
+      },
+      {
+        "id": "REF-006",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-١٥-٦٨١_com.recognize_text.translate.screen.jpg",
+        "bytes": 310443,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "7521ad6a6f5b2fab2042cb3b1e7aabbc0a86ebe1cd789db359cb28709857f456",
+        "git_blob_sha1": "b822589515ad0ee30fd38d716aede4ab636571fc",
+        "github_match": true
+      },
+      {
+        "id": "REF-007",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-٤١-٤٢٦_com.recognize_text.translate.screen.jpg",
+        "bytes": 217149,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "c86f546c835fc4981f3583df3eeff426c2c4a89a8ce3eb0f672105ae28d92df7",
+        "git_blob_sha1": "1df89d80d28df2df3e28a0b8e28d2654ced5bfff",
+        "github_match": true
+      },
+      {
+        "id": "REF-008",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-٤٥-١٧٣_com.recognize_text.translate.screen.jpg",
+        "bytes": 294614,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "da47996dbded26aad172651fb46e4084087967e02e7475e495cec81e6a01eb36",
+        "git_blob_sha1": "6b6c108a1c26aa99ada5c62fa7ff1b1563608edf",
+        "github_match": true
+      },
+      {
+        "id": "REF-009",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-٥٤-٩٣٦_com.recognize_text.translate.screen.jpg",
+        "bytes": 244530,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "ad8a2f2a576649fb25f9ca1c847c0eb068c40da754b87c806cfc957ab614a84f",
+        "git_blob_sha1": "2aec342abe63ddd5b890e2d034aaf529a840c875",
+        "github_match": true
+      },
+      {
+        "id": "REF-010",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٣-٥٧-٢٠٠_com.recognize_text.translate.screen.jpg",
+        "bytes": 240532,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "b1394bfa76a9991bdf92c8b4581c9771df459dbe2fb464b925d0d4b3c04c2c18",
+        "git_blob_sha1": "2f9e447adc9fcf2380fd8be3c17ed5c85e0bd544",
+        "github_match": true
+      },
+      {
+        "id": "REF-011",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٤-٠٤-٠٢٦_com.recognize_text.translate.screen.jpg",
+        "bytes": 236667,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "0c700a55fc69f73de4c3d58403cb693fa0fbefcc6fee1e7474708d91a7134222",
+        "git_blob_sha1": "340dd696c878e9ccbc683c88dd636769792c4502",
+        "github_match": true
+      },
+      {
+        "id": "REF-012",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٤-١٨-٦٨٨_com.recognize_text.translate.screen.jpg",
+        "bytes": 316118,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "2c6c660bafef5dc3b33586c31b78ce254b05caba8a55d130535ee369dc0fce8c",
+        "git_blob_sha1": "390212bac06f932840845b9e2abaf80950c5e29e",
+        "github_match": true
+      },
+      {
+        "id": "REF-013",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٤-٣١-٨٩٣_com.recognize_text.translate.screen.jpg",
+        "bytes": 247445,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "3dd86873113967a5ecb7851baabe589a240548f9a26bd65f9c88c3b60c2af8a8",
+        "git_blob_sha1": "68d6219b5451630898bae7a8128eb0aa9b675733",
+        "github_match": true
+      },
+      {
+        "id": "REF-014",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٤-٤٢-٤٠٠_com.recognize_text.translate.screen.jpg",
+        "bytes": 285629,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "b725c0a8246572eb4610a1199720e0341b640c4b7d3d93ab5530280a3093f19c",
+        "git_blob_sha1": "b184d8c6be42ce2572dff22a7df3c9c8f3948411",
+        "github_match": true
+      },
+      {
+        "id": "REF-015",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-١٢-١١٣_com.recognize_text.translate.screen.jpg",
+        "bytes": 174917,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "e1160c7c83d1fd39e2f0028b9b4f82d66d130e0e24950b9bbacf3ca7a4d7583a",
+        "git_blob_sha1": "f4a928d829b2a7e1820b7f298d5f1196395a4c7f",
+        "github_match": true
+      },
+      {
+        "id": "REF-016",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-١٥-٠٧٧_com.recognize_text.translate.screen.jpg",
+        "bytes": 240410,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "9c1f2ea58585c8e0dc3e2c7412210450d524ce0a42d668cd36d0395dddc33d21",
+        "git_blob_sha1": "b214519b34de5bd03cbade585986cd2526e18e9f",
+        "github_match": true
+      },
+      {
+        "id": "REF-017",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-٢٣-٩٧٩_com.recognize_text.translate.screen.jpg",
+        "bytes": 241415,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "b482fbf38ba6d6bf9a3f83687d536ca2ebd6bd5159df240f787d8f4d2af1228b",
+        "git_blob_sha1": "d964d0fafbe515cde1f2948f75f5d53d35b91caa",
+        "github_match": true
+      },
+      {
+        "id": "REF-018",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-٢٧-٨٨٢_com.recognize_text.translate.screen.jpg",
+        "bytes": 168978,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "48e566e43d43bd191fa64e71c549f82816f3fb564163186284f1a063ae51933f",
+        "git_blob_sha1": "ac7fb0fd746ca3ad914be61d9facd30e17045d29",
+        "github_match": true
+      },
+      {
+        "id": "REF-019",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-٣٢-٧٨٤_com.recognize_text.translate.screen.jpg",
+        "bytes": 316065,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "65d7558a2409690e2eaaa2b349648497f09769c0b656f5515a738e03f37d6be0",
+        "git_blob_sha1": "aced15a3796f7a2ad2b78b5d943b9ccec84b1c4b",
+        "github_match": true
+      },
+      {
+        "id": "REF-020",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-٤٦-٣٤٥_com.recognize_text.translate.screen.jpg",
+        "bytes": 150614,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "d40438c955a0d7c7b870db5bdf8fd441574644098dfa5ca5c0ef2da01cd0988b",
+        "git_blob_sha1": "04a4ec2542bcc678fbf88018721500b422c6e83c",
+        "github_match": true
+      },
+      {
+        "id": "REF-021",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٥-٥٠-٢٣٥_com.recognize_text.translate.screen.jpg",
+        "bytes": 253267,
+        "width": 1080,
+        "height": 2497,
+        "sha256": "847658843c8d4b3edd84a3e018619b2a83130addc1640b7a1c317458532051fd",
+        "git_blob_sha1": "ecf3b5609af782167e7d1f02b4a8c4fbf929ed80",
+        "github_match": true
+      },
+      {
+        "id": "REF-022",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٦-١٨-٤٧٩_com.recognize_text.translate.screen.jpg",
+        "bytes": 134433,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "dd7f678c9e0ad2b78697a7e8a1f15d806bf92585ce5ca76fa797cdd17d9a2b14",
+        "git_blob_sha1": "28870ddb8d4c436443f81a61a3883e6888839a7f",
+        "github_match": true
+      },
+      {
+        "id": "REF-023",
+        "path": "img/Screenshot_٢٠٢٦-١١-٢٦-٠٩-٠٦-٢٦-٥٣٢_com.recognize_text.translate.screen.jpg",
+        "bytes": 319126,
+        "width": 1080,
+        "height": 2400,
+        "sha256": "598e3f661646b47bda3a7390d39bbe639d51745ea45a178cdd357e0bd08bb88e",
+        "git_blob_sha1": "2a32e2b52a2d01ac368b953aca31b2beec257d07",
+        "github_match": true
+      }
+    ]
+  },
+  "limitations": [
+    "No fresh apksigner/aapt2 logs: SDK tools absent and dl.google.com DNS resolution failed. Historical signature observations remain in reference-verification-recovery.json, not independently repeated here.",
+    "No re-execution of original APK or benchmark.",
+    "No byte-level comparison to decoded source tree in this session.",
+    "No original archive, content bytes, or image uploaded to Git.",
+    "Prior visual review is retained; this session checked image metadata and byte identity, not the visual requirements anew."
+  ],
+  "acceptance_recheck": {
+    "host_run": 45787527099,
+    "device_run": 45787527216,
+    "source": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "both_completed_success": true,
+    "artifact_id": 15101850735,
+    "artifact_expired": false,
+    "artifact_zip_digest": "sha256:88d1b2435e2b697a054fa021cccf9abcfa5c8aa009aacef14efdb8a9131ae6ae",
+    "artifact_bytes": 23985688,
+    "expires_at": "2027-02-24T08:57:08Z",
+    "artifact_metadata_checked_not_downloaded": true,
+    "owner_acceptance": "pending",
+    "notes": "GitHub run and job metadata independently checked; test counts from the existing permanent validation record. No rebuild or new device run; candidate remains unchanged."
+  }
+}
