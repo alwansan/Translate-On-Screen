@@ -166,8 +166,13 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "005",
-    "feature": "direct_region_drag",
-    "validation": "pending"
+    "id": "006",
+    "matrix": "docs/HM_BEHAVIOR_MATRIX_AR.md",
+    "validation": "pending",
+    "previous_runs": {
+      "45895016436": "success",
+      "45895016302": "cancelled",
+      "45895474474": "success"
+    }
   }
 }

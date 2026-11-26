@@ -163,6 +163,23 @@ class CaptureInstrumentationTest {
         stopCapture()
     }
 
+    @Test fun bubbleDragCapturesRegionWithoutChangingFixedAreaOrPosition() {
+        configure(CaptureOptions(mode = CaptureMode.REGION, positionedResults = false, displaySeconds = 0))
+        CaptureOptionsStore.saveBubblePosition(context, false, .15f, .34f)
+        val original = CaptureOptionsStore.bubblePosition(context, false)
+        authorize()
+        awaitFixtureForeground("dragging from the region bubble")
+        val selector = By.descStartsWith("Translation bubble.")
+        await(10_000, "Region bubble did not appear") { device.hasObject(selector) }
+        val start = requireNotNull(device.findObject(selector)).visibleCenter
+        val target = safeSelectionGesture()
+        assertTrue(device.swipe(start.x, start.y, target.right, target.bottom, 35))
+        awaitOutput("OPEN SCREEN")
+        assertFalse("Bubble drag included outside text", currentOutput().contains("OUTSIDE"))
+        assertEquals(original, CaptureOptionsStore.bubblePosition(context, false))
+        assertTrue(CaptureOptionsStore.readRegion(context, false) == null)
+    }
+
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()
@@ -285,6 +302,24 @@ class CaptureInstrumentationTest {
         await(5_000, "Source app touch was blocked by the passive translation window") {
             device.hasObject(By.desc("Source tap count 1"))
         }
+    }
+
+    @Test fun clearerAutoOverlayConsumesDismissalThenRestoresSourceTouch() {
+        authorize()
+        launchTouchTarget()
+        configure(CaptureOptions(mode = CaptureMode.AUTO_FULL, intervalSeconds = 60, displaySeconds = 0,
+            positionedResults = true, tapToDismissAutoOverlay = true))
+        action(CaptureService.ACTION_APPLY_OPTIONS)
+        action(CaptureService.ACTION_CAPTURE)
+        val overlay = By.desc("Dismiss automatic translation")
+        await(40_000, "Clear automatic overlay did not appear") { device.hasObject(overlay) }
+        val x = device.displayWidth / 2
+        val y = device.displayHeight / 2
+        device.click(x, y)
+        await(5_000, "Dismissal did not remove the positioned result") { !device.hasObject(overlay) }
+        assertFalse(device.hasObject(By.desc("Source tap count 1")))
+        device.click(x, y)
+        await(5_000, "Source touch did not resume") { device.hasObject(By.desc("Source tap count 1")) }
     }
 
     @Test fun outsideTouchExpeditesAutoAndPauseDisablesTheTrigger() {

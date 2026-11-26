@@ -36,7 +36,7 @@ object ScreenPreferences {
                 speakAutomatically = bool("speak", d.speakAutomatically), lineByLine = bool("lines", d.lineByLine),
                 positionedResults = bool("positioned", d.positionedResults), verticalText = bool("vertical", d.verticalText),
                 skipUnchangedFrames = bool("skip_unchanged", true), changeThreshold = int("threshold", 8),
-                translateOnInteraction = bool("interaction", false), smartColors = bool("smart_colors", false),
+                translateOnInteraction = bool("interaction", false), tapToDismissAutoOverlay = bool("dismiss_auto_overlay", false), smartColors = bool("smart_colors", false),
                 bubbleAutoDock = p.getBoolean("dock", true), bubbleAutoDim = p.getBoolean("dim", true),
                 bubbleLocked = p.getBoolean("locked", false), fontFamily = string("font", "sans-serif"),
                 fontBold = bool("bold", d.fontBold), backgroundBorder = bool("border", false),
@@ -63,6 +63,7 @@ object ScreenPreferences {
             .putBoolean(prefix + "speak", v.speakAutomatically).putBoolean(prefix + "lines", v.lineByLine)
             .putBoolean(prefix + "positioned", v.positionedResults).putBoolean(prefix + "vertical", v.verticalText)
             .putBoolean(prefix + "skip_unchanged", v.skipUnchangedFrames).putInt(prefix + "threshold", v.changeThreshold)
+            .putBoolean(prefix + "dismiss_auto_overlay", v.tapToDismissAutoOverlay)
             .putBoolean(prefix + "interaction", v.translateOnInteraction).putBoolean(prefix + "smart_colors", v.smartColors)
             .putBoolean(prefix + "bold", v.fontBold).putBoolean(prefix + "border", v.backgroundBorder)
             .putInt(prefix + "border_color", v.borderColor).putInt(prefix + "panel_width", v.panelWidthPercent)

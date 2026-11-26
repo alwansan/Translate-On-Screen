@@ -31,6 +31,7 @@ data class CaptureOptions(
     val skipUnchangedFrames: Boolean = true,
     val changeThreshold: Int = 8,
     val translateOnInteraction: Boolean = false,
+    val tapToDismissAutoOverlay: Boolean = false,
     val smartColors: Boolean = false,
     val bubbleAutoDock: Boolean = true,
     val bubbleAutoDim: Boolean = true,

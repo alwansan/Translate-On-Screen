@@ -157,6 +157,7 @@ object ScreenSettingsDialog {
         val smart = toggle(ui("Sample text background colors", "مطابقة ألوان خلفية النص"), old.smartColors)
         val skip = toggle(ui("Skip unchanged frames", "تجاوز الصور غير المتغيرة"), old.skipUnchangedFrames)
         val threshold = slider(ui("Change sensitivity threshold", "عتبة تغير الصورة"), 1, 40, old.changeThreshold)
+        val clearOverlay = toggle(ui("Clearer automatic overlay · tap the screen to dismiss", "عرض تلقائي أوضح · المس الشاشة لإغلاق النتيجة"), old.tapToDismissAutoOverlay)
         val interaction = toggle(ui("Refresh automatic capture after outside touch", "تحديث التلقائي بعد لمس خارج الفقاعة"), old.translateOnInteraction)
         panel.addView(TextView(c).apply { text = ui(
             "Outside touch detects gesture start only; periodic updates continue. Pausing disables this trigger. The time limit ends screen sharing.",
@@ -186,6 +187,7 @@ object ScreenSettingsDialog {
                 vertical.isChecked = profile.verticalText; outline.isChecked = profile.outlineText
                 upper.isChecked = profile.uppercaseText; smart.isChecked = profile.smartColors
                 skip.isChecked = profile.skipUnchangedFrames; threshold.progress = profile.changeThreshold - 1
+                clearOverlay.isChecked = profile.tapToDismissAutoOverlay
                 interaction.isChecked = profile.translateOnInteraction
                 refreshPreview?.invoke()
             }
@@ -260,6 +262,7 @@ object ScreenSettingsDialog {
                     fontFamily=fonts[font.selectedItemPosition],lineByLine=lines.isChecked,positionedResults=positioned.isChecked,
                     verticalText=vertical.isChecked,outlineText=outline.isChecked,uppercaseText=upper.isChecked,smartColors=smart.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,
+                    tapToDismissAutoOverlay=clearOverlay.isChecked,
                     bubbleAutoDock=dock.isChecked,bubbleAutoDim=dim.isChecked,bubbleLocked=locked.isChecked)
                 if (ScreenPreferences.save(c,updated)) {
                     if (CaptureService.isRunning) runCatching { c.startService(Intent(c, CaptureService::class.java).setAction(CaptureService.ACTION_APPLY_OPTIONS)) }

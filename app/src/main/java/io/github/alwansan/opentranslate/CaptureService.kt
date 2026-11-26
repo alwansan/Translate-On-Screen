@@ -1091,13 +1091,20 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val screen = screenSize()
         val style = if (options.mode == CaptureMode.SUBTITLE) options.copy(centerText = true) else options
         val view = TranslationOverlayView(this, blocks, screen.x, screen.y, style)
+        val tapToDismiss = options.automatic && options.tapToDismissAutoOverlay
+        if (tapToDismiss) {
+            view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+            view.contentDescription = ui("Dismiss automatic translation", "إغلاق الترجمة التلقائية")
+            view.setOnClickListener { hideResults() }
+        }
         val params = overlayParams(-1, -1).apply {
-            flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            // Android 12+ evaluates window opacity, not just the pixels we paint. One passive
-            // window covers all boxes; the separate bubble/control strip are deliberately interactive.
-            alpha = if (Build.VERSION.SDK_INT >= 31)
-                min(.79f, (getSystemService(InputManager::class.java).maximumObscuringOpacityForTouch - .01f).coerceAtLeast(0f))
-                else .79f
+            flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            if (!tapToDismiss) {
+                flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                alpha = if (Build.VERSION.SDK_INT >= 31)
+                    min(.79f, (getSystemService(InputManager::class.java).maximumObscuringOpacityForTouch - .01f).coerceAtLeast(0f))
+                    else .79f
+            }
             if (Build.VERSION.SDK_INT >= 28) layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
         return try { windows.addView(view, params); boxesPanel = view; true }
