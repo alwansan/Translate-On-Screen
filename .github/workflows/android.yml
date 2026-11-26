@@ -40,6 +40,7 @@ jobs:
         run: |
           python3 -m unittest discover -s tools/tests -v
           python3 -m unittest discover -s tools -p 'test_provision_test_models.py' -v
+          python3 -m unittest discover -s tools -p 'test_run_device_tests.py' -v
       - name: Set up Android SDK explicitly
         uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4
         with:
@@ -57,6 +58,9 @@ jobs:
         env:
           OFFLINE_MODEL_TEST_ROOT: ${{ runner.temp }}/ost-test-models
         run: ./gradlew --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug :app:assembleDebugAndroidTest
+      - name: Record unit-test and lint evidence
+        if: always()
+        run: python3 tools/summarize_validation.py
       - name: Verify APK signature, native alignment and packaged licenses
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk

@@ -87,9 +87,9 @@ class TranslationEngine(context: Context) : Closeable {
         val fingerprint = TranslationFingerprint.of(TranslationFingerprint.settings(settings), result.original, result.translated.orEmpty())
         if (fingerprint == lastHistoryFingerprint) return result
         return try {
-            HistoryStore.append(context, settings, result)
+            val committed = HistoryStore.append(context, settings, result)
             if (Thread.currentThread().isInterrupted) failure(result.original, result.blocks, TranslationFailure.CANCELLED)
-            else { lastHistoryFingerprint = fingerprint; result }
+            else { if (committed) lastHistoryFingerprint = fingerprint; result }
         } catch (_: Exception) {
             if (Thread.currentThread().isInterrupted) failure(result.original, result.blocks, TranslationFailure.CANCELLED)
             else result.copy(warning = message("Translation succeeded, but it could not be saved to history.",

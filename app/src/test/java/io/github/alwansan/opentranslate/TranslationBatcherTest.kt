@@ -63,6 +63,26 @@ class TranslationBatcherTest {
             assertTrue(Thread.currentThread().isInterrupted); assertTrue(provider.calls.isEmpty())
         } finally { Thread.interrupted() } // Runner cleanup, never production behavior.
     }
+    @Test fun outputLimitIncludesNewlinesBetweenTranslatedBlocks() {
+        var secondLength = 24_000
+        var calls = 0
+        val provider = object : TranslationProvider {
+            override val id = "libretranslate"
+            override val requiresNetwork = true
+            override fun translate(texts: List<String>, settings: UserSettings, gate: RequestGate): List<String> {
+                calls++
+                return listOf("x".repeat(24_000), "y".repeat(secondLength))
+            }
+        }
+        val batcher = TranslationBatcher()
+        try { batcher.translate(listOf("first", "second"), settings, provider, gate); fail("48,001 displayed characters must fail") }
+        catch (error: TranslationProblem) { assertEquals(TranslationFailure.RESPONSE_TOO_LARGE, error.reason) }
+        assertEquals(1, calls)
+        secondLength = 23_999
+        val accepted = batcher.translate(listOf("first", "second"), settings, provider, gate)
+        assertEquals(48_000, accepted.joinToString("\n").length)
+        assertEquals(2, calls) // The rejected response did not populate the cache.
+    }
     private class Fake(private val bytes: Int = TranslationLimits.TEXT_BYTES) : TranslationProvider {
         override val id = "libretranslate"; override val requiresNetwork = true
         override val maxBatchUtf8Bytes get() = bytes

@@ -681,8 +681,14 @@ class MainActivity : Activity() {
             .format(bytes / 1048576.0) + t(" MB", " ميغابايت")
 
     private fun showHistory() {
-        val entries = HistoryStore.read(this)
+        work(t("Loading history…", "جارٍ تحميل السجل…"), {
+            HistoryStore.readSnapshot(applicationContext)
+        }) { snapshot -> renderHistory(snapshot.entries, snapshot.warning) }
+    }
+
+    private fun renderHistory(entries: List<HistoryEntry>, warning: String?) {
         val body = ui.column(16)
+        warning?.let { body.addView(ui.secondary(it)) }
         val search = ui.field(body, t("Search history", "البحث في السجل"))
         val list = ListView(this)
         body.addView(list, LinearLayout.LayoutParams(-1, ui.dp(320)))
@@ -691,7 +697,7 @@ class MainActivity : Activity() {
             val query = search.text.toString().trim()
             visible = entries.filter { it.original.contains(query, true) || it.translated.contains(query, true) }
             list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, visible.map {
-                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(it.timestamp)) +
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, resources.configuration.locales[0]).format(Date(it.timestamp)) +
                     "\n" + it.original.take(90) + "\n" + it.translated.take(90)
             })
         }
@@ -712,8 +718,13 @@ class MainActivity : Activity() {
     }
 
     private fun showWordbook() {
-        val entries = WordbookStore.read(this)
-        val readWarning = WordbookStore.lastReadWarning
+        work(t("Loading wordbook…", "جارٍ تحميل القاموس…"), {
+            val entries = WordbookStore.read(applicationContext)
+            entries to WordbookStore.lastReadWarning
+        }) { (entries, warning) -> renderWordbook(entries, warning) }
+    }
+
+    private fun renderWordbook(entries: List<SavedWord>, readWarning: String?) {
         val body = ui.column(16)
         readWarning?.let { body.addView(ui.secondary(it)) }
         val search = ui.field(body, t("Search words, translations or notes", "ابحث في الكلمات والترجمات والملاحظات"))
@@ -807,12 +818,16 @@ class MainActivity : Activity() {
                 val words = WordbookStore.read(applicationContext)
                 WordbookStore.lastReadWarning?.let { throw IOException(it) }
                 WordbookStore.encode(words)
-            } else JSONArray().apply {
-                HistoryStore.read(applicationContext).forEach { entry -> put(JSONObject().apply {
+            } else {
+                val snapshot = HistoryStore.readSnapshot(applicationContext)
+                snapshot.warning?.let { throw IOException(it) }
+                JSONArray().apply {
+                snapshot.entries.forEach { entry -> put(JSONObject().apply {
                     put("timestamp", entry.timestamp); put("source", entry.source); put("target", entry.target)
                     put("original", entry.original); put("translated", entry.translated)
                 }) }
-            }.toString(2)
+                }.toString(2)
+            }
             checkCancelled()
             val bytes = json.toByteArray(Charsets.UTF_8)
             checkCancelled()

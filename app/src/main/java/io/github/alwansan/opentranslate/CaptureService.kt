@@ -864,7 +864,9 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 return true
             }
             override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-                if (bubble === view && options.double != BubbleAction.NONE) view.performClick()
+                // Automatic refresh may replace the bubble before the double-tap timeout.
+                // A completed tap still belongs to this live service and must be able to pause it.
+                if (!stopping && isRunning && options.double != BubbleAction.NONE) view.performClick()
                 return true
             }
             override fun onDoubleTap(event: MotionEvent): Boolean {
@@ -1086,10 +1088,10 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             }
             elevation = dp(10).toFloat()
         }
-        panel.addView(text(ui("Screen translation", "ترجمة الشاشة"), 19f).apply { setTypeface(null, Typeface.BOLD) })
+        panel.addView(text(ui("Screen translation", "ترجمة الشاشة"), 19f).apply { setTypeface(null, Typeface.BOLD); setTextColor(options.textColor) })
         val content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         result.warning?.takeIf { it.isNotBlank() }?.let { warning ->
-            content.addView(text(warning, 14f).apply { setTextColor(Color.rgb(255, 212, 119)); setPadding(0, dp(8), 0, dp(8)) })
+            content.addView(text(warning, 14f).apply { setTextColor(if (Color.luminance(options.backgroundColor) > .4f) Color.rgb(112, 63, 0) else Color.rgb(255, 212, 119)); setPadding(0, dp(8), 0, dp(8)) })
         }
         val output = result.translated?.takeIf { it.isNotBlank() } ?: result.original
         if (output.isNotBlank()) {
@@ -1104,11 +1106,11 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             })
         } else if (result.warning.isNullOrBlank()) {
             content.addView(text(ui("No readable text found. Try a smaller, clearer area. Protected screens may be blank.",
-                "لم يُعثر على نص مقروء. جرّب منطقة أوضح وأصغر. قد تظهر الشاشات المحمية فارغة."), 16f))
+                "لم يُعثر على نص مقروء. جرّب منطقة أوضح وأصغر. قد تظهر الشاشات المحمية فارغة."), 16f).apply { setTextColor(options.textColor) })
         }
         if (!options.hideOriginal && !result.translated.isNullOrBlank() && result.original.isNotBlank()) {
-            content.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(Color.LTGRAY) })
-            content.addView(text(result.original, 14f).apply { setTextIsSelectable(true) })
+            content.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(options.textColor) })
+            content.addView(text(result.original, 14f).apply { setTextColor(options.textColor); setTextIsSelectable(true) })
         }
         val scroll = ScrollView(this).apply { addView(content) }
         val panelWidth = (screen.x * options.panelWidthPercent / 100).coerceIn(min(dp(160), screen.x - dp(16)), screen.x - dp(16))

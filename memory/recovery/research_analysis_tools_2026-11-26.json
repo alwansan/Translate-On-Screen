@@ -119,6 +119,18 @@
       "git_blob_sha": "57a91286c7ed1bd45dd727ccfccb411c1d8bbb72",
       "content_saved": "complete UTF-8 source, newly reconstructed from the verified contracts; not byte-identical restoration",
       "characters": 12020
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/HistoryStore.kt",
+      "git_blob_sha": "b2afb74b93370ce773a42f2e5fb1efc0cc747292",
+      "content_saved": "complete UTF-8 source; new history-integrity fix after recovery, not a claim of original-file restoration",
+      "characters": 11371
+    },
+    {
+      "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/HistoryStoreInstrumentationTest.kt",
+      "git_blob_sha": "388e5a26d5ca37109a5dfa339bfb2c86c62e88de",
+      "content_saved": "complete UTF-8 source; new history-integrity fix after recovery, not a claim of original-file restoration",
+      "characters": 14315
     }
   ],
   "recovered_by_other_agent": [
@@ -222,7 +234,7 @@
     ],
     "tests": {
       "count": 10,
-      "execution_status": "not executed in unavailable local executor; CI validation required",
+      "execution_status": "Root reported all 10 provisioner tests PASS in CI for commit 51cc5343c90e02bbdc8f27aab89d8e16b19b019a; no local executor run by this agent.",
       "command": "python -m unittest discover -s tools -p 'test_provision_test_models.py' -v"
     }
   },
@@ -252,5 +264,52 @@
       }
     ],
     "status": "reported; this record does not claim root changes applied or tested"
+  },
+  "history_integrity_fix": {
+    "baseline_commit": "51cc5343c90e02bbdc8f27aab89d8e16b19b019a",
+    "contracts": {
+      "append": "append(Context, UserSettings, TranslationResult): Boolean; true only after AtomicFile.finishWrite succeeds, false for opt-out/no-op; interrupted in-flight operations preserve interruption and throw InterruptedIOException",
+      "read": "read(Context): List<HistoryEntry> remains available",
+      "snapshot": "readSnapshot(Context): HistorySnapshot(entries: List<HistoryEntry>, warning: String?)",
+      "warning": "lastReadWarning: String? remains read-only outside HistoryStore"
+    },
+    "limits": {
+      "entries": 100,
+      "per_text_field_utf16_units": 48000,
+      "file_bytes": 4194304
+    },
+    "behavior": [
+      "No per-entry text truncation; retain the newest complete prefix and evict only whole oldest entries to meet count/encoded-byte budgets.",
+      "UTF-8 decoder REPORT, bounded reads, strict row shape/types, valid UTF-16, and trailing JSON detection.",
+      "Corrupt, oversized, or unreadable committed history is not treated as an empty history by append.",
+      "Lock order HistoryStore monitor then SettingsStore.historyConsentLock; never synchronized SettingsStore.read/save from the history critical section.",
+      "Check interruption while reading, encoding and writing, before/after fsync, and before committing.",
+      "Explicit clear remains available for damaged history."
+    ],
+    "related_engine_blob": "c1b39a8984b8494b90a16040b967acda2d467c7f",
+    "tests": {
+      "class": "HistoryStoreInstrumentationTest",
+      "count": 8,
+      "status": "source reviewed and published as blob; Android compilation and execution still required",
+      "coverage": [
+        "48000-character Unicode roundtrip and oversized-result rejection",
+        "100-entry newest-first retention",
+        "4MiB actual JSON-byte budget with escaped controls",
+        "corrupt UTF-8/schema/trailing/oversized byte and mtime preservation",
+        "opt-out winning during strict read",
+        "already authorized write serializes ahead of opt-out; later appends blocked",
+        "cancellation before AtomicFile start preserves prior bytes and interrupt flag",
+        "no-op Boolean result without file creation"
+      ]
+    },
+    "integration_owner": "root; this agent did not mutate a branch or MainActivity"
+  },
+  "confirmed_ci_notice_gate": {
+    "reported_by": "root and engine agent",
+    "commit": "51cc5343c90e02bbdc8f27aab89d8e16b19b019a",
+    "file": "ONNX-RUNTIME-THIRD-PARTY.txt",
+    "bytes": 333022,
+    "sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
+    "scope": "Upstream notices generation gate passed; does not by itself assert a completed packaged APK or device runtime pass."
   }
 }

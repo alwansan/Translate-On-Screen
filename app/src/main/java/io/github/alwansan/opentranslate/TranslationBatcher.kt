@@ -51,7 +51,9 @@ internal class TranslationBatcher(
         flush()
         resolved.putAll(pending)
         val ordered = keys.map { resolved[it] ?: throw TranslationProblem(TranslationFailure.BAD_RESPONSE) }
-        if (ordered.sumOf { it.length.toLong() } > TranslationLimits.OUTPUT_CHARS) {
+        // The engine displays blocks with newline separators; count those before committing cache.
+        val outputCharacters = ordered.sumOf { it.length.toLong() } + (ordered.size - 1).coerceAtLeast(0)
+        if (outputCharacters > TranslationLimits.OUTPUT_CHARS) {
             throw TranslationProblem(TranslationFailure.RESPONSE_TOO_LARGE)
         }
         gate.check()

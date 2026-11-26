@@ -1,83 +1,102 @@
 # Open Screen Translate · ترجمة الشاشة المفتوحة
 
-تطبيق Android مستقل ومفتوح المصدر لترجمة النص من الشاشة. **الإصدار الحالي `0.1.0-dev` نواة تطويرية، وليس بديلاً مكتملاً لكل خصائص التطبيق المرجعي.**
+تطبيق Android مستقل ومفتوح المصدر لقراءة النص وترجمته من الشاشة والصور والنص المكتوب. فرع التطوير: `feature/open-screen-translate`، والإصدار الحالي `0.2.0-dev`.
 
-بدأ هذا الفرع من `hm@53a10142656f60b04299fdd8fa073b0d675210ee` بناءً على طلب مالك المستودع. تبقى ملفات التطبيق المفكك على فرع `hm` كمرجع ثابت؛ شجرة هذا الفرع تحتوي تطبيقنا الجديد وتقارير التحليل فقط. لم نعدّل `main` أو `hm`.
+**حالة النسخة:** مصدر التوسعة محفوظ في Git. يجري التحقق من البناء والمحرك المحلي واختبارات Android؛ لا تُعد نسخة توزيع نهائية حتى تُغلق البوابات في [سجل التحقق](docs/VALIDATION.md). نجاح بناء النواة السابقة لا يثبت نجاح المصدر الأحدث.
 
-## الموجود الآن
+## الوظائف الموجودة في المصدر
 
-- جلسة مشاركة شاشة بموافقة Android، خدمة ظاهرة وزر إيقاف.
-- زر عائم متحرك: ضغطة لقراءة كامل الشاشة، وضغطة طويلة لتحديد منطقة.
-- قراءة عربية/إنكليزية على الجهاز باستخدام Tesseract، بعد تنزيل نموذج القراءة أو استيراده.
-- ترجمة نصية حقيقية عبر خادم LibreTranslate يختاره المستخدم، مع HTTPS ومفتاح اختياري.
-- عرض النص الأصلي والترجمة في لوحة، نسخ ومشاركة وقراءة صوتية.
-- استقبال النص والصور عبر المشاركة، واختيار صورة من الجهاز، وترجمة النص المكتوب.
-- واجهة عربية/إنكليزية وRTL، وسجل اختياري قابل للمسح.
-- لا خادم افتراضي؛ إرسال النص وحفظ السجل معطّلان افتراضياً. لا تُحفظ صور الشاشة.
+- سبعة أوضاع: كامل الشاشة، منطقة يدوية، منطقة ثابتة، منطقة تلقائية، كامل الشاشة تلقائياً، الترجمة أسفل الفيديو، والمانغا.
+- فقاعة قابلة للسحب، إيماءات قابلة للتعيين، «لا إجراء»، تثبيت بالحافة، تلاشي عند الخمول وقفل الموضع. أنماط مستقلة لكل وضع مع ألوان وخط ووزن وحدود وشفافية ومعاينة.
+- عرض صناديق الترجمة عند مواضع النص، أو لوحة قراءة. تجميع حقيقي لسطور/فقرات OCR، وقراءة CJK العمودي بنماذج مناسبة.
+- تكرار متسلسل محدود بزمن الجلسة، تجاوز الإطار الثابت، إيقاف مؤقت وإلغاء النتائج القديمة. انتهاء المؤقت أو قفل الشاشة ينهي مشاركة الشاشة.
+- قراءة محلية باستخدام Tesseract مع18 نموذج لغة مثبت بالحجم وSHA256. التنزيل أو الاستيراد يتم بطلب المستخدم.
+- ترجمة محلية **إنكليزية→عربية وعربية→إنكليزية** بواسطة Marian ONNX، بعد تثبيت الحزم. لا تحتاج خادم ترجمة أو مفتاحاً.
+- مزودات رسمية أو متوافقة: LibreTranslate،DeepL،OpenAI-compatible،Gemini،Google Cloud،Azure،Yandex وBaidu، بمعلومات اتصال ومفاتيح يختارها المستخدم.
+- نص/لصق/مشاركة/معالجة نص محدد، صورة من الملفات، كاميرا خارجية عالية الدقة مع قص وتدوير وقراءة EXIF، وإدخال صوتي عبر الخدمة المثبتة.
+- نسخ الأصل والترجمة، مشاركة ونطق، سجل اختياري وقاموس شخصي مع ملاحظات واستيراد/تصدير JSON.
+- واجهة عربية وإنكليزية مع RTL ومظهر فاتح/داكن/حسب النظام، وأصوات وسرعة وحدة مستقلة لكل لغة، وبلاطة للإعدادات السريعة.
 
-**قراءة الصورة دون اتصال ليست ترجمة دون اتصال.** هذه النسخة تعرض النص المقروء إذا لم تفعّل خادم الترجمة. إضافة محرك ترجمة محلي مفتوح المصدر جزء من الخطة.
+وجود مسار في المصدر لا يساوي نجاحه على كل جهاز. تغطية المتطلبات وحدودها في [مصفوفة الصور](docs/FEATURE_MATRIX_AR.md)، والعقود التقنية في [المحركات والمزودات](docs/OFFLINE_AND_PROVIDER_CONTRACTS.md).
 
-## الاستخدام الأول
+## البدء
 
-1. افتح «لغات قراءة الصور» ونزّل `eng` أو `ara` أو استوردهما من ملفاتك. التنزيل من مصدر Tesseract المثبت برقم commit، مع فحص الحجم وSHA-256.
-2. افتح «اللغات والترجمة» وحدد لغة القراءة واللغة الأصلية والهدف.
-3. للترجمة، أدخل خادم LibreTranslate موثوقاً يبدأ بـ `https://` وفعّل إرسال النص. يجب أن يدعم الخادم زوج اللغات المختار؛ استضافة الخدمة وتكاليفها منفصلة عن التطبيق.
-4. اضغط «تشغيل الزر العائم»، وامنح إذن الظهور فوق التطبيقات ثم موافقة مشاركة الشاشة.
-5. انتقل إلى التطبيق المطلوب. اضغط الزر العائم، أو اضغطه مطولاً وحدد مستطيلاً. أوقف الجلسة من الإشعار أو التطبيق عند الانتهاء.
+1. افتح «نماذج اللغات». ثبّت نموذج قراءة اللغة المطلوبة؛ العربية `ara` والإنكليزية `eng`.
+2. للبدء دون خادم، اختر زوج en↔ar واضغط «إعداد ترجمة إنكليزية ↔ عربية دون إنترنت» في الرئيسية. يوضح الحوار حجم التنزيل ويثبّت اتجاهي الترجمة ونماذج القراءة الناقصة.
+3. أو افتح «اللغات ومزوّد الترجمة»، واختر خدمتك وعنوان HTTPS والمفتاح/النموذج المطلوبين، ثم فعّل إرسال النص. توفر اللغات والتكلفة تابعان لخدمتك.
+4. شغّل الفقاعة، وامنح إذن الظهور فوق التطبيقات، ثم موافقة Android على مشاركة الشاشة.
+5. استخدم الإيماءات التي اخترتها أو قائمة الأوضاع. أوقف المشاركة من الإشعار أو التطبيق.
 
-لا تتجاوز هذه النسخة حماية الشاشات التي يمنع Android تصويرها. وضع المنطقة يستعمل مشاركة كامل الشاشة لتطابق الإحداثيات. النطق يعتمد على محرك الصوت واللغات المثبتة في جهازك، وقد يستخدم الإنترنت بحسب إعدادات ذلك المحرك.
+تغيير اللغة الأصلية يحدّث نموذج القراءة عند توفره، لكن لا ينزله خفية. مشاركة تطبيق واحد على Android14+ تستخدم لوحة قراءة؛ المناطق والصناديق المحاذية تحتاج مشاركة الشاشة كاملة. الشاشات المحمية بقواعد Android قد تظهر فارغة.
 
-## حالة التطابق
+تحديث ما بعد اللمس يستخدم بداية لمسة خارج نافذتنا مع تأخير قصير وتكرار احتياطي. لا يدّعي مراقبة نهاية التمرير. الألوان الذكية تقدّر الخلفية؛ لا تمحو الرسم الأصلي أو تستكمل أجزاء الصورة.
 
-الأوضاع التلقائية والمنطقة الثابتة، وضعا المانغا والحوارات، الترجمة فوق كل صندوق نص في مكانه، الكاميرا المباشرة، الإدخال الصوتي، القاموس، تعدد مزودي الترجمة والترجمة المحلية الكاملة **لم تكتمل بعد**. تفاصيل الميزات وأدلتها وخطة قبولها في:
+## الخصوصية
 
-- [التقرير والخطة بالعربية](docs/PLAN_AR.md)
-- [التدقيق التفصيلي للتطبيق المرجعي](docs/REFERENCE_AUDIT.md)
-- [الأدوات والمشاريع المشابهة](docs/TOOLS_AND_ALTERNATIVES_AR.md)
-- [الجرد الآلي الثابت](docs/reference-inventory.json)
-- [نتائج التحقق وحدودها](docs/VALIDATION.md)
-- [مرجع استعادة العمل](docs/RESTORE_SESSION_AR.md)
+الالتقاط بموافقة Android مع إشعار وإيقاف واضح. تُعالج لقطات الشاشة في الذاكرة. صور الكاميرا لها ملف خاص مؤقت يُحذف عند إنهاء/إلغاء المحرر، وتنظّف الملفات المتروكة لاحقاً. تبقى الصور المستوردة في مكانها.
 
-## التحقق المنجز
-
-نجح بناء APK محلياً، مع **16 اختبار JVM و8 اختبارات لأداة التدقيق وAndroid lint بلا مسائل**. نجح أيضاً [البناء والاختبارات ورفع APK على GitHub](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836)، و[إعادة جرد المرجع](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030). فُحص توقيع APK المحلي ومحاذاة مكتباته لـ16 KiB. **لم تُجرَ تجربة على هاتف/محاكي أو ترجمة ضد خادم فعلي بعد**؛ نتائج البناء لا تثبت اكتمال التشغيل أو مطابقة المرجع. التفاصيل في [سجل التحقق](docs/VALIDATION.md).
+الشبكة والسجل اختياريان؛ لا إعلانات أو تحليلات أو مفاتيح خدمة مدمجة. مفاتيح API مشفرة بـAndroid Keystore. لا ترسل الترجمة الشبكية الصورة، بل النص الذي وافق المستخدم على إرساله إلى المزوّد المحدد. النطق والتعرف الصوتي خدمات Android مستقلة وقد تحتاج الشبكة بحسب الصوت أو الخدمة المختارة.
 
 ## Build
 
-Native Kotlin Android app. Application ID: `io.github.alwansan.opentranslate`.
+Native Kotlin, application ID: `io.github.alwansan.opentranslate`.
 
-| Component | Pinned choice |
+| Component | Version / scope |
 | --- | --- |
-| Android | Minimum 26; compile/target 36 |
-| CPU | arm64-v8a and x86_64 |
+| Android | min26, compile/target36 |
+| CPU | ARM64 and x86_64 |
 | JDK | 17 |
-| Gradle / Android Gradle Plugin | 8.13 / 8.13.2 |
-| Kotlin | 2.2.21 |
-| OCR | Tesseract4Android 4.9.0 |
+| Gradle / AGP / Kotlin | 8.13 /8.13.2 /2.2.21 |
+| OCR | Tesseract4Android4.9.0 |
+| Offline runtime | ONNX Runtime1.23.2 |
+| EXIF | AndroidX ExifInterface1.4.2 |
 
-Install Android SDK platform 36 and build tools 35.0.0. Point `ANDROID_HOME` or a local, untracked `local.properties` at the SDK, then:
+Install Android SDK platform36 and build-tools35.0.0, and configure `ANDROID_HOME` or an untracked `local.properties`.
 
 ```bash
-./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
+./gradlew --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
+```
+
+The app APK is `app/build/outputs/apk/debug/app-debug.apk`. Debug signing supports development testing; production signing keys are not stored in this repository.
+
+The build resolves the official ONNX1.23.2 JVM artifact solely to extract its complete third-party notices, checks its source commit and notice SHA256, and packages the notice offline. Runtime dependency is the Android artifact. No model weights or original reference APK are bundled.
+
+## Validation
+
+Unit tests require the pinned OCR/translation fixtures and independently generated SentencePiece cases. Python3.12 is used in CI; run these inside your Python virtual environment:
+
+```bash
+python3 tools/provision_test_models.py --cache .test-models --download-only
+python3 -m pip install --only-binary=:all: sentencepiece==0.2.1
+python3 tools/generate_marian_fixtures.py --cache .test-models
+OFFLINE_MODEL_TEST_ROOT="$PWD/.test-models" ./gradlew --no-daemon :app:testDebugUnitTest :app:lintDebug
 python3 -m unittest discover -s tools/tests -v
+python3 -m unittest discover -s tools -p 'test_provision_test_models.py' -v
+python3 tools/verify_apk.py app/build/outputs/apk/debug/app-debug.apk --output app/build/reports/package-verification.json
 ```
 
-The development APK is written to `app/build/outputs/apk/debug/app-debug.apk`. CI builds the same tasks and uploads the debug APK and validation reports. Debug signing is for development; release signing and distribution are not configured.
+The Android workflow builds, runs JVM tests and lint, then checks the APK signature, ZIP/ELF native alignment and packaged notices. The device workflow uses disposable API29/API35 x86_64 emulators for real capture, OCR, rotation, cancellation, cross-app touch-through, image editing and offline translation with networking disabled. It requires the models and rejects missing/ignored/incomplete test runs; an ADB exit code alone is insufficient.
 
-## Audit reproduction
-
-The audit reads the decoded reference; it does not execute it or use its backend. Keep that reference outside this source tree:
+On a disposable local emulator:
 
 ```bash
-python3 tools/audit_reference.py \
-  --root /path/to/Translate+On+Screen_1.188_APKPure_apks_src \
-  --output /path/to/reference-inventory.json
+python3 tools/run_device_tests.py --model-cache .test-models --output app/build/device-tests/local
 ```
 
-This deterministic inventory reports declarations, counts and hashes. It deliberately excludes original resource text, Smali bodies and metadata values. It does not prove runtime behavior.
+The device runner rejects physical devices before installation or changes. It restores emulator radio state afterward. Static16KiB alignment checks do not establish execution on a16KiB-page device. Live paid-provider accounts, external camera/voice apps and manufacturer-specific restrictions need appropriately scoped device acceptance.
 
-## License and provenance
+## Memory and project evidence
 
-New source and original resources in this branch are licensed under [Apache-2.0](LICENSE). Dependencies and downloadable OCR models retain their respective licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). The historical decoded reference on `hm` is **not** relicensed by this file. No original Smali, artwork, private service credentials or translation backend implementation is incorporated into the new app.
+- [رسالة الاستعادة المختصرة](prompt/RESTORE_SESSION_AR.md)
+- [بروتوكول الذاكرة](memory/README.md) و[الحالة الحالية](memory/STATE.json)
+- [الخطة وبوابات الإكمال](docs/PLAN_AR.md)
+- [سجل التحقق](docs/VALIDATION.md)
+- [التدقيق الأصلي](docs/REFERENCE_AUDIT.md) و[مراجعة الصور](docs/REFERENCE_VISUAL_AUDIT_AR.md)
+- [الأدوات والمشاريع المشابهة](docs/TOOLS_AND_ALTERNATIVES_AR.md)
+- [سجل استعادة بيئة التنفيذ](memory/sessions/002-environment-recovery.md)
 
-This is an independent rewrite informed by static analysis. It is not represented as a strict clean-room project. No APK/runtime feature-parity claim is made solely because compilation or unit tests succeed.
+The work branch began from `hm@53a10142656f60b04299fdd8fa073b0d675210ee`. The original decoded material remains in history/on `hm`; it is research evidence and is not relicensed. User-supplied APK/XAPK and23 screenshots are indexed in memory, including persistent attachment IDs. `main`, `hm` and the BLACK memory-example repository remain untouched by implementation commits.
+
+## License
+
+New independent code and resources use [Apache-2.0](LICENSE). Dependencies and downloadable models retain their licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). No original Smali, branding, private keys or proprietary backend is incorporated. This rewrite was informed by source/visual review and is not described as a strict clean-room process.

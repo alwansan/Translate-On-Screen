@@ -12,3 +12,5 @@ local.properties
 reports/
 reference-input/
 __pycache__/
+.test-models/
+.venv/

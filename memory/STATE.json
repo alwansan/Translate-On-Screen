@@ -5,7 +5,7 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "integrated_0_2_reconstruction_pending_ci",
+  "phase": "functional_device_validation",
   "last_verified_code_commit": "1741d437f67f8491fbbb298af3508496dd67f593",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
@@ -38,14 +38,14 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "78ae21418b92406269e39ad4c387e34e2f12454b",
+  "observed_branch_head": "3189a8f84d523aa1e8b853b82fb5048886c255da",
   "latest_observed_android_ci": {
-    "run_id": 45771378480,
-    "head_sha": "1741d437f67f8491fbbb298af3508496dd67f593",
-    "conclusion": "success",
-    "scope": "Five-mode base after syntax fix; does not validate reconstructed0.2 source in this checkpoint"
+    "run_id": 45774006463,
+    "head_sha": "3189a8f84d523aa1e8b853b82fb5048886c255da",
+    "conclusion": "failure",
+    "reason": "Android test compile: BySelector.textMatches unavailable; corrected to text(Pattern) in this batch"
   },
-  "source_checkpoint_parent": "1741d437f67f8491fbbb298af3508496dd67f593",
+  "source_checkpoint_parent": "3189a8f84d523aa1e8b853b82fb5048886c255da",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
     "aggregate_compile",
@@ -54,5 +54,27 @@
     "apk_license_signature_alignment",
     "android_api29_and_api35_device_tests",
     "final_release_and_owner_acceptance"
+  ],
+  "latest_observed_device_ci": {
+    "run_id": 45774006612,
+    "conclusion": "failure",
+    "scope": "Both API29/35 jobs stopped at Android-test compilation; no device runtime verdict"
+  },
+  "confirmed_fixture_evidence": {
+    "run_id": 45773473019,
+    "audit_tests": 8,
+    "provisioner_tests": 10,
+    "verified_model_fixture_files": 12,
+    "independent_sentencepiece_cases": 32,
+    "onnx_notice_bytes": 333022,
+    "onnx_notice_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+  },
+  "current_fix_batch": [
+    "UiAutomator compatible selector",
+    "live orientation/density with sparse Configuration override",
+    "history full-text bounded atomic storage + opt-out race",
+    "translation output separators counted",
+    "six required Android suites including history",
+    "unit/lint result JSON"
   ]
 }

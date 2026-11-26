@@ -99,6 +99,18 @@ def parse_instrumentation(output: str, returncode: int) -> dict:
     return {"passed": not problems, "tests": cases, "problems": problems, "final_code": final_code}
 
 
+def validate_coverage(report: dict, capture_only: bool) -> None:
+    required = {"CaptureInstrumentationTest"}
+    if not capture_only:
+        required.update({"OfflineTranslationInstrumentationTest", "ImageEditorInstrumentationTest",
+                         "MainUiInstrumentationTest", "WordbookImportInstrumentationTest", "HistoryStoreInstrumentationTest"})
+    executed = {case["class"].rsplit(".", 1)[-1] for case in report["tests"]}
+    missing = sorted(required - executed)
+    if missing:
+        report["problems"].append("Required device suites did not execute: " + ", ".join(missing))
+        report["passed"] = False
+
+
 def write_junit(path: Path, report: dict) -> None:
     failures = sum(test["status"] != 0 for test in report["tests"])
     suite = ET.Element("testsuite", name="android-device",
@@ -131,6 +143,7 @@ def disable_radios(adb: list[str]) -> None:
     command(adb + ["shell", "settings", "put", "global", "airplane_mode_on", "1"])
     command(adb + ["shell", "cmd", "connectivity", "airplane-mode", "enable"], check=False)
     command(adb + ["shell", "svc", "wifi", "disable"])
+    command(adb + ["shell", "settings", "put", "global", "mobile_data", "0"])
     command(adb + ["shell", "svc", "data", "disable"])
     deadline = time.monotonic() + 10
     while time.monotonic() < deadline:
@@ -219,6 +232,7 @@ def main(argv: list[str] | None = None) -> int:
                              timeout=max(60, args.timeout), check=False)
             raw = result.stdout
             report = parse_instrumentation(raw, result.returncode)
+            validate_coverage(report, args.capture_only)
         except subprocess.TimeoutExpired as error:
             raw = error.stdout or ""
             if isinstance(raw, bytes):
@@ -246,6 +260,16 @@ def main(argv: list[str] | None = None) -> int:
         (output / "instrumentation.txt").write_text(raw, encoding="utf-8")
         (output / "result.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         write_junit(output / "results.xml", report)
+    if not report["passed"]:
+        failed = [case for case in report["tests"] if case["status"] != 0]
+        for case in failed:
+            print("Failed test: " + case["class"] + "." + case["name"])
+            print(case["message"][-12000:])
+        if not failed and raw:
+            print("Incomplete instrumentation output:\n" + raw[-16000:])
+        log_path = output / "app-logcat.txt"
+        if verified_emulator and log_path.is_file():
+            print("Application UID diagnostic tail:\n" + log_path.read_text(encoding="utf-8")[-16000:])
     print("Device tests passed." if report["passed"] else "Device tests failed: " + "; ".join(report["problems"]))
     return 0 if report["passed"] else 1
 

@@ -1,73 +1,52 @@
 # Validation record
 
-Date: **2026-11-26**. App version: `0.1.0-dev`. The reference is fixed at `53a10142656f60b04299fdd8fa073b0d675210ee`.
+Updated: **2026-11-26**. Current development version: `0.2.0-dev`. Results are tied to commits and scope; a failed overall build is not a passing app release.
 
-## Completed locally
+## Source and recovery
 
-| Gate | Result | Scope |
+The local execution environment became unavailable before the planned Android device run. Full source was then reconstructed and committed via GitHub. This source needs its own CI evidence. Earlier local host results are not reused as proof of the reconstructed implementation.
+
+- Aggregate implementation: [51cc5343c90e02bbdc8f27aab89d8e16b19b019a](https://github.com/alwansan/Translate-On-Screen/commit/51cc5343c90e02bbdc8f27aab89d8e16b19b019a).
+- Device and native-test integration: [3189a8f84d523aa1e8b853b82fb5048886c255da](https://github.com/alwansan/Translate-On-Screen/commit/3189a8f84d523aa1e8b853b82fb5048886c255da).
+- Latest fixes/results must be read from [STATE](../memory/STATE.json) and the relevant Actions run.
+
+## Confirmed checkpoints
+
+| Commit / run | Observed result | Scope and limit |
 | --- | --- | --- |
-| Android debug build | PASS | `:app:assembleDebug`, final source and packaged notices |
-| Kotlin/JVM unit tests | 16 passed, 0 failures/errors | 7 region geometry; 3 endpoint policy; 5 model-format validation; 1 credential redaction |
-| Android lint | PASS; 0 reported issues | `:app:lintDebug` |
-| Audit-tool tests | 8 passed, 0 failures/errors | XML namespaces, inventory, hashes, metadata conflicts, privacy, malformed input, symlinks and deterministic output |
-| Real reference inventory | PASS | Read-only extraction of declarations/counts/hashes from pinned decoded reference |
-| APK signing | PASS | `apksigner verify --verbose`; debug APK, v2 signature |
-| APK ZIP native alignment | PASS | `zipalign -c -P 16 4` |
-| Packaged ELF load alignment | PASS | All 8 native library entries (4 each for ARM64/x86_64) have LOAD alignment >= 16 KiB |
-| Attribution packaging | PASS | 12 offline license/notice assets included |
+| `3bca5754` / [45763162836](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836) | PASS | Historical0.1 app build/JVM/lint. Full original record preserved in [VALIDATION_0_1.md](VALIDATION_0_1.md). |
+| `78ae2141` / [45768672996](https://github.com/alwansan/Translate-On-Screen/actions/runs/45768672996) | FAIL | Extra parenthesis in CaptureService prevented Kotlin compilation. |
+| `1741d437` / [45771378480](https://github.com/alwansan/Translate-On-Screen/actions/runs/45771378480) | PASS | Corrected five-mode base build/JVM/lint; predates complete0.2 integration. |
+| `51cc5343` / [45773473019](https://github.com/alwansan/Translate-On-Screen/actions/runs/45773473019) | Overall FAIL | Audit8 + model-provisioner10 tests passed.12 pinned fixture files verified and32 independent SentencePiece cases generated. ONNX notice task passed. Compile failed in debug ImageEditorHarness because setClipData returns void; corrected next. |
+| `3189a8f8` / [45774006463](https://github.com/alwansan/Translate-On-Screen/actions/runs/45774006463) | Overall FAIL | Production app and JVM-test compilation completed; Gradle unit-test task completed without an announced test failure. Android-test compile failed at two unsupported UiAutomator textMatches calls. Exact unit counts are to be captured from reports, not inferred. |
+| `3189a8f8` / [45774006612](https://github.com/alwansan/Translate-On-Screen/actions/runs/45774006612) | FAIL before device execution | Both API29 and35 jobs encountered the same Android-test compile error. No device runtime pass is claimed from this run. |
+| `3189a8f8` / [45774006424](https://github.com/alwansan/Translate-On-Screen/actions/runs/45774006424) | PASS | Pinned original static inventory reproduced. This does not execute the reference APK. |
 
-Commands:
+The owner reported that0.1 floating bubble, overlay and basic OCR worked on their phone without a crash in a simple trial. Device/OS details were not supplied. This is an owner report, not full coverage or evidence of the new local translation engine.
 
-```bash
-./gradlew --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
-python3 -m unittest discover -s tools/tests -v
-apksigner verify --verbose app/build/outputs/apk/debug/app-debug.apk
-zipalign -c -P 16 4 app/build/outputs/apk/debug/app-debug.apk
-```
+## Packaging evidence already obtained
 
-The final Gradle invocation completed successfully. An earlier lint attempt caught the API 27-only light navigation bar attribute in the API 26 base theme. It was fixed with a `values-v27` override and then rechecked. Three narrow lint annotations document intentional programmatic-only view construction, standard click dispatch from the drag listener, and physical LEFT-origin capture coordinates; they do not disable the lint gate or hide the API compatibility error.
+The build extracted the official ONNX Runtime1.23.2 third-party notices from its JVM artifact and verified source commit `a83fc4d58cb48eb68890dd689f94f28288cf2278`.
 
-Environment: Linux x86_64, Temurin JDK 17.0.21.1+2, Gradle 8.13, AGP 8.13.2, Kotlin 2.2.21, Android platform 36/build tools 35.0.0. The initial host had only a Java runtime; a full JDK and the existing environment CA/proxy configuration were used for the successful build. No TLS validation was disabled.
+- Notice length:333,022 bytes.
+- Notice SHA256:`e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6`.
+- The checksum is now enforced by the build. This task success alone does not prove an APK was packaged or passed device tests.
 
-## Exact local artifact
+## Required evidence before acceptance delivery
 
-- Package: `io.github.alwansan.opentranslate`.
-- Minimum/target SDK: 26/36.
-- CPU libraries: `arm64-v8a`, `x86_64`.
-- Size: **16,609,730 bytes**.
-- SHA-256: `722dd731e50220b2ee32ded64e590fdc026aec1edd7ae5209a3560e452dd866c`.
-- Full machine-readable results: [local-validation.json](local-validation.json).
+- App and Android-test APK build, all required JVM tests without skipped model fixtures, lint.
+- APK signature and packaged license checks, both CPU architectures and16KiB ZIP/ELF alignment.
+- Real capture consent, image acquisition, normalized region reuse, rotation, auto pause/stop/deadline, screen-off cleanup.
+- Cross-UID touch-through and bounded outside-touch refresh.
+- Native English/Arabic OCR, six host translation regressions and both Android local translation directions with network disabled.
+- Image crop/rotation/recreation/cancellation and camera-provider path/cleanup tests.
+- Wordbook/history integrity, Unicode and length/size boundaries, opt-out and cancellation.
+- Interface language/theme, draft preservation and language swap updating the OCR language.
 
-CI debug APKs can have different hashes/signing keys/timestamps. This hash identifies the locally built deliverable only; it is not a reproducible-build claim. Release signing is not configured.
+Workflows retain artifacts for14 days. Commit durable summaries with the app source and retain the delivery artifact separately; do not rely on temporary artifact URLs as permanent memory.
 
-## GitHub Actions
+## Remaining practical limits
 
-Two workflows are included: Android build/tests/lint with APK/report artifacts, and deterministic reproduction of the pinned reference inventory. Both have read-only repository permissions and pinned action revisions. They do not run the reference application or use any translation API secret. The reference job compares fresh output byte-for-byte with the committed inventory.
+Real external provider accounts have not been exercised because no service credentials were supplied. Contract tests cover request/response structure and bounds; they do not prove every paid service/account configuration. Native host results do not establish Android latency. Static16KiB alignment does not establish runtime on a16KiB-page phone. One-app sharing, external camera/recognizer/TTS apps, CJK quality and manufacturer restrictions need clearly scoped final device acceptance, not inflated claims from a synthetic test.
 
-- [Reference inventory run 45762908030](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030): **PASS** at implementation commit `33d6f37c5fd12ef2fe5ad94486c3f3968a70e92f`.
-- [First Android run 45762908015](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908015): failed in SDK setup because the Ubuntu 26.04 runner did not provide `sdkmanager` on PATH. Application build/test/lint steps did not run in that attempt. The workflow now explicitly provisions Android command-line tools with a pinned setup action instead of assuming a preinstalled SDK.
-- [Corrected Android run 45763162836](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836): build, unit tests, Android lint and APK/report uploads **PASS** at `3bca5754ed5d149b420c4af17f8243a5ef2340bd`. This revision changes CI setup and documentation only; the app source is the same as the locally verified implementation commit above.
-- Uploaded artifacts: `open-screen-translate-debug-3bca5754ed5d149b420c4af17f8243a5ef2340bd` (artifact ID `15090837177`) and `validation-reports-3bca5754ed5d149b420c4af17f8243a5ef2340bd` (artifact ID `15090896780`). The run retains these for 14 days, until 2026-12-10; build again from source for a later artifact.
-
-## Reviewed fixes
-
-- Stop invalidates the session and interrupts the pending task **before** removing overlays or making projection/TTS teardown calls. The engine checks interruption after native OCR and before initiating text upload/history work.
-- The captured bitmap remains owned by an active native OCR call until it returns. A cancelled queued task releases its bitmap without starting.
-- Disabling history applies to late results through a current-preference check and shared consent/write lock.
-- Text-only/OCR-only result speech uses source language rather than always the translation target; long speech output is split to the platform limit.
-- Model download/import is bounded, checked, atomic, and explicit. Downloaded upstream files have verified SHA-256 values; imported files have structural validation and are not falsely described as upstream-verified bytes.
-
-Native Tesseract `getUTF8Text()` may continue internally until it returns. Cancellation suppresses subsequent work and results; it cannot retract a request that already started sending before stop. This limitation is retained rather than claiming instantaneous cancellation of native code or the network.
-
-## Not established yet
-
-- No phone or Android emulator execution was available in this session. No screenshot/UI rendering, permission flow, MediaProjection frame capture, OCR accuracy, Arabic layout, performance, memory or battery result is claimed.
-- No live LibreTranslate endpoint/key was supplied; the real HTTP adapter exists, but end-to-end translation against a service was not executed.
-- No original signed APK/APKS was present. The original was not installed, rebuilt, run or contacted over the network.
-- No complete feature parity, original subscription/server access, production readiness or on-device translation engine is claimed.
-
-## Required device acceptance
-
-Run the new app on ARM64 hardware and a supported emulator. Record OS version, app/source revision and model versions. Test screen/image/text inputs, English/Arabic/mixed-direction samples, fresh consent and denial, notification stop, system sharing-stop, lock/unlock, rotation during selection/capture/processing, repeated start/stop, rapid taps, model absence/corruption/interruption, network opt-out/cancel/timeouts/rate limits, history opt-out/clear and installed/missing TTS voices. Test ZIP/ELF 16 KiB results on an actual 16 KiB-page device before claiming full runtime compatibility.
-
-For reference parity, obtain the original signed install artifact and a repeatable screen/menu/mode walkthrough. Use [REFERENCE_AUDIT.md](REFERENCE_AUDIT.md) as the evidence checklist and [PLAN_AR.md](PLAN_AR.md) for the remaining feature milestones.
+Release signing is not configured. A development/acceptance APK must be labelled with its actual signing mode. The final owner trial should be one consolidated checklist after the available gates are green, not repeated requests after each small change.

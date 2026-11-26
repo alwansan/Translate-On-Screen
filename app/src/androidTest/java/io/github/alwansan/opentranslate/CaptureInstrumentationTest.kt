@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import java.util.regex.Pattern
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -256,11 +257,11 @@ class CaptureInstrumentationTest {
         await(15_000, "Real system MediaProjection consent prompt was not shown") {
             device.hasObject(By.res("com.android.systemui", "start_now")) ||
                 device.hasObject(By.pkg("com.android.systemui").res("android:id/button1")) ||
-                device.hasObject(By.pkg("com.android.systemui").textMatches("Start now|Start|Share screen"))
+                device.hasObject(By.pkg("com.android.systemui").text(Pattern.compile("Start now|Start|Share screen")))
         }
         val consent = device.findObject(By.res("com.android.systemui", "start_now"))
             ?: device.findObject(By.pkg("com.android.systemui").res("android:id/button1"))
-            ?: device.findObject(By.pkg("com.android.systemui").textMatches("Start now|Start|Share screen"))
+            ?: device.findObject(By.pkg("com.android.systemui").text(Pattern.compile("Start now|Start|Share screen")))
         assertNotNull("System consent button disappeared", consent)
         consent!!.click()
         await(20_000, "MediaProjection did not start after real system consent") { CaptureService.isRunning }

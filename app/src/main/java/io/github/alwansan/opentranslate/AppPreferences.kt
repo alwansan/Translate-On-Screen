@@ -3,7 +3,6 @@ package io.github.alwansan.opentranslate
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.speech.tts.TextToSpeech
 import java.io.IOException
 import java.util.Locale
@@ -40,15 +39,16 @@ object AppPreferences {
     }
     fun wrap(context: Context): Context {
         val appearance = read(context)
-        val config = Configuration(context.resources.configuration)
-        val locale = if (appearance.language == "system") Resources.getSystem().configuration.locales[0]
-            else Locale.forLanguageTag(appearance.language)
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        config.uiMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or when (appearance.theme) {
-            "dark" -> Configuration.UI_MODE_NIGHT_YES
-            "light" -> Configuration.UI_MODE_NIGHT_NO
-            else -> Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        // Only override the requested fields; orientation, density and font scale remain live.
+        val config = Configuration()
+        if (appearance.language != "system") {
+            val locale = Locale.forLanguageTag(appearance.language)
+            config.setLocale(locale)
+            config.setLayoutDirection(locale)
+        }
+        if (appearance.theme != "system") {
+            config.uiMode = if (appearance.theme == "dark") Configuration.UI_MODE_NIGHT_YES
+                else Configuration.UI_MODE_NIGHT_NO
         }
         return context.createConfigurationContext(config)
     }
