@@ -4,14 +4,14 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "011",
+  "session": "012",
   "phase": "hm_behavior_parity_development",
   "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
   "last_verified_android_ci": 45896196263,
-  "last_verified_inventory_ci": 45784175402,
+  "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
     "original_apk",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/011-single-app-consent.md",
+  "session_checkpoint": "memory/sessions/012-automatic-appearance-and-edge.md",
   "environment": {
     "status": "Local Git, Python and GitHub CLI available; Android validation through Actions",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -44,11 +44,14 @@
       "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
     }
   },
-  "observed_branch_head": "e7330ce2d7c569cf2e2ce12d62eb7d64badf9dfb",
+  "observed_branch_head": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
   "latest_observed_android_ci": {
-    "run_id": 45896196263,
-    "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
-    "conclusion": "success"
+    "run_id": 45899477091,
+    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+    "conclusion": "success",
+    "jvm_passed": 70,
+    "lint_errors": 0,
+    "lint_warnings": 46
   },
   "source_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
@@ -139,14 +142,11 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "011",
+    "id": "012",
     "matrix": "docs/HM_BEHAVIOR_MATRIX_AR.md",
     "validation": "pending",
-    "prior_host_run": 45899084534,
-    "prior_device_run": 45899084526,
-    "prior_inventory_run": 45899084544,
-    "local_pinned_fixture_files": 17,
-    "local_sentencepiece_cases": 40
+    "prior_host_run": 45899477091,
+    "prior_device_run": 45899477061
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

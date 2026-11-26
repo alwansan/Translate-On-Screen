@@ -30,11 +30,11 @@ class AutoCaptureSchedule(intervalMs: Long, durationMs: Long) {
     fun delay(now: Long) = minOf((next - now).coerceAtLeast(0), remaining(now))
     fun remaining(now: Long) = if (running) (deadline - now).coerceAtLeast(0) else 0
 }
-class InteractionCaptureDebounce(private val settleMs: Long = 650, private val maxBurstMs: Long = 1_800) {
+class InteractionCaptureDebounce(private val maxBurstMs: Long = 1_800) {
     private var first: Long? = null
     var dueAt: Long? = null
         private set
-    fun note(now: Long) {
+    fun note(now: Long, settleMs: Long = 650) {
         val start = first ?: now.also { first = it }
         dueAt = minOf(now + settleMs, start + maxBurstMs)
     }

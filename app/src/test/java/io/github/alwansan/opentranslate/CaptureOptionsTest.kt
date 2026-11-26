@@ -55,4 +55,23 @@ class CaptureOptionsTest {
         assertNull(AutoCapturePolicy.nextDelay(60_000, 60_000, 8))
         assertEquals(61_000L, AutoCapturePolicy.deadline(1_000, 0))
     }
+
+    @Test fun automaticModeCanShareAppearanceWithoutSharingCaptureSettings() {
+        val automatic = CaptureOptions(mode = CaptureMode.AUTO_REGION, useManualAppearance = true,
+            intervalSeconds = 3, lineByLine = true, tapToDismissAutoOverlay = true, textSize = 15)
+        val fixed = CaptureOptions(mode = CaptureMode.FIXED, textSize = 26, fontFamily = "serif",
+            positionedResults = false, backgroundOpacity = 55, intervalSeconds = 20)
+        val effective = automatic.withManualAppearance(fixed)
+        assertEquals(CaptureMode.AUTO_REGION, effective.mode)
+        assertEquals(26, effective.textSize)
+        assertEquals("serif", effective.fontFamily)
+        assertFalse(effective.positionedResults)
+        assertEquals(55, effective.backgroundOpacity)
+        assertEquals(3, effective.intervalSeconds)
+        assertTrue(effective.lineByLine)
+        assertTrue(effective.tapToDismissAutoOverlay)
+        assertEquals(automatic.copy(useManualAppearance = false),
+            automatic.copy(useManualAppearance = false).withManualAppearance(fixed))
+        assertEquals(automatic, automatic.withManualAppearance(fixed.copy(mode = CaptureMode.FULL)))
+    }
 }

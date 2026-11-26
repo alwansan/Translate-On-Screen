@@ -46,22 +46,56 @@ data class CaptureOptions(
     val outlineText: Boolean = false,
     val uppercaseText: Boolean = false,
     val mangaFont: Boolean = false,
+    val interactionDelayMs: Int = 650,
+    val useManualAppearance: Boolean = false,
+    val bubbleEdgeHidePercent: Int = 0,
 ) {
     val resultFontFamily: String get() = if (mode == CaptureMode.MANGA && mangaFont) "casual" else fontFamily
     val automatic: Boolean get() = mode.automatic
     val requiresFixedRegion: Boolean get() = mode in setOf(CaptureMode.FIXED, CaptureMode.AUTO_REGION, CaptureMode.SUBTITLE)
     val autoIntervalMs: Long get() = intervalSeconds * 1_000L
+    internal val manualAppearanceMode: CaptureMode?
+        get() = when (mode) {
+            CaptureMode.AUTO_FULL -> CaptureMode.FULL
+            CaptureMode.AUTO_REGION -> CaptureMode.FIXED
+            else -> null
+        }
+
+    internal fun withManualAppearance(manual: CaptureOptions): CaptureOptions {
+        if (!useManualAppearance || manual.mode != manualAppearanceMode) return this
+        return copy(
+            textSize = manual.textSize,
+            textColor = manual.textColor,
+            backgroundColor = manual.backgroundColor,
+            backgroundOpacity = manual.backgroundOpacity,
+            centerText = manual.centerText,
+            hideOriginal = manual.hideOriginal,
+            positionedResults = manual.positionedResults,
+            smartColors = manual.smartColors,
+            fontFamily = manual.fontFamily,
+            fontBold = manual.fontBold,
+            backgroundBorder = manual.backgroundBorder,
+            borderColor = manual.borderColor,
+            panelWidthPercent = manual.panelWidthPercent,
+            anchorBelowRegion = manual.anchorBelowRegion,
+            outlineText = manual.outlineText,
+            uppercaseText = manual.uppercaseText,
+        )
+    }
+
     fun safe() = copy(
         intervalSeconds = intervalSeconds.coerceIn(1, 120),
         displaySeconds = displaySeconds.coerceIn(0, 300),
         stopMinutes = stopMinutes.coerceIn(1, 120),
         bubbleSize = bubbleSize.coerceIn(36, 96),
         bubbleOpacity = bubbleOpacity.coerceIn(20, 100),
+        bubbleEdgeHidePercent = bubbleEdgeHidePercent.coerceIn(0, 60),
         textSize = textSize.coerceIn(12, 36),
         panelWidthPercent = panelWidthPercent.coerceIn(50, 100),
         backgroundOpacity = backgroundOpacity.coerceIn(15, 100),
         bubbleSymbol = bubbleSymbol.trim().take(4).ifBlank { "文" },
         changeThreshold = changeThreshold.coerceIn(1, 40),
+        interactionDelayMs = interactionDelayMs.coerceIn(100, 1_500),
         fontFamily = fontFamily.takeIf { it in setOf("sans-serif", "serif", "monospace") } ?: "sans-serif",
     )
 }

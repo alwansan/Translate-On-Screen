@@ -11,6 +11,12 @@ object ScreenPreferences {
 
     fun read(context: Context): CaptureOptions = read(context, null)
 
+    internal fun readForCapture(context: Context, mode: CaptureMode? = null): CaptureOptions {
+        val current = read(context, mode)
+        val manualMode = current.manualAppearanceMode ?: return current
+        return if (current.useManualAppearance) current.withManualAppearance(read(context, manualMode)) else current
+    }
+
     fun read(context: Context, requestedMode: CaptureMode?): CaptureOptions {
         val p = prefs(context)
         return try {
@@ -36,13 +42,13 @@ object ScreenPreferences {
                 speakAutomatically = bool("speak", d.speakAutomatically), lineByLine = bool("lines", d.lineByLine),
                 positionedResults = bool("positioned", d.positionedResults), verticalText = bool("vertical", d.verticalText),
                 skipUnchangedFrames = bool("skip_unchanged", true), changeThreshold = int("threshold", 8),
-                translateOnInteraction = bool("interaction", false), tapToDismissAutoOverlay = bool("dismiss_auto_overlay", false), smartColors = bool("smart_colors", false),
+                translateOnInteraction = bool("interaction", false), interactionDelayMs = int("interaction_delay", d.interactionDelayMs), tapToDismissAutoOverlay = bool("dismiss_auto_overlay", false), smartColors = bool("smart_colors", false),
                 bubbleAutoDock = p.getBoolean("dock", true), bubbleAutoDim = p.getBoolean("dim", true),
-                bubbleLocked = p.getBoolean("locked", false), fontFamily = string("font", "sans-serif"),
+                bubbleLocked = p.getBoolean("locked", false), bubbleEdgeHidePercent = p.getInt("edge_hide_percent", 0), fontFamily = string("font", "sans-serif"),
                 fontBold = bool("bold", d.fontBold), backgroundBorder = bool("border", false),
                 borderColor = int("border_color", d.borderColor), selectionBorderColor = p.getInt("selection_color", d.selectionBorderColor),
                 panelWidthPercent = int("panel_width", d.panelWidthPercent), anchorBelowRegion = bool("below_region", false),
-                outlineText = bool("outline", false), uppercaseText = bool("uppercase", false), mangaFont = bool("manga_font", false),
+                useManualAppearance = bool("manual_appearance", false), outlineText = bool("outline", false), uppercaseText = bool("uppercase", false), mangaFont = bool("manga_font", false),
             ).safe()
         } catch (_: ClassCastException) { CaptureOptions(mode = requestedMode ?: CaptureMode.FULL) }
     }
@@ -55,6 +61,7 @@ object ScreenPreferences {
             .putInt("bubble_size", v.bubbleSize).putInt("bubble_opacity", v.bubbleOpacity)
             .putInt("bubble_color", v.bubbleColor).putString("symbol", v.bubbleSymbol)
             .putInt("selection_color", v.selectionBorderColor)
+            .putInt("edge_hide_percent", v.bubbleEdgeHidePercent)
             .putBoolean("dock", v.bubbleAutoDock).putBoolean("dim", v.bubbleAutoDim).putBoolean("locked", v.bubbleLocked)
             .putInt(prefix + "interval", v.intervalSeconds).putInt(prefix + "display", v.displaySeconds).putInt(prefix + "stop", v.stopMinutes)
             .putInt(prefix + "text_size", v.textSize).putInt(prefix + "text_color", v.textColor)
@@ -64,13 +71,15 @@ object ScreenPreferences {
             .putBoolean(prefix + "positioned", v.positionedResults).putBoolean(prefix + "vertical", v.verticalText)
             .putBoolean(prefix + "skip_unchanged", v.skipUnchangedFrames).putInt(prefix + "threshold", v.changeThreshold)
             .putBoolean(prefix + "dismiss_auto_overlay", v.tapToDismissAutoOverlay)
+            .putInt(prefix + "interaction_delay", v.interactionDelayMs)
             .putBoolean(prefix + "interaction", v.translateOnInteraction).putBoolean(prefix + "smart_colors", v.smartColors)
             .putBoolean(prefix + "bold", v.fontBold).putBoolean(prefix + "border", v.backgroundBorder)
             .putInt(prefix + "border_color", v.borderColor).putInt(prefix + "panel_width", v.panelWidthPercent)
             .putBoolean(prefix + "below_region", v.anchorBelowRegion)
             .putString(prefix + "font", v.fontFamily).putBoolean(prefix + "outline", v.outlineText)
             .putBoolean(prefix + "uppercase", v.uppercaseText)
-            .putBoolean(prefix + "manga_font", v.mangaFont).commit()
+            .putBoolean(prefix + "manga_font", v.mangaFont)
+            .putBoolean(prefix + "manual_appearance", v.useManualAppearance).commit()
     }
 }
 

@@ -42,6 +42,17 @@ class AutoCaptureScheduleTest {
         assertEquals(AutoCaptureSchedule.Decision.STOPPED, schedule.begin(2_000))
     }
 
+    @Test fun configuredInteractionDelayStillCapsGestureBursts() {
+        val debounce = InteractionCaptureDebounce()
+        debounce.note(100, 1_500)
+        assertEquals(1_600L, debounce.dueAt)
+        debounce.note(900, 1_500)
+        assertEquals(1_900L, debounce.dueAt)
+        debounce.clear()
+        debounce.note(2_000, 100)
+        assertEquals(2_100L, debounce.dueAt)
+    }
+
     @Test fun cropMappingUsesRoundedPhysicalCropAndRejectsInvalidBoxes() {
         val requested = NormalizedRegion(.101f, .199f, .801f, .701f)
         val actual = RegionMath.actualCrop(requested, 99, 101)

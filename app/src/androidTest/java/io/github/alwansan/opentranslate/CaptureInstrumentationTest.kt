@@ -242,6 +242,24 @@ class CaptureInstrumentationTest {
         }
     }
 
+    @Test fun dockedBubbleCanHideAtTheEdgeAndExpandOnTouch() {
+        configure(CaptureOptions(single = BubbleAction.NONE, double = BubbleAction.NONE, long = BubbleAction.NONE,
+            bubbleAutoDim = false, bubbleEdgeHidePercent = 40))
+        CaptureOptionsStore.saveBubblePosition(context, false, 1f, .4f)
+        authorize()
+        val bubble = By.descStartsWith("Translation bubble.")
+        await(5_000, "Full-width bubble did not appear") { device.hasObject(bubble) }
+        val original = requireNotNull(device.findObject(bubble)).visibleBounds
+        await(6_000, "Docked bubble did not tuck into the edge") {
+            device.findObject(bubble)?.visibleBounds?.let { it.right == original.right && it.width() < original.width() } == true
+        }
+        requireNotNull(device.findObject(bubble)).click()
+        await(2_000, "Touch did not restore the bubble width at the same screen edge") {
+            device.findObject(bubble)?.visibleBounds == original
+        }
+        assertEquals(1f, CaptureOptionsStore.bubblePosition(context, false)?.first)
+    }
+
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()

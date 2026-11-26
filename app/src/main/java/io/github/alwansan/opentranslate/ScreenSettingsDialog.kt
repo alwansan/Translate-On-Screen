@@ -132,6 +132,8 @@ object ScreenSettingsDialog {
         panel.addView(previewFrame, LinearLayout.LayoutParams(-1, -2))
         val previewHint = TextView(c).apply { textSize = 12f }
         panel.addView(previewHint)
+        val sharedStyle = toggle(ui("Use the manual mode's appearance", "استخدم مظهر الوضع اليدوي"), old.useManualAppearance)
+        val manualStyles = listOf(CaptureMode.FULL, CaptureMode.FIXED).associateWith { ScreenPreferences.read(c, it) }
         val textSize=slider(ui("Text size","حجم النص"),12,36,old.textSize)
         val textColors=listOf(Color.WHITE,Color.BLACK,0xffffdf82.toInt(),0xff4de2bf.toInt())
         val textColor=color(ui("Text color","لون النص"),textColors,listOf(ui("White","أبيض"),ui("Black","أسود"),ui("Yellow","أصفر"),ui("Mint","نعناعي")),old.textColor)
@@ -175,20 +177,30 @@ object ScreenSettingsDialog {
         val threshold = slider(ui("Change sensitivity threshold", "عتبة تغير الصورة"), 1, 40, old.changeThreshold)
         val clearOverlay = toggle(ui("Clearer automatic overlay · tap the screen to dismiss", "عرض تلقائي أوضح · المس الشاشة لإغلاق النتيجة"), old.tapToDismissAutoOverlay)
         val interaction = toggle(ui("Refresh automatic capture after outside touch", "تحديث التلقائي بعد لمس خارج الفقاعة"), old.translateOnInteraction)
+        val interactionDelay = slider(ui("Wait after touch (milliseconds)", "مهلة ما بعد اللمس بالمللي ثانية"),
+            100, 1_500, old.interactionDelayMs)
         panel.addView(TextView(c).apply { text = ui(
             "Outside touch detects gesture start only; periodic updates continue. Pausing disables this trigger. The time limit ends screen sharing.",
             "يرصد اللمس بداية الحركة فقط مع استمرار التحديث الدوري. التوقيف المؤقت يعطّل هذا المحفز. الحد الزمني ينهي مشاركة الشاشة.") })
         val dock = toggle(ui("Dock bubble to screen edge", "تثبيت الفقاعة عند الحافة"), old.bubbleAutoDock)
         val dim = toggle(ui("Dim idle bubble", "تعتيم الفقاعة عند الخمول"), old.bubbleAutoDim)
+        val edgeHide = slider(ui("Hide part of idle docked bubble (%)", "إخفاء جزء من الفقاعة الخاملة عند الحافة (%)"),
+            0, 60, old.bubbleEdgeHidePercent)
         val locked = toggle(ui("Lock bubble position", "قفل مكان الفقاعة"), old.bubbleLocked)
-        panel.addView(TextView(c).apply { text = ui("Each mode keeps its own text appearance and timing. Choose the mode before editing.",
-            "لكل وضع مظهر نص وتوقيت مستقلان. اختر الوضع قبل التعديل.") })
+        panel.addView(TextView(c).apply { text = ui("Each mode keeps its own timing. With shared appearance enabled, edit the matching manual mode to change the live style.",
+            "لكل وضع توقيت مستقل. عند مشاركة المظهر، عدّل الوضع اليدوي المقابل لتغيير المظهر الفعلي.") })
         mode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mangaBackground.visibility = if (modes[position] == CaptureMode.MANGA) View.VISIBLE else View.GONE
                 mangaFont.visibility = mangaBackground.visibility
                 val profile = ScreenPreferences.read(c, modes[position])
+                val manualMode = profile.manualAppearanceMode
+                sharedStyle.visibility = if (manualMode == null) View.GONE else View.VISIBLE
+                sharedStyle.text = if (manualMode == CaptureMode.FULL)
+                    ui("Use full-screen appearance", "استخدم مظهر الشاشة كاملة")
+                else ui("Use fixed-area appearance", "استخدم مظهر المنطقة الثابتة")
+                sharedStyle.isChecked = profile.useManualAppearance
                 mangaFont.isChecked = profile.mangaFont
                 interval.progress = profile.intervalSeconds - 1
                 display.progress = profile.displaySeconds
@@ -208,41 +220,62 @@ object ScreenSettingsDialog {
                 skip.isChecked = profile.skipUnchangedFrames; threshold.progress = profile.changeThreshold - 1
                 clearOverlay.isChecked = profile.tapToDismissAutoOverlay
                 interaction.isChecked = profile.translateOnInteraction
+                interactionDelay.progress = profile.interactionDelayMs - 100
                 refreshPreview?.invoke()
             }
         }
+        fun appearanceDraft() = old.copy(
+            mode = modes[mode.selectedItemPosition],
+            useManualAppearance = sharedStyle.isChecked,
+            textSize = textSize.progress + 12,
+            textColor = textColor.valueOrNull() ?: old.textColor,
+            backgroundColor = bg.valueOrNull() ?: old.backgroundColor,
+            backgroundOpacity = bgAlpha.progress + 15,
+            centerText = centered.isChecked,
+            hideOriginal = hide.isChecked,
+            positionedResults = positioned.isChecked,
+            smartColors = smart.isChecked,
+            fontFamily = fonts[font.selectedItemPosition],
+            fontBold = bold.isChecked,
+            backgroundBorder = border.isChecked,
+            borderColor = borderColor.valueOrNull() ?: old.borderColor,
+            panelWidthPercent = panelWidth.progress + 50,
+            anchorBelowRegion = belowRegion.isChecked,
+            outlineText = outline.isChecked,
+            uppercaseText = upper.isChecked,
+            mangaFont = mangaFont.isChecked,
+        )
         refreshPreview = {
-            val textInk = textColor.valueOrNull() ?: old.textColor
-            val background = bg.valueOrNull() ?: old.backgroundColor
-            val borderInk = borderColor.valueOrNull() ?: old.borderColor
+            val draft = appearanceDraft()
+            val manual = draft.manualAppearanceMode?.let(manualStyles::get)
+            val style = manual?.let(draft::withManualAppearance) ?: draft
             val selectionInk = selectionColor.valueOrNull() ?: old.selectionBorderColor
             val bubbleInk = bubbleColor.valueOrNull() ?: old.bubbleColor
             previewText.text = ui("Translation preview · مرحباً", "معاينة الترجمة · Hello").let {
-                if (upper.isChecked) it.uppercase(Locale.getDefault()) else it
+                if (style.uppercaseText) it.uppercase(Locale.getDefault()) else it
             }
-            previewText.textSize = (textSize.progress + 12).toFloat()
-            val previewFont = old.copy(mode = modes[mode.selectedItemPosition],
-                fontFamily = fonts[font.selectedItemPosition], mangaFont = mangaFont.isChecked).resultFontFamily
-            previewText.typeface = Typeface.create(previewFont, if (bold.isChecked) Typeface.BOLD else Typeface.NORMAL)
-            previewText.setTextColor(textInk)
-            previewText.gravity = if (centered.isChecked) Gravity.CENTER else Gravity.START
-            if (outline.isChecked) previewText.setShadowLayer(dp(2).toFloat(), 0f, 0f, if (Color.luminance(textInk) > .4f) Color.BLACK else Color.WHITE)
+            previewText.textSize = style.textSize.toFloat()
+            previewText.typeface = Typeface.create(style.resultFontFamily, if (style.fontBold) Typeface.BOLD else Typeface.NORMAL)
+            previewText.setTextColor(style.textColor)
+            previewText.gravity = if (style.centerText) Gravity.CENTER else Gravity.START
+            if (style.outlineText) previewText.setShadowLayer(dp(2).toFloat(), 0f, 0f, if (Color.luminance(style.textColor) > .4f) Color.BLACK else Color.WHITE)
             else previewText.setShadowLayer(0f, 0f, 0f, Color.TRANSPARENT)
-            originalPreview.visibility = if (hide.isChecked) View.GONE else View.VISIBLE
-            originalPreview.setTextColor(textInk)
+            originalPreview.visibility = if (style.hideOriginal) View.GONE else View.VISIBLE
+            originalPreview.setTextColor(style.textColor)
             originalPreview.gravity = previewText.gravity
             previewCard.background = GradientDrawable().apply {
-                setColor(Color.argb((bgAlpha.progress + 15) * 255 / 100, Color.red(background), Color.green(background), Color.blue(background)))
+                val ink = style.backgroundColor
+                setColor(Color.argb(style.backgroundOpacity * 255 / 100, Color.red(ink), Color.green(ink), Color.blue(ink)))
                 cornerRadius = dp(12).toFloat()
-                if (border.isChecked) setStroke(dp(2), borderInk)
+                if (style.backgroundBorder) setStroke(dp(2), style.borderColor)
             }
             sourcePreview.background = GradientDrawable().apply {
                 setColor(Color.WHITE); cornerRadius = dp(8).toFloat(); setStroke(dp(2), selectionInk)
             }
             val available = (previewFrame.width - dp(16)).coerceAtLeast(dp(100))
             previewCard.layoutParams = (previewCard.layoutParams as FrameLayout.LayoutParams).apply {
-                width = available * (panelWidth.progress + 50) / 100
-                topMargin = if (belowRegion.isChecked) dp(70) else dp(8)
+                width = available * style.panelWidthPercent / 100
+                topMargin = if (style.anchorBelowRegion) dp(70) else dp(8)
             }
             val bubbleDp = size.progress + 36
             bubblePreview.layoutParams = (bubblePreview.layoutParams as FrameLayout.LayoutParams).apply { width = dp(bubbleDp); height = dp(bubbleDp) }
@@ -251,7 +284,10 @@ object ScreenSettingsDialog {
             bubblePreview.setTextColor(if (Color.luminance(bubbleInk) > .45f) Color.BLACK else Color.WHITE)
             bubblePreview.alpha = (opacity.progress + 20) / 100f
             bubblePreview.background = GradientDrawable().apply { setColor(bubbleInk); cornerRadius = dp(bubbleDp).toFloat() / 2 }
-            previewHint.text = if (smart.isChecked) ui(
+            previewHint.text = if (draft.useManualAppearance && manual != null) ui(
+                "The preview uses the matching manual mode. Your independent appearance choices are kept for when sharing is off.",
+                "تستخدم المعاينة مظهر الوضع اليدوي المقابل. تُحفظ اختيارات المظهر المستقلة عند تعطيل المشاركة.")
+                else if (style.smartColors) ui(
                 "Smart colors follow captured backgrounds. This sample shows your manual color choices.",
                 "تتبع الألوان الذكية خلفية النص الملتقط. يعرض هذا المثال الألوان اليدوية المختارة.")
                 else ui("Changes update this sample immediately; Save applies them.", "تظهر التغييرات على المثال فوراً؛ اضغط حفظ لتطبيقها.")
@@ -275,17 +311,14 @@ object ScreenSettingsDialog {
                 val colorFields = listOf(bubbleColor, textColor, bg, borderColor, selectionColor)
                 val invalid = colorFields.firstOrNull { !it.validate() }
                 if (invalid != null) { invalid.focus(); return@setOnClickListener }
-                val updated=old.copy(mode=modes[mode.selectedItemPosition],single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
+                val updated=appearanceDraft().copy(single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
                     intervalSeconds=interval.progress+1,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
-                    textSize=textSize.progress+12,textColor=requireNotNull(textColor.valueOrNull()),backgroundColor=requireNotNull(bg.valueOrNull()),backgroundOpacity=bgAlpha.progress+15,centerText=centered.isChecked,hideOriginal=hide.isChecked,speakAutomatically=speak.isChecked,
-                    fontBold=bold.isChecked,backgroundBorder=border.isChecked,borderColor=requireNotNull(borderColor.valueOrNull()),
-                    selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),panelWidthPercent=panelWidth.progress+50,anchorBelowRegion=belowRegion.isChecked,
-                    fontFamily=fonts[font.selectedItemPosition],lineByLine=lines.isChecked,positionedResults=positioned.isChecked,
-                    verticalText=vertical.isChecked,outlineText=outline.isChecked,uppercaseText=upper.isChecked,smartColors=smart.isChecked,
-                    mangaFont=mangaFont.isChecked,
+                    speakAutomatically=speak.isChecked, selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),
+                    lineByLine=lines.isChecked, verticalText=vertical.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,
-                    tapToDismissAutoOverlay=clearOverlay.isChecked,
-                    bubbleAutoDock=dock.isChecked,bubbleAutoDim=dim.isChecked,bubbleLocked=locked.isChecked)
+                    tapToDismissAutoOverlay=clearOverlay.isChecked, interactionDelayMs=interactionDelay.progress+100,
+                    bubbleAutoDock=dock.isChecked,bubbleAutoDim=dim.isChecked,bubbleLocked=locked.isChecked,
+                    bubbleEdgeHidePercent=edgeHide.progress)
                 if (ScreenPreferences.save(c,updated)) {
                     if (CaptureService.isRunning) runCatching { c.startService(Intent(c, CaptureService::class.java).setAction(CaptureService.ACTION_APPLY_OPTIONS)) }
                     Toast.makeText(c,ui("Saved. Active automatic capture is paused.", "حُفظت الإعدادات. التلقائي النشط متوقف مؤقتاً."),Toast.LENGTH_LONG).show()

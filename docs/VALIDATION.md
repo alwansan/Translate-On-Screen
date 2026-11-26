@@ -1,14 +1,19 @@
 # Validation record
 
+## التحقق من الدفعة 011
+
+نجح بناء المصدر `62fa00e6838d81d125f759716bb0ce69f1e1b2ef` في [45899477091](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477091) مع 70/70 JVM و25/25 Python و0 أخطاء lint و46 تحذيراً. تشمل الحالات 40 مقارنة SentencePiece و12 بصمة ملف ونتيجة ja→en من Marian على JVM. تحقق جرد المرجع في [45899477134](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477134). نتيجة الجهاز تتبع [45899477061](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477061). فشل بناء الدفعة 010 في عدّاد تحقق ملفات الحزم الذي بقي على ثمانية، وصحّحته الدفعة 011 إلى اثني عشر.
+
+
 ## التحقق من الدفعة 006 ومتابعة الدفعة 007
 
 نجح [البناء والتدقيق](https://github.com/alwansan/Translate-On-Screen/actions/runs/45896196263) و[اختبار المحاكي API 29 و35](https://github.com/alwansan/Translate-On-Screen/actions/runs/45896196247) للمصدر `2fccd59d5c8cab8e0ca63b428c3d55b0108794d9`. تشمل شجرة المصدر اختباري سحب الفقاعة وإغلاق الغطاء التلقائي باللمس. دفعة 007 تضيف اختبار تأخير التثبيت وإعداد خلفية المانغا، ونتائج هذا المصدر الجديد قيد التحقق. حزمة f0388b2 مدرجة أدناه كدليل تاريخي، وقد أُجّل قبول المالك.
 
 Updated: **2026-11-26**. Current development version: `0.2.0-dev`. Results are tied to commits and scope; a failed overall build is not a passing app release.
 
-## Current acceptance build: all required gates passed
+## Historical acceptance build f0388b2
 
-Source [`f0388b2ac928482e73c82de8115ec10ce9aade4d`](https://github.com/alwansan/Translate-On-Screen/commit/f0388b2ac928482e73c82de8115ec10ce9aade4d) is ready for **one consolidated owner acceptance trial**. Implementation of the documented scope is complete; physical-phone acceptance is pending. The sections below retain historical checkpoints, including unsuccessful attempts, and must not be read as the current gate status.
+Source [`f0388b2ac928482e73c82de8115ec10ce9aade4d`](https://github.com/alwansan/Translate-On-Screen/commit/f0388b2ac928482e73c82de8115ec10ce9aade4d) passed the documented gates for its original scope. The owner deferred acceptance while hm behavior development continues. The sections below retain historical checkpoints, including unsuccessful attempts, and must not be read as the current gate status.
 
 | Gate | Verified result |
 | --- | --- |

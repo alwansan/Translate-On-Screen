@@ -165,7 +165,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private var autoControl: Button? = null
     private var dragOutline: View? = null
     private var pendingDock: Runnable? = null
-    private var dimBubble: Runnable? = null
+    private var idleBubble: Runnable? = null
     private var resultHideTimer: Runnable? = null
     private var resultExpiresAt = Long.MAX_VALUE
     private var lastSpokenText: String? = null
@@ -219,7 +219,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         super.onCreate()
         windows = getSystemService(WindowManager::class.java)
         displays = getSystemService(DisplayManager::class.java)
-        options = ScreenPreferences.read(this)
+        options = ScreenPreferences.readForCapture(this)
         frameThread.start()
         frames = Handler(frameThread.looper)
         displays.registerDisplayListener(this, main)
@@ -253,7 +253,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 ACTION_PAUSE_AUTO -> toggleAutomatic()
                 ACTION_APPLY_OPTIONS -> {
                     pauseAutomatic(); cancelCurrentCapture()
-                    options = ScreenPreferences.read(this)
+                    options = ScreenPreferences.readForCapture(this)
                     lastResult = null; lastSpokenText = null
                     removeAllOverlays(); showBubble(); notifyState(readyMessage())
                 }
@@ -387,8 +387,9 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         pauseAutomatic()
         cancelCurrentCapture()
         // Load the destination's own style instead of copying the old mode's profile over it.
-        options = ScreenPreferences.read(this, mode)
-        if (!ScreenPreferences.save(this, options)) toast(ui("Could not save the selected mode.", "تعذّر حفظ الوضع المختار."))
+        val profile = ScreenPreferences.read(this, mode)
+        options = ScreenPreferences.readForCapture(this, mode)
+        if (!ScreenPreferences.save(this, profile)) toast(ui("Could not save the selected mode.", "تعذّر حفظ الوضع المختار."))
         lastResult = null
         lastSpokenText = null
         removeAllOverlays()
@@ -441,7 +442,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         })
         panel.addView(button(if (options.bubbleLocked) ui("Unlock bubble movement", "إلغاء قفل الفقاعة") else ui("Lock bubble movement", "قفل تحريك الفقاعة")) {
             options = options.copy(bubbleLocked = !options.bubbleLocked)
-            ScreenPreferences.save(this, options)
+            val profile = ScreenPreferences.read(this, options.mode)
+            ScreenPreferences.save(this, profile.copy(bubbleLocked = options.bubbleLocked))
             removeAllOverlays(); showBubble()
         })
         panel.addView(button(ui("Settings", "الإعدادات")) {
@@ -559,7 +561,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         // WATCH_OUTSIDE_TOUCH reports the first outside DOWN only. No coordinates/input data
         // are read, and periodic capture remains active for long gestures and platform limits.
         val now = SystemClock.elapsedRealtime()
-        interactionDebounce.note(now)
+        interactionDebounce.note(now, options.interactionDelayMs.toLong())
         interactionTimer?.let(main::removeCallbacks)
         interactionTimer = Runnable {
             interactionTimer = null
@@ -910,8 +912,14 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                     MotionEvent.ACTION_DOWN -> {
                         ignoreInteractions()
                         cancelPendingDock()
-                        dimBubble?.let(main::removeCallbacks); dimBubble = null
+                        idleBubble?.let(main::removeCallbacks); idleBubble = null
                         view.alpha = options.bubbleOpacity / 100f
+                        if (params.width != size) {
+                            params.width = size
+                            view.textSize = options.bubbleSize * .46f
+                            params.x = bubbleX.coerceIn(0, max(0, screenSize().x - size))
+                            runCatching { windows.updateViewLayout(view, params) }
+                        }
                         startX = event.rawX; startY = event.rawY
                         originalX = params.x; originalY = params.y
                         dragging = false
@@ -963,6 +971,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                                     params.x = if (params.x + size / 2 < width / 2) 0 else max(0, width - size)
                                     windows.updateViewLayout(view, params)
                                     persistPosition()
+                                    armBubbleIdle()
                                 }
                                 val regionAssigned = listOf(options.single, options.long, options.double).any {
                                     it == BubbleAction.REGION || (it == BubbleAction.DEFAULT && options.mode == CaptureMode.REGION)
@@ -973,7 +982,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                                 } else dock.run()
                             }
                         } else detector.onTouchEvent(event)
-                        armBubbleDim()
+                        armBubbleIdle()
                     }
                     else -> detector.onTouchEvent(event)
                 }
@@ -983,20 +992,35 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         try {
             windows.addView(view, params)
             bubble = view; bubbleParams = params
-            armBubbleDim()
+            armBubbleIdle()
         } catch (_: RuntimeException) {
             toast(ui("Overlay permission is unavailable. Enable it from the app.", "إذن الظهور فوق التطبيقات غير متاح. فعّله من التطبيق."))
             cleanup(); stopSelf()
         }
     }
 
-    private fun armBubbleDim() {
-        dimBubble?.let(main::removeCallbacks); dimBubble = null
-        if (!options.bubbleAutoDim) return
+    private fun armBubbleIdle() {
+        idleBubble?.let(main::removeCallbacks); idleBubble = null
+        val hidePercent = options.bubbleEdgeHidePercent
+        if (!options.bubbleAutoDim && hidePercent == 0) return
         val view = bubble ?: return
-        dimBubble = Runnable {
-            dimBubble = null
-            if (bubble === view) view.alpha = max(.2f, options.bubbleOpacity / 100f * .45f)
+        val params = bubbleParams ?: return
+        idleBubble = Runnable {
+            idleBubble = null
+            if (bubble !== view) return@Runnable
+            if (options.bubbleAutoDim) view.alpha = max(.2f, options.bubbleOpacity / 100f * .45f)
+            if (hidePercent > 0) {
+                val screenWidth = screenSize().x
+                val size = params.height
+                val rightEdge = screenWidth - size
+                if (rightEdge > 0 && (bubbleX == 0 || bubbleX == rightEdge)) {
+                    val visibleWidth = max(dp(24), size * (100 - hidePercent) / 100).coerceAtMost(size)
+                    params.width = visibleWidth
+                    view.textSize = min(options.bubbleSize * .46f, visibleWidth / resources.displayMetrics.scaledDensity * .65f)
+                    params.x = if (bubbleX == 0) 0 else screenWidth - visibleWidth
+                    runCatching { windows.updateViewLayout(view, params) }
+                }
+            }
         }.also { main.postDelayed(it, 3_500) }
     }
 
@@ -1460,7 +1484,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private fun removeBubble() {
         clearDragOutline()
         cancelPendingDock()
-        dimBubble?.let(main::removeCallbacks); dimBubble = null
+        idleBubble?.let(main::removeCallbacks); idleBubble = null
         bubble?.let { runCatching { windows.removeViewImmediate(it) } }; bubble = null
         bubbleParams = null
     }
