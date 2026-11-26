@@ -1,0 +1,24 @@
+{
+  "source": "908118564cfcf83c8d15cd9ff0cd9ecda9556a27",
+  "host": {
+    "run": 45910436548,
+    "conclusion": "success"
+  },
+  "device": {
+    "run": 45910436541,
+    "conclusion": "success",
+    "apis": {
+      "29": {
+        "job": 140217221335,
+        "passed": 39,
+        "failed": 0
+      },
+      "35": {
+        "job": 140217221063,
+        "passed": 39,
+        "failed": 0
+      }
+    },
+    "verified_case": "subtitleModeReadsTheSavedAreaAndUsesLocalTranslationWhenProvisioned"
+  }
+}

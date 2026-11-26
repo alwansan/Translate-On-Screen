@@ -6,11 +6,11 @@
   "branch": "feature/open-screen-translate",
   "session": "017",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "45293ec572391154ddc933425016dad180b86b83",
+  "last_verified_code_commit": "908118564cfcf83c8d15cd9ff0cd9ecda9556a27",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45909524987,
+  "last_verified_android_ci": 45910436548,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -61,15 +61,14 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45909525188,
-    "attempt": 2,
-    "head_sha": "45293ec572391154ddc933425016dad180b86b83",
+    "run_id": 45910436541,
+    "head_sha": "908118564cfcf83c8d15cd9ff0cd9ecda9556a27",
     "conclusion": "success",
     "apis": [
       29,
       35
     ],
-    "passed_each": 38
+    "passed_each": 39
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -83,7 +82,7 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [],
-  "last_verified_code_scope": "Host 70/70 JVM, Lint 0/46, and both emulator jobs passed. Japanese to English worked offline; API 35 selected a single app via SystemUI and read it in the unaligned panel.",
+  "last_verified_code_scope": "39/39 device cases per API 29 and 35, including vertical Japanese OCR, offline subtitle capture for the saved region and rotation.",
   "latest_attempt": {
     "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "host": "success",
@@ -107,7 +106,7 @@
   "acceptance_ready": false,
   "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-45293ec-attempt2.json",
+  "latest_evidence": "memory/evidence/validation-9081185.json",
   "delivery": {
     "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
     "artifact_id": 15101850735,
