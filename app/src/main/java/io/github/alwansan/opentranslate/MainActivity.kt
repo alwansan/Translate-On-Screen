@@ -1077,12 +1077,12 @@ class MainActivity : Activity() {
             "٣. الإيماءات الحالية:\nنقرة واحدة: ") + actionName(options.single) +
             t("\nDouble tap: ", "\nنقرتان: ") + actionName(options.double) +
             t("\nLong press: ", "\nضغط مطوّل: ") + actionName(options.long) +
-            t("\nDrag the bubble to move it. Change these actions in Screen modes and appearance.\n\n" +
+            t("\nIn Region mode with the whole screen shared, drag from the bubble across the text and release to translate. In other modes, drag to move the bubble. Change these actions in Screen modes and appearance.\n\n" +
                 "4. Select a region by dragging; fixed regions are stored separately for each orientation. Automatic modes repeat after work finishes and can be paused or stopped.\n\n" +
                 "5. Stop from the notification or floating menu. Locking the screen ends sharing. Protected content can appear blank under Android rules.\n\n" +
                 "If Android or the device maker stops the service, reopen the app and start a fresh session. There is no hidden background restart. For images, use the crop/rotate preview before reading.\n\n" +
                 "For word definitions, select one word in a result and choose Word meaning, or open Dictionary lookup from More. Network lookup needs its own confirmation.",
-                "\nاسحب الفقاعة لنقلها. غيّر هذه الإيماءات من أوضاع الشاشة والمظهر.\n\n" +
+                "\nفي وضع المنطقة عند مشاركة الشاشة كاملة، اسحب من الفقاعة عبر النص وأفلت لترجمته. في الأوضاع الأخرى اسحب الفقاعة لنقلها. غيّر هذه الإيماءات من أوضاع الشاشة والمظهر.\n\n" +
                 "٤. حدد منطقة بالسحب؛ تُحفظ المناطق الثابتة لكل اتجاه شاشة بصورة مستقلة. تكرر الأوضاع التلقائية العمل بعد انتهاء كل دورة ويمكن إيقافها مؤقتاً أو إنهاؤها.\n\n" +
                 "٥. أوقف المشاركة من الإشعار أو القائمة العائمة. ينهي قفل الشاشة المشاركة. قد يظهر المحتوى المحمي فارغاً وفق قواعد Android.\n\n" +
                 "إذا أوقف Android أو نظام الجهاز الخدمة، افتح التطبيق وابدأ جلسة جديدة. لا توجد إعادة تشغيل خلفية خفية. للصور، استخدم معاينة القص والتدوير قبل القراءة.\n\n" +

@@ -164,5 +164,10 @@
     "artifact": 15101850735,
     "expired": false
   },
-  "owner_acceptance_requested": false
+  "owner_acceptance_requested": false,
+  "latest_development_batch": {
+    "id": "005",
+    "feature": "direct_region_drag",
+    "validation": "pending"
+  }
 }

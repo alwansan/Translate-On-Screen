@@ -163,6 +163,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private var boxesPanel: View? = null
     private var menuPanel: View? = null
     private var autoControl: Button? = null
+    private var dragOutline: View? = null
     private var pendingDock: Runnable? = null
     private var dimBubble: Runnable? = null
     private var resultHideTimer: Runnable? = null
@@ -897,6 +898,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         })
         var startX = 0f; var startY = 0f
         var originalX = 0; var originalY = 0
+        var selectingByDrag = false
         var dragging = false
         val slop = ViewConfiguration.get(this).scaledTouchSlop
         view.setOnTouchListener { _, event ->
@@ -913,16 +915,19 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                         startX = event.rawX; startY = event.rawY
                         originalX = params.x; originalY = params.y
                         dragging = false
+                        selectingByDrag = options.mode == CaptureMode.REGION && phase == Phase.IDLE && reliableDisplay()
                         detector.onTouchEvent(event)
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val dx = event.rawX - startX; val dy = event.rawY - startY
-                        if (!options.bubbleLocked && !dragging && (abs(dx) > slop || abs(dy) > slop)) {
+                        if ((selectingByDrag || !options.bubbleLocked) && !dragging && (abs(dx) > slop || abs(dy) > slop)) {
                             dragging = true
                             val cancel = MotionEvent.obtain(event).apply { action = MotionEvent.ACTION_CANCEL }
                             detector.onTouchEvent(cancel); cancel.recycle()
                         }
-                        if (dragging && bubble === view) {
+                        if (dragging && selectingByDrag && bubble === view) {
+                            updateDragOutline(startX, startY, event.rawX, event.rawY)
+                        } else if (dragging && bubble === view) {
                             val bounds = screenSize()
                             params.x = (originalX + dx).roundToInt().coerceIn(0, max(0, bounds.x - size))
                             params.y = (originalY + dy).roundToInt().coerceIn(0, max(0, bounds.y - size))
@@ -931,7 +936,16 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                         } else detector.onTouchEvent(event)
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        if (dragging && bubble === view) {
+                        if (dragging && selectingByDrag && bubble === view) {
+                            clearDragOutline()
+                            if (event.actionMasked == MotionEvent.ACTION_UP && reliableDisplay() && screenSize() == screen &&
+                                abs(event.rawX - startX) >= dp(24) && abs(event.rawY - startY) >= dp(24)) {
+                                RegionMath.fromScreen(startX, startY, event.rawX, event.rawY, screen.x, screen.y)?.let {
+                                    lastResult = null
+                                    requestCapture(it)
+                                }
+                            }
+                        } else if (dragging && bubble === view) {
                             fun persistPosition() {
                                 val bounds = screenSize()
                                 bubbleX = params.x
@@ -1406,12 +1420,38 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private fun removeRegion() {
         regionPanel?.let { runCatching { windows.removeViewImmediate(it) } }; regionPanel = null
     }
+    private fun updateDragOutline(x: Float, y: Float, endX: Float, endY: Float) {
+        val params = overlayParams(max(1, abs(endX - x).roundToInt()), max(1, abs(endY - y).roundToInt())).apply {
+            flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            this.x = minOf(x, endX).roundToInt()
+            this.y = minOf(y, endY).roundToInt()
+        }
+        val existing = dragOutline
+        if (existing != null) {
+            windows.updateViewLayout(existing, params)
+        } else {
+            val outline = View(this).apply {
+                background = android.graphics.drawable.GradientDrawable().apply {
+                    setColor(Color.TRANSPARENT)
+                    setStroke(dp(2), options.selectionBorderColor)
+                }
+            }
+            if (runCatching { windows.addView(outline, params) }.isSuccess) dragOutline = outline
+        }
+    }
+
+    private fun clearDragOutline() {
+        dragOutline?.let { runCatching { windows.removeViewImmediate(it) } }
+        dragOutline = null
+    }
+
     private fun cancelPendingDock() {
         pendingDock?.let(main::removeCallbacks)
         pendingDock = null
     }
 
     private fun removeBubble() {
+        clearDragOutline()
         cancelPendingDock()
         dimBubble?.let(main::removeCallbacks); dimBubble = null
         bubble?.let { runCatching { windows.removeViewImmediate(it) } }; bubble = null
