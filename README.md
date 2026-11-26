@@ -38,6 +38,10 @@
 - [نتائج التحقق وحدودها](docs/VALIDATION.md)
 - [مرجع استعادة العمل](docs/RESTORE_SESSION_AR.md)
 
+## التحقق المنجز
+
+نجح بناء APK محلياً، مع **16 اختبار JVM و8 اختبارات لأداة التدقيق وAndroid lint بلا مسائل**. نجح أيضاً [البناء والاختبارات ورفع APK على GitHub](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836)، و[إعادة جرد المرجع](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030). فُحص توقيع APK المحلي ومحاذاة مكتباته لـ16 KiB. **لم تُجرَ تجربة على هاتف/محاكي أو ترجمة ضد خادم فعلي بعد**؛ نتائج البناء لا تثبت اكتمال التشغيل أو مطابقة المرجع. التفاصيل في [سجل التحقق](docs/VALIDATION.md).
+
 ## Build
 
 Native Kotlin Android app. Application ID: `io.github.alwansan.opentranslate`.

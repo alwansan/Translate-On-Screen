@@ -23,7 +23,9 @@
 4. نواة Kotlin أصلية `0.1.0-dev`: MediaProjection وخدمة/زر عائم، كامل الشاشة أو منطقة، Tesseract للعربية/الإنكليزية، LibreTranslate HTTPS اختياري، صور ونص ومشاركة، نسخ ونطق، سجل اختياري، واجهة عربية/إنكليزية وRTL.
 5. ترخيص Apache-2.0 للكود الجديد، وإشعارات واعتماديات مدققة داخل APK. لا استعمال لكود/موارد أو مفاتيح التطبيق المرجعي ولا اعتمادية ML Kit في الجديد.
 6. بناء محلي ناجح، 16 اختبار JVM ناجح، lint بلا مسائل، تحقق توقيع APK ومحاذاة ZIP/ELF 16 KiB. التفاصيل/hash في `docs/VALIDATION.md` و`docs/local-validation.json`.
-7. Workflow للبناء والاختبارات ورفع APK، وآخر لإعادة جرد المرجع المثبت. نتائج التنفيذ البعيد تسجل في `docs/VALIDATION.md` عند توفرها.
+7. نجح [بناء Android والاختبارات وlint ورفع APK](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836) على GitHub عند `3bca5754ed5d149b420c4af17f8243a5ef2340bd`، بعد إصلاح غياب `sdkmanager` من الخادم بتهيئة SDK صراحةً. ونجح [إعادة جرد المرجع ومقارنة التقرير](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030) عند `33d6f37c5fd12ef2fe5ad94486c3f3968a70e92f`. تفاصيل القطع والحدود في `docs/VALIDATION.md`.
+
+التزام التنفيذ الأساسي هو `33d6f37c5fd12ef2fe5ad94486c3f3968a70e92f`، يليه إصلاح CI عند `3bca5754ed5d149b420c4af17f8243a5ef2340bd` ثم تحديثات التوثيق. هذه أرقام أدلة ثابتة، وليست افتراضاً أن رأس الفرع لن يتغير. ملفات Actions مؤقتة لمدة 14 يوماً؛ يمكن إعادة البناء من المصدر.
 
 ## الحدود المؤكدة
 

@@ -46,7 +46,8 @@ Two workflows are included: Android build/tests/lint with APK/report artifacts, 
 
 - [Reference inventory run 45762908030](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030): **PASS** at implementation commit `33d6f37c5fd12ef2fe5ad94486c3f3968a70e92f`.
 - [First Android run 45762908015](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908015): failed in SDK setup because the Ubuntu 26.04 runner did not provide `sdkmanager` on PATH. Application build/test/lint steps did not run in that attempt. The workflow now explicitly provisions Android command-line tools with a pinned setup action instead of assuming a preinstalled SDK.
-- The corrected Android workflow result will be recorded after its run. A configured workflow is not itself a successful run.
+- [Corrected Android run 45763162836](https://github.com/alwansan/Translate-On-Screen/actions/runs/45763162836): build, unit tests, Android lint and APK/report uploads **PASS** at `3bca5754ed5d149b420c4af17f8243a5ef2340bd`. This revision changes CI setup and documentation only; the app source is the same as the locally verified implementation commit above.
+- Uploaded artifacts: `open-screen-translate-debug-3bca5754ed5d149b420c4af17f8243a5ef2340bd` (artifact ID `15090837177`) and `validation-reports-3bca5754ed5d149b420c4af17f8243a5ef2340bd` (artifact ID `15090896780`). The run retains these for 14 days, until 2026-12-10; build again from source for a later artifact.
 
 ## Reviewed fixes
 
