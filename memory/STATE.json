@@ -46,10 +46,10 @@
   },
   "observed_branch_head": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
   "latest_observed_android_ci": {
-    "run_id": 45899477091,
-    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+    "run_id": 45909524987,
+    "head_sha": "45293ec572391154ddc933425016dad180b86b83",
     "conclusion": "success",
-    "jvm_passed": 70,
+    "jvm_passed": 72,
     "lint_errors": 0,
     "lint_warnings": 46
   },
@@ -145,7 +145,8 @@
     "id": "014",
     "validation": "pending",
     "prior_host_run": 45909524987,
-    "prior_device_run": 45909525188
+    "prior_device_run": 45909525188,
+    "subtitle_default_seconds": 2
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
