@@ -4,9 +4,9 @@
 
 This document describes the independent source reconstructed after the executor outage on 2026-11-26 and subsequently verified from Git. The tested delivery source is [`f0388b2ac928482e73c82de8115ec10ce9aade4d`](https://github.com/alwansan/Translate-On-Screen/commit/f0388b2ac928482e73c82de8115ec10ce9aade4d), tree `8b76203ccf8b97e73ee748fd3c5f24de54b117b3`.
 
-**The current automated gates pass:** 68/68 JVM tests, debug/test/release assembly, and 32/32 Android device cases on each of API 29 and API 35. There are zero failed, skipped or missing device cases/suites, and both device runs record networking disabled. The [feature matrix](FEATURE_MATRIX_AR.md) maps all 44 visual requirements, the separate lexical dictionary requirement, source evidence and the remaining manual/external-service limits. [VALIDATION.md](VALIDATION.md) records delivery and acceptance details.
+**The automated gates at f0388b2 passed:** 68/68 JVM tests, debug/test/release assembly, and 32/32 Android device cases on each of API 29 and API 35. There are zero failed, skipped or missing device cases/suites, and both device runs record networking disabled. The [feature matrix](FEATURE_MATRIX_AR.md) maps all 44 visual requirements, the separate lexical dictionary requirement, source evidence and the remaining manual/external-service limits. [VALIDATION.md](VALIDATION.md) records delivery and acceptance details.
 
-This source is ready for one acceptance session on the owner's phone. The automated fixtures do not establish quality for every screenshot, font, script or device, or validate paid provider accounts for which no real credentials were supplied. Earlier failures are retained below as history; they are not current open gates.
+Acceptance for the historical build was deferred when the owner reopened development for hm behavior coverage. The automated fixtures do not establish quality for every screenshot, font, script or device, or validate paid provider accounts for which no real credentials were supplied. Earlier failures are retained below as history; they are not current open gates.
 
 ## API and coordinates
 
@@ -70,14 +70,15 @@ The twelve dictionary JVM tests pass, including consent-before-transport, fixed 
 
 ## Local Marian translation
 
-`offline` runs quantized Marian encoder/merged-decoder models on CPU using **ONNX Runtime Android 1.23.2**. It supports explicit **en→ar** and **ar→en**, without an API key or network-translation opt-in. No download occurs during inference.
+`offline` runs quantized Marian encoder/merged-decoder models on CPU using **ONNX Runtime Android 1.23.2**. It supports explicit **en→ar**, **ar→en**, and **ja→en**, without an API key or network-translation opt-in. No download occurs during inference.
 
 | Pack | Immutable converted model | Total bytes | Original model license evidence |
 | --- | --- | ---: | --- |
 | en-ar | [Xenova/opus-mt-en-ar @ 034a684356c19021a187cda4d7f823298b913921](https://huggingface.co/Xenova/opus-mt-en-ar/tree/034a684356c19021a187cda4d7f823298b913921) | 113,896,629 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-en-ar/blob/03087980e8ce753d64b3248ed0a912444545b840/README.md) |
 | ar-en | [Xenova/opus-mt-ar-en @ 09c7556866400dcc53562ba8d7035119e7d9a2c1](https://huggingface.co/Xenova/opus-mt-ar-en/tree/09c7556866400dcc53562ba8d7035119e7d9a2c1) | 114,059,523 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-ar-en/blob/c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1/README.md) |
+| ja-en | [Xenova/opus-mt-ja-en @ 1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16](https://huggingface.co/Xenova/opus-mt-ja-en/tree/1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16) | 111,112,194 | [Helsinki-NLP: Apache-2.0](https://huggingface.co/Helsinki-NLP/opus-mt-ja-en/blob/0770961a39ba6bd66305b149c3f4110bcafca2e6/README.md) |
 
-The source-card pins document licensing, not the exact source commit Xenova originally converted. Converted weights have independent fixed revisions and eight SHA-256 digests in [OfflineModelManifest.kt](../app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt).
+The source-card pins document licensing, not the exact source commit Xenova originally converted. Converted weights have independent fixed revisions and four SHA-256 digests per pack in [OfflineModelManifest.kt](../app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt).
 
 Each pack includes quantized encoder ONNX, quantized merged decoder ONNX, source.spm and vocab.json. Explicit download stages all files, checks size/SHA, and writes a complete-pack marker. Public model CDN redirects are HTTPS-only and carry no user text or translation credentials. Installed files live in `files/offline_translation/{id}`. Weights are not bundled in the APK.
 
@@ -94,7 +95,7 @@ python3 tools/generate_marian_fixtures.py --cache /path/to/test-models
 OFFLINE_MODEL_TEST_ROOT=/path/to/test-models ./gradlew :app:testDebugUnitTest
 ~~~
 
-Missing models or generated fixtures fail explicitly; there are no model-test skips. The independent reference generator checks source/tokenizer hashes and emits 32 Arabic, Unicode, number, whitespace and emoji cases. Other tests verify all eight model files, provider protocol/cardinality, cancellation, cache separation and OCR geometry.
+Missing models or generated fixtures fail explicitly; there are no model-test skips. The independent reference generator checks source/tokenizer hashes and emits 40 cases covering Arabic, Japanese, Unicode, numbers, whitespace and emoji. Other tests verify all twelve model files, provider protocol/cardinality, cancellation, cache separation and OCR geometry.
 
 `MarianRuntimeTest` uses the same production decoder and official JVM JNI 1.23.2 for six known phrase regressions, cancellation after the encoder, reuse after cancellation, interruption preservation and idempotent close. It requires both pinned packs. Network protocol tests use an injected recording transport and no account credentials.
 

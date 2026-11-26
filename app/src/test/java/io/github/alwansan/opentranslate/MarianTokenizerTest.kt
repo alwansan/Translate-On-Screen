@@ -26,14 +26,14 @@ class MarianTokenizerTest {
             catch (_: IllegalArgumentException) { }
         }
     }
-    @Test fun modelsMatchThirtyTwoIndependentSentencePieceFixtures() {
+    @Test fun modelsMatchIndependentSentencePieceFixtures() {
         val root = fixtureRoot()
         val source = File(root, "marian-tokenizer-cases.json")
         assertTrue("Run tools/generate_marian_fixtures.py with sentencepiece==0.2.1 first", source.isFile)
         val json = JSONObject(source.readText(Charsets.UTF_8))
         assertEquals("sentencepiece 0.2.1", json.getString("generator"))
         val cases = json.getJSONArray("fixtures")
-        assertEquals(32, cases.length())
+        assertEquals(40, cases.length())
         val tokenizers = OfflineModelManifest.packs.associate { pack ->
             val folder = File(root, "offline_translation/${pack.id}")
             pack.id to MarianTokenizer(File(folder, "source.spm"), File(folder, "vocab.json"), pack.vocabularySize, pack.padToken)
@@ -46,7 +46,7 @@ class MarianTokenizerTest {
                 tokenizers.getValue(case.getString("pack")).encode(case.getString("text")))
         }
     }
-    @Test fun allEightPinnedFilesMatchTheirSizeAndSha256() {
+    @Test fun allPinnedFilesMatchTheirSizeAndSha256() {
         val root = fixtureRoot()
         assertEquals(setOf("en-ar", "ar-en", "ja-en"), OfflineModelManifest.packs.map { it.id }.toSet())
         var checked = 0
@@ -66,7 +66,7 @@ class MarianTokenizerTest {
             val actual = digest.digest().joinToString("") { "%02x".format(it.toInt() and 255) }
             assertEquals(entry.sha256, actual); checked++
         }
-        assertEquals(8, checked)
+        assertEquals(12, checked)
     }
     private fun fixtureRoot(): File {
         val path = System.getenv("OFFLINE_MODEL_TEST_ROOT")

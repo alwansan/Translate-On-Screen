@@ -22,6 +22,7 @@ import android.widget.FrameLayout
 @SuppressLint("SetTextI18n") // Fixed English OCR fixtures are test inputs, not product UI.
 class CaptureFixtureActivity : Activity() {
     private lateinit var drawing: FixtureView
+    private var shareFullDisplay = true
     override fun attachBaseContext(newBase: Context) { super.attachBaseContext(AppPreferences.wrap(newBase)) }
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
@@ -32,16 +33,19 @@ class CaptureFixtureActivity : Activity() {
         root.addView(Button(this).apply {
             text = "Authorize test capture"
             contentDescription = "Authorize test capture"
-            setOnClickListener {
-                val manager = getSystemService(MediaProjectionManager::class.java)
-                val consent = if (Build.VERSION.SDK_INT >= 34)
-                    manager.createScreenCaptureIntent(MediaProjectionConfig.createConfigForDefaultDisplay())
-                    else manager.createScreenCaptureIntent()
-                @Suppress("DEPRECATION")
-                startActivityForResult(consent, 101)
-            }
+            setOnClickListener { requestCapture(fullDisplay = true) }
         }, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply { topMargin = dp(32) })
         setContentView(root)
+    }
+
+    fun requestCapture(fullDisplay: Boolean) {
+        shareFullDisplay = fullDisplay
+        val manager = getSystemService(MediaProjectionManager::class.java)
+        val consent = if (Build.VERSION.SDK_INT >= 34 && fullDisplay)
+            manager.createScreenCaptureIntent(MediaProjectionConfig.createConfigForDefaultDisplay())
+        else manager.createScreenCaptureIntent()
+        @Suppress("DEPRECATION")
+        startActivityForResult(consent, 101)
     }
 
     fun replaceFixtureText(value: String) { drawing.line = value; drawing.invalidate() }
@@ -53,7 +57,7 @@ class CaptureFixtureActivity : Activity() {
             startForegroundService(Intent(this, CaptureService::class.java)
                 .putExtra(CaptureService.EXTRA_RESULT_CODE, resultCode)
                 .putExtra(CaptureService.EXTRA_RESULT_DATA, data)
-                .putExtra(CaptureService.EXTRA_FULL_DISPLAY, true))
+                .putExtra(CaptureService.EXTRA_FULL_DISPLAY, shareFullDisplay))
         }
     }
 

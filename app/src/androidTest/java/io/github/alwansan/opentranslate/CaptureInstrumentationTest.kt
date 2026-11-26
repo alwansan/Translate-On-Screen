@@ -161,6 +161,46 @@ class CaptureInstrumentationTest {
         // Keep landscape and exercise the real, scrollable SystemUI consent dialog too.
         authorize()
         stopCapture()
+
+        // The default-display flow above is required on every API in the matrix.
+        // Only Android 14+ exposes the single-app choice.
+        if (Build.VERSION.SDK_INT >= 34) verifySingleAppProjection()
+    }
+
+    private fun verifySingleAppProjection() {
+        orientToPortrait(expectFixture = true)
+        configure(CaptureOptions(positionedResults = true, displaySeconds = 0))
+        launchTouchTarget()
+        device.executeShellCommand("am start -n " + instrumentation.context.packageName + "/" +
+            TouchTargetActivity::class.java.name + " --ez background_fixture true")
+        awaitFixtureForeground("starting single-app consent")
+
+        instrumentation.runOnMainSync { requireNotNull(fixture).requestCapture(fullDisplay = false) }
+        val spinner = By.res("com.android.systemui", "screen_share_mode_spinner")
+        val singleApp = By.text("A single app")
+        val sourceCard = By.pkg("com.android.systemui").desc("Screen translation test source")
+        try {
+            await(15_000, "SystemUI did not offer a choice of shared content") { device.hasObject(spinner) }
+            if (device.findObject(spinner)?.findObject(singleApp) == null) {
+                requireNotNull(device.findObject(spinner)).click()
+                await(5_000, "SystemUI did not list single-app sharing") { device.hasObject(singleApp) }
+                requireNotNull(device.findObject(singleApp)).click()
+            }
+            pressConsentStart()
+            await(15_000, "SystemUI's app picker did not list the source task") { device.hasObject(sourceCard) }
+            requireNotNull(device.findObject(sourceCard)).click()
+            await(20_000, "Single-app projection did not start on the selected source") {
+                CaptureService.isRunning && device.hasObject(By.desc("Source tap count 0"))
+            }
+            action(CaptureService.ACTION_CAPTURE)
+            awaitOutput("OPEN SCREEN TOUCH")
+            assertFalse(device.hasObject(By.desc("Translation overlay controls")))
+            stopCapture()
+        } catch (error: Throwable) {
+            recordUiEvidence("single_app_consent_or_capture")
+            if (device.hasObject(sourceCard)) device.pressBack()
+            throw error
+        }
     }
 
     @Test fun bubbleDragCapturesRegionWithoutChangingFixedAreaOrPosition() {
@@ -618,6 +658,11 @@ class CaptureInstrumentationTest {
 
     private fun authorize() {
         requireNotNull(device.findObject(By.desc("Authorize test capture"))).click()
+        pressConsentStart()
+        await(20_000, "MediaProjection did not start after real system consent") { CaptureService.isRunning }
+    }
+
+    private fun pressConsentStart() {
         await(15_000, "Real system MediaProjection consent dialog was not shown") {
             consentButton() != null ||
                 device.hasObject(By.res("com.android.systemui", "screen_share_permission_dialog"))
@@ -636,7 +681,6 @@ class CaptureInstrumentationTest {
         }
         await(5_000, "System consent dialog appeared but its Start action was not reachable") { consentButton() != null }
         requireNotNull(consentButton()).click()
-        await(20_000, "MediaProjection did not start after real system consent") { CaptureService.isRunning }
     }
 
     private fun launchTouchTarget() {

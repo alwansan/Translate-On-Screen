@@ -15,6 +15,10 @@ SOURCES = {
         "source.spm": "484f7210e5f4466f7e5b99b660717c6ef2a6f90746196daba507795b69dc02a2",
         "vocab.json": "87b78c097c331672ca22a522c3ba24c5dc2cdff90495dcb52cf742635439a3a0",
     },
+    "ja-en": {
+        "source.spm": "d0b5c3b10b5959f056ff2c86e2f2356129242ff1fc72d3a4a34d6a8c0eee4e57",
+        "vocab.json": "a1667b43d021e09c76f385101bd473f20b5691a12cdca7dda43e4a8daff20021",
+    },
 }
 CASES = {
     "en-ar": [
@@ -32,6 +36,10 @@ CASES = {
         "اللغة العربية English ٣", "🙂🙂 مرحباً 👩‍💻", "ﻻ ﻷ ﻹ ﻵ",
         "كلمة\u200bكلمة\u200dأخرى", "\u00a0نص\u3000عربي\u00a0",
         "١٢٣٤٥٦٧٨٩٠ ۱۲۳۴۵۶۷۸۹۰", "رموز: | + & < >", "مكتبة — الكتاب 2026.",
+    ],
+    "ja-en": [
+        "これは本です。", "明日は雨が降ります。", "「こんにちは！」", "ゲームを始める",
+        "全角ＡＢＣ１２３", "漢字・ひらがな・カタカナ", "日本語とEnglish", "　翻訳\nテスト　",
     ],
 }
 
@@ -53,8 +61,8 @@ def main():
         for text in CASES[pack]:
             pieces = processor.encode(text, out_type=str)
             fixtures.append({"pack": pack, "text": text, "ids": [vocabulary.get(piece, vocabulary["<unk>"]) for piece in pieces]})
-    if len(fixtures) != 32:
-        raise SystemExit("Expected 32 independent fixtures")
+    if len(fixtures) != 40:
+        raise SystemExit("Expected 40 independent fixtures")
     output = args.cache / "marian-tokenizer-cases.json"
     temporary = output.with_suffix(".json.part")
     temporary.write_text(json.dumps({"generator": "sentencepiece 0.2.1", "sources": SOURCES, "fixtures": fixtures}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -21,7 +21,7 @@ object ProviderCatalog {
         ProviderSpec("azure", "Microsoft Azure Translator", "مترجم Microsoft Azure", true, false, "https://api.cognitive.microsofttranslator.com"),
         ProviderSpec("yandex", "Yandex Cloud Translate", "ترجمة Yandex Cloud", true, false, "https://translate.api.cloud.yandex.net"),
         ProviderSpec("baidu", "Baidu Translate API", "Baidu Translate API", true, false, "https://fanyi-api.baidu.com"),
-        ProviderSpec("offline", "On-device English ↔ Arabic", "على الجهاز: الإنجليزية ↔ العربية", false, false, "", false),
+        ProviderSpec("offline", "On-device translation", "الترجمة على الجهاز", false, false, "", false),
     )
     fun find(id: String): ProviderSpec? = providers.firstOrNull { it.id == id }
 }

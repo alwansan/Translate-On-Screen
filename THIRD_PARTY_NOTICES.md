@@ -43,12 +43,13 @@ The 18 offered OCR model files (`eng`, `ara`, `fra`, `deu`, `spa`, `ita`, `por`,
 
 ## Optional local translation packs
 
-The English → Arabic and Arabic → English packs use Helsinki-NLP/OPUS-MT models converted to ONNX by Xenova. The source model cards declare Apache-2.0. The converted-model cards identify the corresponding Helsinki-NLP base model. The model license is separate from ONNX Runtime's MIT license and from the app's own source license.
+The English → Arabic, Arabic → English and Japanese → English packs use Helsinki-NLP/OPUS-MT models converted to ONNX by Xenova. The source model cards declare Apache-2.0. The converted-model cards identify the corresponding Helsinki-NLP base model. The model license is separate from ONNX Runtime's MIT license and from the app's own source license.
 
 | Pair | Pinned downloaded-model revision | Pinned source-card license evidence |
 | --- | --- | --- |
 | English → Arabic | [Xenova/opus-mt-en-ar @ `034a684356c19021a187cda4d7f823298b913921`](https://huggingface.co/Xenova/opus-mt-en-ar/tree/034a684356c19021a187cda4d7f823298b913921) | [Helsinki-NLP card @ `03087980e8ce753d64b3248ed0a912444545b840`](https://huggingface.co/Helsinki-NLP/opus-mt-en-ar/blob/03087980e8ce753d64b3248ed0a912444545b840/README.md) |
 | Arabic → English | [Xenova/opus-mt-ar-en @ `09c7556866400dcc53562ba8d7035119e7d9a2c1`](https://huggingface.co/Xenova/opus-mt-ar-en/tree/09c7556866400dcc53562ba8d7035119e7d9a2c1) | [Helsinki-NLP card @ `c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1`](https://huggingface.co/Helsinki-NLP/opus-mt-ar-en/blob/c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1/README.md) |
+| Japanese → English | [Xenova/opus-mt-ja-en](https://huggingface.co/Xenova/opus-mt-ja-en/tree/1a906cfaaf7c8f4193f67f5885c082aa6dbd9d16) | [Helsinki-NLP card](https://huggingface.co/Helsinki-NLP/opus-mt-ja-en/blob/0770961a39ba6bd66305b149c3f4110bcafca2e6/README.md) |
 
 Each pack downloads two quantized ONNX files, `source.spm` and `vocab.json`. [OfflineModelManifest.kt](app/src/main/java/io/github/alwansan/opentranslate/OfflineModelManifest.kt) records all eight file hashes and sizes. These are optional explicit downloads, not APK assets. The source-card pins above identify the inspected licensing statements; they do not claim that the conversion was performed from those exact source revisions. The app's tokenizer is independently authored Kotlin code; SentencePiece and protobuf runtimes are not redistributed. Attribution and model provenance are also available offline in `OPUS-MT-MODEL-NOTICES.txt`, alongside the Apache license text.
 

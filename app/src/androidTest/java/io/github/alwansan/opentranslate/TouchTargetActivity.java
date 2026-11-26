@@ -42,6 +42,7 @@ public final class TouchTargetActivity extends Activity {
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.getBooleanExtra("finish_fixture", false)) finish();
+        else if (intent.getBooleanExtra("background_fixture", false)) moveTaskToBack(true);
     }
 
     private void updateCounter() {
