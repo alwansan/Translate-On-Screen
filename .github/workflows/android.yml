@@ -66,13 +66,37 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 4 app/build/outputs/apk/debug/app-debug.apk
           python3 tools/verify_apk.py app/build/outputs/apk/debug/app-debug.apk --output app/build/reports/package-verification.json
+      - name: Prepare downloadable APK bundle
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, shutil
+          root = pathlib.Path(".")
+          version = re.search(r'versionName\s*=\s*"([^"]+)"', (root / "app/build.gradle.kts").read_text()).group(1)
+          if not re.fullmatch(r"[A-Za-z0-9._-]+", version):
+              raise SystemExit("Unsafe APK version filename")
+          output = root / "app/build/distribution"
+          output.mkdir(parents=True, exist_ok=True)
+          apk = output / f"open-screen-translate-{version}.apk"
+          shutil.copyfile(root / "app/build/outputs/apk/debug/app-debug.apk", apk)
+          digest = hashlib.sha256(apk.read_bytes()).hexdigest()
+          info = json.loads((root / "app/build/reports/package-verification.json").read_text())
+          if info["sha256"] != digest:
+              raise SystemExit("Packaged APK changed after verification")
+          info.update(apk=apk.name, source_commit=os.environ["GITHUB_SHA"],
+              host_workflow_run=int(os.environ["GITHUB_RUN_ID"]), signing="debug",
+              device_gate="Check VALIDATION.md for this exact source commit before acceptance.")
+          (output / "APK-INFO.json").write_text(json.dumps(info, indent=2) + "\n")
+          (output / "SHA256SUMS.txt").write_text(digest + "  " + apk.name + "\n")
+          shutil.copyfile(root / "docs/ACCEPTANCE_AR.md", output / "ACCEPTANCE-AR.md")
+          print("Acceptance bundle prepared for source " + os.environ["GITHUB_SHA"])
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: success()
         with:
           name: open-screen-translate-debug-${{ github.sha }}
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/distribution/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 90
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:

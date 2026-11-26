@@ -1,6 +1,19 @@
 package io.github.alwansan.opentranslate
 
+import android.app.KeyguardManager
 import android.content.Context
+import android.os.Bundle
+import android.os.Process
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextDirectionHeuristics
+import android.text.TextPaint
+import android.util.Base64
+import androidx.test.core.app.ActivityScenario
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
+import java.io.ByteArrayOutputStream
+import java.io.File
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -26,6 +39,7 @@ class CaptureInstrumentationTest {
     private val context = instrumentation.targetContext
     private val device = UiDevice.getInstance(instrumentation)
     private var fixture: CaptureFixtureActivity? = null
+    private var scenario: ActivityScenario<CaptureFixtureActivity>? = null
     private lateinit var oldSettings: UserSettings
     private lateinit var oldAppearance: AppAppearance
     private var oldScreenPreferences: Map<String, *>? = null
@@ -33,7 +47,12 @@ class CaptureInstrumentationTest {
     private var touchFixtureStarted = false
 
     @Before fun prepare() {
+        instrumentation.sendStatus(2, Bundle().apply {
+            putString("ost_pid", Process.myPid().toString())
+            putString("ost_uid", Process.myUid().toString())
+        })
         stopCapture()
+        finishLeakedFixtures()
         oldSettings = SettingsStore.read(context)
         oldAppearance = AppPreferences.read(context)
         oldScreenPreferences = context.getSharedPreferences("screen_options", Context.MODE_PRIVATE).all.toMap()
@@ -41,6 +60,10 @@ class CaptureInstrumentationTest {
         oldOverlayMode = Regex("SYSTEM_ALERT_WINDOW: (allow|deny|ignore|default)").find(appOp)?.groupValues?.get(1) ?: "default"
         device.wakeUp()
         device.executeShellCommand("wm dismiss-keyguard")
+        await(8_000, "Emulator keyguard did not unlock before fixture launch") {
+            !context.getSystemService(KeyguardManager::class.java).isKeyguardLocked
+        }
+        device.pressHome()
         device.setOrientationNatural()
         device.executeShellCommand("appops set " + context.packageName + " SYSTEM_ALERT_WINDOW allow")
         AppPreferences.save(context, AppAppearance("en", "light"))
@@ -51,8 +74,14 @@ class CaptureInstrumentationTest {
         context.getSharedPreferences("screen_options", Context.MODE_PRIVATE).edit().clear().commit()
         CaptureOptionsStore.save(context, CaptureOptions(positionedResults = false, displaySeconds = 0,
             bubbleAutoDim = false, speakAutomatically = false))
-        fixture = instrumentation.startActivitySync(Intent(context, CaptureFixtureActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as CaptureFixtureActivity
+        try {
+            scenario = ActivityScenario.launch<CaptureFixtureActivity>(Intent(context, CaptureFixtureActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            scenario!!.onActivity { fixture = it }
+        } catch (error: Throwable) {
+            recordUiEvidence("capture_fixture_launch")
+            throw error
+        }
         await(10_000, "Debug capture fixture did not open") { device.hasObject(By.desc("Authorize test capture")) }
     }
 
@@ -62,7 +91,9 @@ class CaptureInstrumentationTest {
             device.executeShellCommand("am start -W -n " + instrumentation.context.packageName + "/" +
                 TouchTargetActivity::class.java.name + " --ez finish_fixture true")
         }
-        fixture?.let { activity -> instrumentation.runOnMainSync { activity.finish() } }
+        val closeFailure = runCatching { scenario?.close() }.exceptionOrNull()
+        scenario = null
+        finishLeakedFixtures()
         fixture = null
         if (::oldSettings.isInitialized) SettingsStore.save(context, oldSettings)
         if (::oldAppearance.isInitialized) AppPreferences.save(context, oldAppearance)
@@ -84,6 +115,8 @@ class CaptureInstrumentationTest {
         device.wakeUp()
         device.setOrientationNatural()
         device.unfreezeRotation()
+        device.pressHome()
+        if (closeFailure != null) throw AssertionError("Capture fixture did not close cleanly", closeFailure)
     }
 
     @Test fun actualConsentFullCaptureRotationAndStop() {
@@ -198,10 +231,13 @@ class CaptureInstrumentationTest {
                 assertEquals(result.original, result.translated)
                 assertGeometry(result)
             } finally { english.recycle() }
-            val arabic = textBitmap("ترجمة الشاشة المفتوحة")
+            val arabic = textBitmap("ترجمة الشاشة المفتوحة", rtl = true)
             try {
                 val result = engine.fromBitmap(arabic, UserSettings(source = "ar", target = "ar", ocrLanguage = "ara"))
-                assertTrue("Native Arabic OCR returned no Arabic text", Regex("[\\u0600-\\u06ff]").containsMatchIn(result.original))
+                val containsArabic = Regex("[\\u0600-\\u06ff]").containsMatchIn(result.original)
+                if (!containsArabic) recordBitmapEvidence("arabic_ocr_fixture", arabic)
+                assertTrue("Native Arabic OCR returned no Arabic text. Warning=" + result.warning +
+                    "; recognized=" + result.original.take(300), containsArabic)
                 assertEquals(result.original, result.translated)
                 assertGeometry(result)
             } finally { arabic.recycle() }
@@ -221,16 +257,61 @@ class CaptureInstrumentationTest {
         } finally { colors.recycle() }
     }
 
-    private fun textBitmap(value: String): Bitmap {
+    private fun textBitmap(value: String, rtl: Boolean = false): Bitmap {
         val bitmap = Bitmap.createBitmap(1400, 400, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.WHITE)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK; textSize = 82f
-            typeface = Typeface.create("sans-serif", Typeface.BOLD); textAlign = Paint.Align.CENTER
+            typeface = Typeface.create("sans-serif", Typeface.BOLD)
         }
-        canvas.drawText(value, 700f, 230f, paint)
+        val layout = StaticLayout.Builder.obtain(value, 0, value.length, paint, 1320)
+            .setTextDirection(if (rtl) TextDirectionHeuristics.RTL else TextDirectionHeuristics.LTR)
+            .setAlignment(Layout.Alignment.ALIGN_CENTER).setIncludePad(true).build()
+        canvas.save()
+        canvas.translate(40f, (400 - layout.height) / 2f)
+        layout.draw(canvas)
+        canvas.restore()
         return bitmap
+    }
+
+    private fun finishLeakedFixtures() {
+        instrumentation.runOnMainSync {
+            val monitor = ActivityLifecycleMonitorRegistry.getInstance()
+            listOf(Stage.CREATED, Stage.STARTED, Stage.RESUMED, Stage.PAUSED, Stage.STOPPED)
+                .flatMap { monitor.getActivitiesInStage(it) }.distinct()
+                .filterIsInstance<CaptureFixtureActivity>().forEach { if (!it.isFinishing) it.finish() }
+        }
+        instrumentation.waitForIdleSync()
+    }
+
+    /** Failure evidence contains only this emulator's generated fixtures and system consent UI. */
+    private fun recordUiEvidence(reason: String) {
+        runCatching {
+            val xml = File(context.cacheDir, "capture-test-window.xml")
+            val png = File(context.cacheDir, "capture-test-window.png")
+            try {
+                device.dumpWindowHierarchy(xml)
+                val captured = device.takeScreenshot(png, .5f, 70)
+                instrumentation.sendStatus(2, Bundle().apply {
+                    putString("ost_evidence_reason", reason)
+                    putString("ost_ui_xml", Base64.encodeToString(xml.readBytes().take(100_000).toByteArray(), Base64.NO_WRAP))
+                    if (captured && png.length() <= 350_000)
+                        putString("ost_screenshot_png", Base64.encodeToString(png.readBytes(), Base64.NO_WRAP))
+                })
+            } finally { xml.delete(); png.delete() }
+        }
+    }
+
+    private fun recordBitmapEvidence(reason: String, bitmap: Bitmap) {
+        runCatching {
+            val bytes = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+            if (bytes.size() <= 350_000) instrumentation.sendStatus(2, Bundle().apply {
+                putString("ost_evidence_reason", reason)
+                putString("ost_screenshot_png", Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP))
+            })
+        }
     }
 
     private fun assertGeometry(result: TranslationResult) {
@@ -286,7 +367,9 @@ class CaptureInstrumentationTest {
             if (condition()) return
             SystemClock.sleep(80)
         }
-        assertTrue(message, condition())
+        val satisfied = condition()
+        if (!satisfied) recordUiEvidence(message)
+        assertTrue(message, satisfied)
     }
     private fun assertRemains(duration: Long, message: String, condition: () -> Boolean) {
         val deadline = SystemClock.elapsedRealtime() + duration

@@ -104,7 +104,6 @@ object HistoryStore {
             } catch (error: Exception) {
                 output?.let { runCatching { atomic.failWrite(it) } }
                 if (error is InterruptedIOException || Thread.currentThread().isInterrupted) {
-                    Thread.currentThread().interrupt()
                     throw cancelled(context)
                 }
                 throw IOException(context.engineMessage(
@@ -181,6 +180,8 @@ object HistoryStore {
                 }
             }
         } catch (error: InterruptedIOException) {
+            // Stream cleanup or Android I/O may consume the flag before this boundary.
+            Thread.currentThread().interrupt()
             throw error
         } catch (_: Exception) {
             // Parser diagnostics can contain saved text. They are not exposed or logged.
@@ -241,9 +242,17 @@ object HistoryStore {
         if (Thread.currentThread().isInterrupted) throw cancelled(context)
     }
 
-    private fun cancelled(context: Context) = InterruptedIOException(context.engineMessage(
-        "History operation cancelled.", "أُلغيت عملية السجل.",
-    ))
+    private fun cancelled(context: Context): InterruptedIOException {
+        try {
+            return InterruptedIOException(context.engineMessage(
+                "History operation cancelled.", "أُلغيت عملية السجل.",
+            ))
+        } finally {
+            // Message localization can load SharedPreferences. Android may consume an
+            // interrupt while waiting for that load; cancellation must survive it.
+            Thread.currentThread().interrupt()
+        }
+    }
 
     private fun unreadable(context: Context) = IOException(context.engineMessage(
         "Saved history could not be read and was kept unchanged. Export a backup if possible, or explicitly clear the damaged history before saving new results.",

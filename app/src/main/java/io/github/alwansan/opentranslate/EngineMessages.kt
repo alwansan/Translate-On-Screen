@@ -5,10 +5,18 @@ import android.content.res.Resources
 
 /** Application-context workers must follow the explicit interface-language preference. */
 internal fun Context.engineMessage(english: String, arabic: String): String {
-    val chosen = AppPreferences.language(this)
-    val language = if (chosen == "ar" || chosen == "en") chosen
-        else Resources.getSystem().configuration.locales[0]?.language
-    return if (language == "ar") arabic else english
+    val thread = Thread.currentThread()
+    val interruptedOnEntry = thread.isInterrupted
+    try {
+        val chosen = AppPreferences.language(this)
+        val language = if (chosen == "ar" || chosen == "en") chosen
+            else Resources.getSystem().configuration.locales[0]?.language
+        return if (language == "ar") arabic else english
+    } finally {
+        // SharedPreferences' first-load wait may swallow InterruptedException on Android.
+        // Formatting a cancellation/error message must not erase an existing stop signal.
+        if (interruptedOnEntry) thread.interrupt()
+    }
 }
 internal fun Context.endpointMessage(error: IllegalArgumentException): String =
     if (error is EndpointValidationException) engineMessage(error.reason.english, error.reason.arabic)

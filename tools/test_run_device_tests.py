@@ -29,6 +29,16 @@ class InstrumentationVerdictTest(unittest.TestCase):
         self.assertTrue(result["passed"], result["problems"])
         self.assertEqual(1, len(result["tests"]))
 
+    def test_progress_diagnostics_do_not_create_or_finish_tests(self):
+        source = transcript().replace("INSTRUMENTATION_STATUS_CODE: 1\n",
+            "INSTRUMENTATION_STATUS_CODE: 1\nINSTRUMENTATION_STATUS: ost_pid=123\n"
+            "INSTRUMENTATION_STATUS: ost_uid=10123\nINSTRUMENTATION_STATUS_CODE: 2\n")
+        result = parse_instrumentation(source, 0)
+        self.assertTrue(result["passed"], result["problems"])
+        self.assertEqual(1, len(result["starts"]))
+        self.assertEqual(1, len(result["tests"]))
+        self.assertEqual([{"pid": "123", "uid": "10123"}], result["processes"])
+
     def test_adb_zero_does_not_mean_runner_completed(self):
         self.assertFalse(parse_instrumentation(transcript(final=False), 0)["passed"])
         self.assertFalse(parse_instrumentation("INSTRUMENTATION_CODE: -1\n", 0)["passed"])

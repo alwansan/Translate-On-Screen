@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="image_crop_action_trim" type="id" />
+    <item name="image_crop_action_expand" type="id" />
+    <item name="image_crop_action_reset" type="id" />
+    <item name="image_crop_action_left" type="id" />
+    <item name="image_crop_action_right" type="id" />
+    <item name="image_crop_action_up" type="id" />
+    <item name="image_crop_action_down" type="id" />
+</resources>

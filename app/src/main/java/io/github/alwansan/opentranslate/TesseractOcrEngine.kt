@@ -89,6 +89,16 @@ internal class TesseractOcrEngine(context: Context) : OcrEngine {
             if (!next.init(ModelStore.dataPath(context).absolutePath, languages.joinToString("+"), TessBaseAPI.OEM_LSTM_ONLY)) {
                 throw OcrProblem("The OCR models could not be loaded. Reinstall them.", "تعذر تشغيل نماذج قراءة النص. أعد تثبيتها.")
             }
+            InterruptedRequestGate.check()
+            // Tesseract 5.5.1's row-noise filter can treat Arabic letter dots as noise
+            // and discard a complete row before the LSTM sees it. Keep word filtering
+            // and the selected PSM, but disable that row heuristic for Arabic models.
+            // Bundled source: textord/tordmain.cpp; upstream issue tesseract-ocr/tesseract#4582.
+            if ("ara" in languages && !next.setVariable("textord_noise_rejrows", "0")) {
+                throw OcrProblem("This OCR library could not configure Arabic text detection.",
+                    "تعذر ضبط قراءة النص العربي في مكتبة التعرف على النص.")
+            }
+            InterruptedRequestGate.check()
             tess = next; modelSignature = signature; retained = true
             return next
         } finally { if (!retained) next.recycle() }

@@ -2,6 +2,7 @@ package io.github.alwansan.opentranslate
 
 import android.app.Activity
 import android.app.Application
+import android.app.KeyguardManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -13,9 +14,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
 import android.provider.OpenableColumns
+import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
@@ -29,6 +32,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.UUID
@@ -44,16 +48,26 @@ class ImageEditorInstrumentationTest {
     private val context = instrumentation.targetContext
     private val application = context.applicationContext as Application
     private val device = UiDevice.getInstance(instrumentation)
-    private var harness: ImageEditorHarnessActivity? = null
+    @Volatile private var harness: ImageEditorHarnessActivity? = null
+    private var harnessScenario: ActivityScenario<ImageEditorHarnessActivity>? = null
     @Volatile private var editor: ImageEditorActivity? = null
     private var previousSettings: UserSettings? = null
     private var previousLanguage = "system"
     private var previousTheme = "system"
     private val temporaryUris = ArrayList<Uri>()
     private val lifecycle = object : Application.ActivityLifecycleCallbacks {
-        override fun onActivityCreated(activity: Activity, state: Bundle?) { if (activity is ImageEditorActivity) editor = activity }
-        override fun onActivityResumed(activity: Activity) { if (activity is ImageEditorActivity) editor = activity }
-        override fun onActivityDestroyed(activity: Activity) { if (editor === activity) editor = null }
+        override fun onActivityCreated(activity: Activity, state: Bundle?) {
+            if (activity is ImageEditorActivity) editor = activity
+            if (activity is ImageEditorHarnessActivity) harness = activity
+        }
+        override fun onActivityResumed(activity: Activity) {
+            if (activity is ImageEditorActivity) editor = activity
+            if (activity is ImageEditorHarnessActivity) harness = activity
+        }
+        override fun onActivityDestroyed(activity: Activity) {
+            if (editor === activity) editor = null
+            if (harness === activity) harness = null
+        }
         override fun onActivityStarted(activity: Activity) {}
         override fun onActivityPaused(activity: Activity) {}
         override fun onActivityStopped(activity: Activity) {}
@@ -61,12 +75,19 @@ class ImageEditorInstrumentationTest {
     }
 
     @Before fun prepare() {
+        instrumentation.sendStatus(2, Bundle().apply {
+            putString("ost_pid", android.os.Process.myPid().toString())
+            putString("ost_uid", android.os.Process.myUid().toString())
+        })
         previousSettings = SettingsStore.read(context)
         previousLanguage = AppPreferences.language(context)
         previousTheme = AppPreferences.theme(context)
         stopCapture()
         device.wakeUp()
         shell("wm dismiss-keyguard")
+        awaitCondition("The emulator keyguard did not unlock before launching the image harness", 10_000) {
+            !context.getSystemService(KeyguardManager::class.java).isKeyguardLocked
+        }
         device.setOrientationNatural()
         assertTrue("Provision a verified eng.traineddata before running image-editor tests", ModelStore.has(context, "eng"))
         AppPreferences.saveAppearance(context, "en", "light")
@@ -74,25 +95,42 @@ class ImageEditorInstrumentationTest {
         SettingsStore.save(context, UserSettings(source = "en", target = "en", ocrLanguage = "eng",
             networkEnabled = false, keepHistory = false))
         instrumentation.runOnMainSync { application.registerActivityLifecycleCallbacks(lifecycle) }
-        harness = instrumentation.startActivitySync(Intent(context, ImageEditorHarnessActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as ImageEditorHarnessActivity
-        assertNotNull(device.wait(Until.findObject(By.desc("Image editor test harness")), 10_000))
+        // A fresh fixture task cannot remain behind a consent/task left by an earlier failed test.
+        // ActivityScenario also waits for the resumed lifecycle, rather than only Activity creation.
+        try {
+            harnessScenario = ActivityScenario.launch<ImageEditorHarnessActivity>(
+                Intent(context, ImageEditorHarnessActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+            ).also { scenario -> scenario.onActivity { harness = it } }
+            assertNotNull(device.wait(Until.findObject(By.desc("Image editor test harness")), 10_000))
+        } catch (error: Throwable) {
+            failureEvidence("Image harness launch or visibility failed: " + error.javaClass.simpleName)
+            throw error
+        }
     }
 
     @After fun restore() {
-        instrumentation.runOnMainSync {
-            editor?.finish()
-            harness?.finish()
-            application.unregisterActivityLifecycleCallbacks(lifecycle)
+        try {
+            instrumentation.runOnMainSync {
+                editor?.finish()
+                harness?.finish()
+                application.unregisterActivityLifecycleCallbacks(lifecycle)
+            }
+        } finally {
+            try {
+                harnessScenario?.close()
+            } finally {
+                harnessScenario = null
+                editor = null
+                harness = null
+                temporaryUris.forEach { CaptureImageProvider.deleteOwnedUri(context, it) }
+                temporaryUris.clear()
+                stopCapture()
+                runCatching { device.setOrientationNatural(); device.unfreezeRotation() }
+                previousSettings?.let { SettingsStore.save(context, it) }
+                AppPreferences.saveAppearance(context, previousLanguage, previousTheme)
+            }
         }
-        editor = null
-        harness = null
-        temporaryUris.forEach { CaptureImageProvider.deleteOwnedUri(context, it) }
-        temporaryUris.clear()
-        stopCapture()
-        runCatching { device.setOrientationNatural(); device.unfreezeRotation() }
-        previousSettings?.let { SettingsStore.save(context, it) }
-        AppPreferences.saveAppearance(context, previousLanguage, previousTheme)
     }
 
     @Test fun cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile() {
@@ -344,12 +382,47 @@ class ImageEditorInstrumentationTest {
     private fun awaitCondition(message: String, timeout: Long, condition: () -> Boolean) {
         val deadline = SystemClock.elapsedRealtime() + timeout
         while (!condition() && SystemClock.elapsedRealtime() < deadline) SystemClock.sleep(50)
-        assertTrue(message, condition())
+        val met = condition()
+        if (!met) failureEvidence(message)
+        assertTrue(message, met)
     }
 
     private fun assertRemains(message: String, duration: Long, condition: () -> Boolean) {
         val deadline = SystemClock.elapsedRealtime() + duration
         do { assertTrue(message, condition()); SystemClock.sleep(50) } while (SystemClock.elapsedRealtime() < deadline)
+    }
+
+    /** Failure-only, synthetic emulator evidence; never changes an assertion or test result. */
+    private fun failureEvidence(reason: String) {
+        runCatching {
+            val xml = File(context.cacheDir, "image-fixture-failure.xml")
+            val png = File(context.cacheDir, "image-fixture-failure.png")
+            val status = Bundle().apply { putString("ost_evidence_reason", reason.take(500)) }
+            try {
+                runCatching {
+                    device.dumpWindowHierarchy(xml)
+                    val bytes = ByteArrayOutputStream()
+                    xml.inputStream().use { input ->
+                        val buffer = ByteArray(8192)
+                        while (bytes.size() < 100_000) {
+                            val count = input.read(buffer, 0, minOf(buffer.size, 100_000 - bytes.size()))
+                            if (count < 0) break
+                            bytes.write(buffer, 0, count)
+                        }
+                    }
+                    status.putString("ost_ui_xml", Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP))
+                }
+                runCatching {
+                    if (device.takeScreenshot(png, .5f, 70) && png.length() <= 350_000) {
+                        status.putString("ost_screenshot_png", Base64.encodeToString(png.readBytes(), Base64.NO_WRAP))
+                    }
+                }
+                instrumentation.sendStatus(2, status)
+            } finally {
+                xml.delete()
+                png.delete()
+            }
+        }
     }
 
     private fun shell(command: String) {

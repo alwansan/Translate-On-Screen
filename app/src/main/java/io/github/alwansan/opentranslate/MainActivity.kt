@@ -77,6 +77,7 @@ class MainActivity : Activity() {
     private var speech: TextToSpeech? = null
     private var speechReady = false
     private var lastServiceState = false
+    private var lastCaptureMode: CaptureMode? = null
 
     override fun attachBaseContext(newBase: Context) = super.attachBaseContext(AppPreferences.wrap(newBase))
 
@@ -108,10 +109,17 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
-        if (::ui.isInitialized && lastServiceState != CaptureService.isRunning) {
+        if (::ui.isInitialized && (lastServiceState != CaptureService.isRunning ||
+                    lastCaptureMode != ScreenPreferences.read(this).mode)) {
             lastServiceState = CaptureService.isRunning
             if (tab == "home") renderPage()
         }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && alive && ::ui.isInitialized && tab == "home" &&
+            lastCaptureMode != ScreenPreferences.read(this).mode) renderPage()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -197,6 +205,7 @@ class MainActivity : Activity() {
             "اقرأ النص وافهمه، وتحكّم بمشاركة شاشتك.")))
         val capture = ui.card(body)
         val running = CaptureService.isRunning
+        lastCaptureMode = ScreenPreferences.read(this).mode
         capture.addView(ui.label(if (running) t("Screen sharing is active", "مشاركة الشاشة فعالة")
             else t("Ready when you are", "جاهز عندما تحتاجه"), 23f, true))
         capture.addView(ui.secondary(t("Start the floating button, then choose the screen or area to read. Android asks before each new sharing session.",
@@ -224,7 +233,9 @@ class MainActivity : Activity() {
         ))
         ui.button(details, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
         ui.button(details, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
-        ui.button(details, t("Choose capture mode", "اختيار وضع الالتقاط")) { chooseMode() }
+        ui.button(details, t("Capture mode: ", "وضع الالتقاط: ") + modeLabel(ScreenPreferences.read(this).mode)) { chooseMode() }
+        details.addView(ui.secondary(t("Screen and image reading: ", "قراءة الشاشة والصور: ") + settings.ocrLanguage))
+        readingNotice(settings.source, settings.ocrLanguage)?.let { details.addView(ui.secondary(it)) }
         val missing = ModelStore.missing(this, settings.ocrLanguage)
         if (missing.isNotEmpty()) {
             details.addView(ui.secondary(t("Reading models needed: ", "نماذج القراءة المطلوبة: ") + missing.joinToString(", ")))
@@ -265,6 +276,18 @@ class MainActivity : Activity() {
         return mapping[code]?.takeIf { it in ModelStore.languages } ?: fallback
     }
 
+    private fun readingNotice(source: String, readingModels: String): String? = when {
+        source == "auto" -> t(
+            "Automatic language detection applies to text translation. Screen and image reading uses the selected models: ",
+            "الاكتشاف التلقائي يخص لغة النص عند الترجمة. قراءة الشاشة والصور تستخدم النماذج المختارة: ") + readingModels
+        ocrForSource(source, "").isEmpty() -> t(
+            "There is no built-in image-reading model for ", "لا يتوفر نموذج قراءة صور مدمج للغة ") +
+            languageName(source) + t(
+                ". Typed text can still be translated by a supporting provider. Reading currently uses: ",
+                ". يمكنك ترجمة النص المكتوب عند دعم المزوّد لها. القراءة تستخدم حالياً: ") + readingModels
+        else -> null
+    }
+
     private fun swapLanguages() {
         val settings = SettingsStore.read(this)
         val target = settings.source.takeUnless { it == "auto" }
@@ -283,8 +306,11 @@ class MainActivity : Activity() {
             AppPreferences.rememberLanguage(this, settings.target)
             renderPage()
             val missing = ModelStore.missing(this, settings.ocrLanguage)
-            message(if (missing.isEmpty()) getString(R.string.settings_saved)
-                else t("Saved. Install the reading model: ", "حُفظت الإعدادات. ثبّت نموذج القراءة: ") + missing.joinToString(", "))
+            message(listOfNotNull(getString(R.string.settings_saved),
+                readingNotice(settings.source, settings.ocrLanguage),
+                missing.takeIf { it.isNotEmpty() }?.let {
+                    t("Install the reading model: ", "ثبّت نموذج القراءة: ") + it.joinToString(", ")
+                }).joinToString("\n"))
         }.onFailure(::fail)
     }
 
@@ -310,6 +336,8 @@ class MainActivity : Activity() {
             "تدعم الحزم المحلية الإنكليزية والعربية، ويجب اختيار اللغة الأصلية.")
         else t("Translation availability depends on your provider. Reading models are chosen separately. Hold a language to add or remove a favorite.",
             "توفر الترجمة يعتمد على المزوّد. نماذج قراءة الصور مستقلة. اضغط مطولاً لإضافة لغة إلى المفضلة أو إزالتها.")))
+        if (source) body.addView(ui.secondary(t("Active reading models: ", "نماذج القراءة الحالية: ") +
+            SettingsStore.read(this).ocrLanguage))
         val list = ListView(this)
         body.addView(list, LinearLayout.LayoutParams(-1, ui.dp(330)))
         val dialog = AlertDialog.Builder(this).setTitle(if (source) R.string.source_language else R.string.target_language)
@@ -328,8 +356,14 @@ class MainActivity : Activity() {
                     locale.getDisplayLanguage(Locale.ENGLISH).lowercase(Locale.ROOT).contains(query) ||
                     locale.getDisplayLanguage(Locale.forLanguageTag("ar")).contains(query)
             }.sortedWith(compareBy<String>({ it != current }, { it !in favorites }, { it !in recents }, { languageName(it) }))
-            list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, visible.map {
-                (if (it == current) "✓ " else "") + (if (it in favorites) "★ " else "") + languageName(it) + " · " + it
+            list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, visible.map { code ->
+                val availability = if (!source) "" else "\n" + when {
+                    code == "auto" -> t("Text detection · reading models stay selected", "اكتشاف لغة النص · تبقى نماذج القراءة المختارة")
+                    ocrForSource(code, "").isEmpty() -> t("Text translation · no built-in reading model", "ترجمة نص · لا يوجد نموذج قراءة مدمج")
+                    else -> t("Image-reading model: ", "نموذج قراءة الصور: ") + ocrForSource(code, "")
+                }
+                (if (code == current) "✓ " else "") + (if (code in favorites) "★ " else "") +
+                    languageName(code) + " · " + code + availability
             })
         }
         search.addTextChangedListener(watcher { refresh() })
@@ -458,6 +492,7 @@ class MainActivity : Activity() {
         val provider = ui.select(body, t("Translation provider", "مزوّد الترجمة"),
             providers.map { t(it.englishName, it.arabicName) }, providers.indexOfFirst { it.id == old.provider })
         lateinit var ocrButton: Button
+        lateinit var ocrNotice: TextView
         val sourceButton = ui.button(body, t("Source: ", "الأصل: ") + languageName(source)) { }
         val targetButton = ui.button(body, t("Target: ", "الهدف: ") + languageName(target)) { }
         sourceButton.setOnClickListener {
@@ -466,6 +501,7 @@ class MainActivity : Activity() {
                 ocr = ocrForSource(it, ocr)
                 sourceButton.text = t("Source: ", "الأصل: ") + languageName(it)
                 ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
+                ocrNotice.text = readingNotice(source, ocr).orEmpty()
             }
         }
         targetButton.setOnClickListener {
@@ -474,6 +510,8 @@ class MainActivity : Activity() {
             }
         }
         ocrButton = ui.button(body, t("Image reading: ", "قراءة الصور: ") + ocr) { }
+        ocrNotice = ui.secondary(readingNotice(source, ocr).orEmpty())
+        body.addView(ocrNotice)
         ocrButton.setOnClickListener {
             val models = ModelStore.models
             val selected = models.map { it.language in ocr.split('+') }.toBooleanArray()
@@ -484,7 +522,11 @@ class MainActivity : Activity() {
                     val codes = models.filterIndexed { index, _ -> selected[index] }.map { it.language }
                     if (codes.isEmpty()) message(t("Choose at least one reading language.", "اختر لغة قراءة واحدة على الأقل."))
                     else if (codes.size > 4) message(t("Choose up to four reading languages at once.", "اختر حتى أربع لغات قراءة معاً."))
-                    else { ocr = codes.joinToString("+"); ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr }
+                    else {
+                        ocr = codes.joinToString("+")
+                        ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
+                        ocrNotice.text = readingNotice(source, ocr).orEmpty()
+                    }
                 }.setNegativeButton(R.string.cancel, null).show()
         }
         val pageModes = listOf("sparse", "block", "vertical")
@@ -544,10 +586,11 @@ class MainActivity : Activity() {
                     sourceButton.text = t("Source: ", "الأصل: ") + languageName(source)
                     targetButton.text = t("Target: ", "الهدف: ") + languageName(target)
                     ocrButton.text = t("Image reading: ", "قراءة الصور: ") + ocr
+                    ocrNotice.text = readingNotice(source, ocr).orEmpty()
                 }
             }
         }
-        endpoint.addTextChangedListener(watcher { network.isChecked = false })
+        endpoint.addTextChangedListener(watcher { key.setText(""); network.isChecked = false })
         provider.onItemSelectedListener = selection { refreshProvider() }
         auth.onItemSelectedListener = selection {
             if (auth.selectedItemPosition != authPosition) {
@@ -575,7 +618,12 @@ class MainActivity : Activity() {
                     singleAppCapture = Build.VERSION.SDK_INT >= 34 && single.isChecked, ocrPageMode = pageModes[page.selectedItemPosition])
                 runCatching { SettingsStore.save(this, next) }.onSuccess {
                     cancelWork(false); notifySettingsChanged(); dialog.dismiss(); renderPage()
-                    message(getString(R.string.settings_saved))
+                    val missing = ModelStore.missing(this, next.ocrLanguage)
+                    message(listOfNotNull(getString(R.string.settings_saved),
+                        readingNotice(next.source, next.ocrLanguage),
+                        missing.takeIf { it.isNotEmpty() }?.let {
+                            t("Install the reading model: ", "ثبّت نموذج القراءة: ") + it.joinToString(", ")
+                        }).joinToString("\n"))
                 }.onFailure { Toast.makeText(this, it.message ?: getString(R.string.operation_failed), Toast.LENGTH_LONG).show() }
             }
         }

@@ -3,6 +3,19 @@ package io.github.alwansan.opentranslate
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.text.Editable
+import android.text.InputFilter
+import android.text.InputType
+import android.text.TextWatcher
+import android.text.TextUtils
+import android.view.Gravity
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.Button
+import java.util.Locale
 import android.view.View
 import android.widget.AdapterView
 import android.graphics.Color
@@ -19,6 +32,7 @@ import android.widget.Toast
 object ScreenSettingsDialog {
     fun show(c: Activity) {
         val old = ScreenPreferences.read(c)
+        var refreshPreview: (() -> Unit)? = null
         fun ui(en: String, ar: String) = c.engineMessage(en, ar)
         fun dp(n: Int) = (n * c.resources.displayMetrics.density).toInt()
         val panel = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20),dp(8),dp(20),dp(12)) }
@@ -29,6 +43,10 @@ object ScreenSettingsDialog {
                 adapter = ArrayAdapter(c, android.R.layout.simple_spinner_dropdown_item, labels)
                 setSelection(index.coerceIn(0, labels.lastIndex)); contentDescription = name
                 panel.addView(this, LinearLayout.LayoutParams(-1,dp(48)))
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) { refreshPreview?.invoke() }
+                }
             }
         }
         fun slider(name: String, min: Int, max: Int, value: Int): SeekBar {
@@ -38,14 +56,19 @@ object ScreenSettingsDialog {
                 this.max = max-min; progress = value.coerceIn(min,max)-min; contentDescription = name
                 caption.text = "$name: ${progress+min}"
                 setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(bar: SeekBar?, progress: Int, fromUser: Boolean) { caption.text = "$name: ${progress+min}" }
+                    override fun onProgressChanged(bar: SeekBar?, progress: Int, fromUser: Boolean) { caption.text = "$name: ${progress+min}"; refreshPreview?.invoke() }
                     override fun onStartTrackingTouch(bar: SeekBar?) = Unit
                     override fun onStopTrackingTouch(bar: SeekBar?) = Unit
                 })
                 panel.addView(this, LinearLayout.LayoutParams(-1,dp(44)))
             }
         }
-        fun toggle(name: String, value: Boolean) = Switch(c).apply { text=name; isChecked=value; minHeight=dp(48); panel.addView(this) }
+        fun toggle(name: String, value: Boolean) = Switch(c).apply {
+            text=name; isChecked=value; minHeight=dp(48); panel.addView(this)
+            setOnCheckedChangeListener { _, _ -> refreshPreview?.invoke() }
+        }
+        fun color(name: String, values: List<Int>, labels: List<String>, initial: Int) =
+            ColorField(c, name, values, labels, initial) { refreshPreview?.invoke() }.also { panel.addView(it.root) }
         val modes = CaptureMode.values().toList()
         val mode = select(ui("Default mode","الوضع الافتراضي"), modes.map { c.modeLabel(it) }, modes.indexOf(old.mode))
         val actions = BubbleAction.values().toList()
@@ -62,25 +85,58 @@ object ScreenSettingsDialog {
         val single = select(ui("Single tap","النقر المفرد"),singleActions.map(::actionLabel),singleActions.indexOf(old.single))
         val long = select(ui("Long press","الضغط المطول"),actions.map(::actionLabel),actions.indexOf(old.long))
         val double = select(ui("Double tap","النقر المزدوج"),actions.map(::actionLabel),actions.indexOf(old.double))
+        panel.addView(TextView(c).apply { text = ui(
+            "Single tap waits briefly only when a double-tap action is enabled. Choose No action for double tap to make single tap immediate.",
+            "ينتظر النقر المفرد قليلاً فقط عند تفعيل إجراء للنقر المزدوج. اختر «لا إجراء» للنقر المزدوج ليصبح المفرد فورياً.") })
         title(ui("Automatic mode","الوضع التلقائي"))
         val interval = slider(ui("Interval (seconds)","الفترة بالثواني"),1,120,old.intervalSeconds)
         val display = slider(ui("Result duration (seconds)","مدة عرض النتيجة بالثواني"),0,300,old.displaySeconds)
         val stop = slider(ui("Stop after (minutes)","إيقاف بعد دقائق"),1,120,old.stopMinutes)
-        panel.addView(TextView(c).apply { text=ui("Automatic capture runs only after you start it. Tap the bubble or use the notification to stop; locking the device stops sharing.","يلتقط الوضع التلقائي بصورة متكررة بعد تشغيله صراحة. اضغط الفقاعة أو الإشعار للإيقاف؛ قفل الجهاز يوقف المشاركة.") })
+        panel.addView(TextView(c).apply { text=ui("Automatic capture runs after explicit start. Use your configured gestures or the notification to pause/stop; locking the device ends sharing.","يلتقط الوضع التلقائي بعد تشغيله صراحة. استخدم الإيماءات المختارة أو الإشعار للتوقيف أو الإنهاء؛ قفل الجهاز ينهي المشاركة.") })
         title(ui("Bubble","الفقاعة"))
         val symbols = listOf("文","T","◎","✦")
         val symbol = select(ui("Symbol","شكل الرمز"),symbols,symbols.indexOf(old.bubbleSymbol))
         val colors = listOf(0xff4de2bf.toInt(),0xff1677d2.toInt(),0xff8a4ed6.toInt(),0xffffa42f.toInt(),Color.WHITE,Color.BLACK)
         val colorNames = listOf(ui("Mint","نعناعي"),ui("Blue","أزرق"),ui("Purple","بنفسجي"),ui("Orange","برتقالي"),ui("White","أبيض"),ui("Black","أسود"))
-        val bubbleColor=select(ui("Bubble color","لون الفقاعة"),colorNames,colors.indexOf(old.bubbleColor))
+        val bubbleColor=color(ui("Bubble color","لون الفقاعة"),colors,colorNames,old.bubbleColor)
         val size=slider(ui("Bubble size","حجم الفقاعة"),36,96,old.bubbleSize)
         val opacity=slider(ui("Bubble opacity (%)","شفافية الفقاعة (%)"),20,100,old.bubbleOpacity)
         title(ui("Result appearance","مظهر النتيجة"))
+        title(ui("Live appearance preview", "معاينة المظهر المباشرة"))
+        val previewFrame = FrameLayout(c).apply {
+            minimumHeight = dp(190)
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            contentDescription = ui("Appearance preview", "معاينة المظهر")
+        }
+        val sourcePreview = TextView(c).apply {
+            text = ui("Original text area", "منطقة النص الأصلي")
+            textSize = 15f; setTextColor(Color.BLACK); gravity = Gravity.CENTER
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        }
+        previewFrame.addView(sourcePreview, FrameLayout.LayoutParams(-1, dp(62)))
+        val previewCard = LinearLayout(c).apply {
+            orientation = LinearLayout.VERTICAL; setPadding(dp(12), dp(10), dp(12), dp(10))
+        }
+        val previewText = TextView(c).apply {
+            textDirection = View.TEXT_DIRECTION_FIRST_STRONG
+            maxLines = 3; ellipsize = TextUtils.TruncateAt.END
+        }
+        val originalPreview = TextView(c).apply {
+            text = ui("Original sample text", "نص أصلي تجريبي"); textSize = 12f
+        }
+        previewCard.addView(previewText, LinearLayout.LayoutParams(-1, -2))
+        previewCard.addView(originalPreview, LinearLayout.LayoutParams(-1, -2))
+        previewFrame.addView(previewCard, FrameLayout.LayoutParams(-1, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL))
+        val bubblePreview = TextView(c).apply { gravity = Gravity.CENTER }
+        previewFrame.addView(bubblePreview, FrameLayout.LayoutParams(dp(54), dp(54), Gravity.BOTTOM or Gravity.END))
+        panel.addView(previewFrame, LinearLayout.LayoutParams(-1, -2))
+        val previewHint = TextView(c).apply { textSize = 12f }
+        panel.addView(previewHint)
         val textSize=slider(ui("Text size","حجم النص"),12,36,old.textSize)
         val textColors=listOf(Color.WHITE,Color.BLACK,0xffffdf82.toInt(),0xff4de2bf.toInt())
-        val textColor=select(ui("Text color","لون النص"),listOf(ui("White","أبيض"),ui("Black","أسود"),ui("Yellow","أصفر"),ui("Mint","نعناعي")),textColors.indexOf(old.textColor))
+        val textColor=color(ui("Text color","لون النص"),textColors,listOf(ui("White","أبيض"),ui("Black","أسود"),ui("Yellow","أصفر"),ui("Mint","نعناعي")),old.textColor)
         val backgrounds=listOf(0xff1d202b.toInt(),Color.BLACK,Color.WHITE,0xff124f78.toInt())
-        val bg=select(ui("Background color","لون الخلفية"),listOf(ui("Slate","رمادي داكن"),ui("Black","أسود"),ui("White","أبيض"),ui("Blue","أزرق")),backgrounds.indexOf(old.backgroundColor))
+        val bg=color(ui("Background color","لون الخلفية"),backgrounds,listOf(ui("Slate","رمادي داكن"),ui("Black","أسود"),ui("White","أبيض"),ui("Blue","أزرق")),old.backgroundColor)
         val bgAlpha=slider(ui("Background opacity (%)","شفافية الخلفية (%)"),15,100,old.backgroundOpacity)
         val centered=toggle(ui("Center text","توسيط النص"),old.centerText)
         val hide=toggle(ui("Hide original when translated","إخفاء الأصلي بعد الترجمة"),old.hideOriginal)
@@ -89,8 +145,8 @@ object ScreenSettingsDialog {
         val font = select(ui("Font family","عائلة الخط"), fonts, fonts.indexOf(old.fontFamily))
         val bold = toggle(ui("Bold text", "نص عريض"), old.fontBold)
         val border = toggle(ui("Background border", "حدود الخلفية"), old.backgroundBorder)
-        val borderColor = select(ui("Background border color", "لون حدود الخلفية"), colorNames, colors.indexOf(old.borderColor))
-        val selectionColor = select(ui("Selection border color", "لون إطار تحديد المنطقة"), colorNames, colors.indexOf(old.selectionBorderColor))
+        val borderColor = color(ui("Background border color", "لون حدود الخلفية"), colors, colorNames, old.borderColor)
+        val selectionColor = color(ui("Selection border color", "لون إطار تحديد المنطقة"), colors, colorNames, old.selectionBorderColor)
         val panelWidth = slider(ui("Result width (%)", "عرض نافذة النتيجة (%)"), 50, 100, old.panelWidthPercent)
         val belowRegion = toggle(ui("Anchor result below selected area", "عرض النتيجة أسفل المنطقة المختارة"), old.anchorBelowRegion)
         val lines = toggle(ui("Translate lines separately (off: paragraphs)", "ترجمة الأسطر منفصلة (التعطيل: فقرات)"), old.lineByLine)
@@ -118,31 +174,89 @@ object ScreenSettingsDialog {
                 display.progress = profile.displaySeconds
                 stop.progress = profile.stopMinutes - 1
                 textSize.progress = profile.textSize - 12
-                textColor.setSelection(textColors.indexOf(profile.textColor).coerceAtLeast(0))
-                bg.setSelection(backgrounds.indexOf(profile.backgroundColor).coerceAtLeast(0))
+                textColor.setValue(profile.textColor)
+                bg.setValue(profile.backgroundColor)
                 bgAlpha.progress = profile.backgroundOpacity - 15
                 centered.isChecked = profile.centerText; hide.isChecked = profile.hideOriginal
                 speak.isChecked = profile.speakAutomatically; font.setSelection(fonts.indexOf(profile.fontFamily).coerceAtLeast(0))
                 bold.isChecked = profile.fontBold; border.isChecked = profile.backgroundBorder
-                borderColor.setSelection(colors.indexOf(profile.borderColor).coerceAtLeast(0))
+                borderColor.setValue(profile.borderColor)
                 panelWidth.progress = profile.panelWidthPercent - 50; belowRegion.isChecked = profile.anchorBelowRegion
                 lines.isChecked = profile.lineByLine; positioned.isChecked = profile.positionedResults
                 vertical.isChecked = profile.verticalText; outline.isChecked = profile.outlineText
                 upper.isChecked = profile.uppercaseText; smart.isChecked = profile.smartColors
                 skip.isChecked = profile.skipUnchangedFrames; threshold.progress = profile.changeThreshold - 1
                 interaction.isChecked = profile.translateOnInteraction
+                refreshPreview?.invoke()
             }
         }
+        refreshPreview = {
+            val textInk = textColor.valueOrNull() ?: old.textColor
+            val background = bg.valueOrNull() ?: old.backgroundColor
+            val borderInk = borderColor.valueOrNull() ?: old.borderColor
+            val selectionInk = selectionColor.valueOrNull() ?: old.selectionBorderColor
+            val bubbleInk = bubbleColor.valueOrNull() ?: old.bubbleColor
+            previewText.text = ui("Translation preview · مرحباً", "معاينة الترجمة · Hello").let {
+                if (upper.isChecked) it.uppercase(Locale.getDefault()) else it
+            }
+            previewText.textSize = (textSize.progress + 12).toFloat()
+            previewText.typeface = Typeface.create(fonts[font.selectedItemPosition], if (bold.isChecked) Typeface.BOLD else Typeface.NORMAL)
+            previewText.setTextColor(textInk)
+            previewText.gravity = if (centered.isChecked) Gravity.CENTER else Gravity.START
+            if (outline.isChecked) previewText.setShadowLayer(dp(2).toFloat(), 0f, 0f, if (Color.luminance(textInk) > .4f) Color.BLACK else Color.WHITE)
+            else previewText.setShadowLayer(0f, 0f, 0f, Color.TRANSPARENT)
+            originalPreview.visibility = if (hide.isChecked) View.GONE else View.VISIBLE
+            originalPreview.setTextColor(textInk)
+            originalPreview.gravity = previewText.gravity
+            previewCard.background = GradientDrawable().apply {
+                setColor(Color.argb((bgAlpha.progress + 15) * 255 / 100, Color.red(background), Color.green(background), Color.blue(background)))
+                cornerRadius = dp(12).toFloat()
+                if (border.isChecked) setStroke(dp(2), borderInk)
+            }
+            sourcePreview.background = GradientDrawable().apply {
+                setColor(Color.WHITE); cornerRadius = dp(8).toFloat(); setStroke(dp(2), selectionInk)
+            }
+            val available = (previewFrame.width - dp(16)).coerceAtLeast(dp(100))
+            previewCard.layoutParams = (previewCard.layoutParams as FrameLayout.LayoutParams).apply {
+                width = available * (panelWidth.progress + 50) / 100
+                topMargin = if (belowRegion.isChecked) dp(70) else dp(8)
+            }
+            val bubbleDp = size.progress + 36
+            bubblePreview.layoutParams = (bubblePreview.layoutParams as FrameLayout.LayoutParams).apply { width = dp(bubbleDp); height = dp(bubbleDp) }
+            bubblePreview.text = symbols[symbol.selectedItemPosition]
+            bubblePreview.textSize = bubbleDp * .46f
+            bubblePreview.setTextColor(if (Color.luminance(bubbleInk) > .45f) Color.BLACK else Color.WHITE)
+            bubblePreview.alpha = (opacity.progress + 20) / 100f
+            bubblePreview.background = GradientDrawable().apply { setColor(bubbleInk); cornerRadius = dp(bubbleDp).toFloat() / 2 }
+            previewHint.text = if (smart.isChecked) ui(
+                "Smart colors follow captured backgrounds. This sample shows your manual color choices.",
+                "تتبع الألوان الذكية خلفية النص الملتقط. يعرض هذا المثال الألوان اليدوية المختارة.")
+                else ui("Changes update this sample immediately; Save applies them.", "تظهر التغييرات على المثال فوراً؛ اضغط حفظ لتطبيقها.")
+        }
+        previewFrame.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
+            if (right - left != oldRight - oldLeft) refreshPreview?.invoke()
+        }
+        lateinit var scroll: ScrollView
+        panel.addView(Button(c).apply {
+            text = ui("Show appearance preview", "عرض معاينة المظهر")
+            isAllCaps = false
+            setOnClickListener { scroll.smoothScrollTo(0, previewFrame.top) }
+        })
+        scroll = ScrollView(c).apply { addView(panel) }
         val dialog = AlertDialog.Builder(c).setTitle(ui("Screen modes and appearance","أوضاع الشاشة والمظهر"))
-            .setView(ScrollView(c).apply { addView(panel) })
+            .setView(scroll)
             .setPositiveButton(ui("Save","حفظ"),null).setNegativeButton(ui("Cancel","إلغاء"),null).create()
         dialog.setOnShowListener {
+            refreshPreview?.invoke()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val colorFields = listOf(bubbleColor, textColor, bg, borderColor, selectionColor)
+                val invalid = colorFields.firstOrNull { !it.validate() }
+                if (invalid != null) { invalid.focus(); return@setOnClickListener }
                 val updated=old.copy(mode=modes[mode.selectedItemPosition],single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
-                    intervalSeconds=interval.progress+1,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=colors[bubbleColor.selectedItemPosition],
-                    textSize=textSize.progress+12,textColor=textColors[textColor.selectedItemPosition],backgroundColor=backgrounds[bg.selectedItemPosition],backgroundOpacity=bgAlpha.progress+15,centerText=centered.isChecked,hideOriginal=hide.isChecked,speakAutomatically=speak.isChecked,
-                    fontBold=bold.isChecked,backgroundBorder=border.isChecked,borderColor=colors[borderColor.selectedItemPosition],
-                    selectionBorderColor=colors[selectionColor.selectedItemPosition],panelWidthPercent=panelWidth.progress+50,anchorBelowRegion=belowRegion.isChecked,
+                    intervalSeconds=interval.progress+1,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
+                    textSize=textSize.progress+12,textColor=requireNotNull(textColor.valueOrNull()),backgroundColor=requireNotNull(bg.valueOrNull()),backgroundOpacity=bgAlpha.progress+15,centerText=centered.isChecked,hideOriginal=hide.isChecked,speakAutomatically=speak.isChecked,
+                    fontBold=bold.isChecked,backgroundBorder=border.isChecked,borderColor=requireNotNull(borderColor.valueOrNull()),
+                    selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),panelWidthPercent=panelWidth.progress+50,anchorBelowRegion=belowRegion.isChecked,
                     fontFamily=fonts[font.selectedItemPosition],lineByLine=lines.isChecked,positionedResults=positioned.isChecked,
                     verticalText=vertical.isChecked,outlineText=outline.isChecked,uppercaseText=upper.isChecked,smartColors=smart.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,
@@ -156,4 +270,73 @@ object ScreenSettingsDialog {
         }
         dialog.show()
     }
+    /** RGB is explicit; the separate opacity controls own transparency. */
+    private class ColorField(
+        private val context: Context, label: String, private val values: List<Int>,
+        labels: List<String>, initial: Int, private val changed: () -> Unit,
+    ) {
+        val root = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
+        private val palette = Spinner(context)
+        private val input = EditText(context)
+        private var syncing = false
+        init {
+            fun dp(value: Int) = (value * context.resources.displayMetrics.density).toInt()
+            root.addView(TextView(context).apply {
+                text = label; textSize = 16f; setTypeface(null, Typeface.BOLD); setPadding(0, dp(12), 0, dp(4))
+            })
+            palette.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item,
+                labels + context.engineMessage("Custom hexadecimal color", "لون مخصص بالصيغة الست عشرية"))
+            palette.contentDescription = label
+            root.addView(palette, LinearLayout.LayoutParams(-1, dp(48)))
+            input.setSingleLine(true)
+            input.hint = "#RRGGBB"
+            input.contentDescription = label + " — " + context.engineMessage("hexadecimal", "ست عشري")
+            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            input.imeOptions = EditorInfo.IME_ACTION_DONE
+            input.filters = arrayOf(InputFilter.LengthFilter(7))
+            root.addView(input, LinearLayout.LayoutParams(-1, dp(48)))
+            palette.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (!syncing && position in values.indices && valueOrNull() != values[position]) setValue(values[position])
+                }
+            }
+            input.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+                override fun afterTextChanged(s: Editable?) {
+                    if (syncing) return
+                    val value = valueOrNull()
+                    input.error = if (value == null) errorMessage() else null
+                    syncing = true
+                    palette.setSelection(value?.let { values.indexOf(it) }?.takeIf { it >= 0 } ?: values.size)
+                    syncing = false
+                    changed()
+                }
+            })
+            setValue(initial)
+        }
+        fun valueOrNull(): Int? {
+            val text = input.text.toString().trim()
+            if (!Regex("#?[0-9a-fA-F]{6}").matches(text)) return null
+            return runCatching { Color.parseColor(if (text.startsWith("#")) text else "#" + text) }.getOrNull()
+        }
+        fun setValue(value: Int) {
+            syncing = true
+            input.setText(String.format(Locale.ROOT, "#%06X", value and 0x00ffffff))
+            input.error = null
+            palette.setSelection(values.indexOf(value).takeIf { it >= 0 } ?: values.size)
+            syncing = false
+            changed()
+        }
+        fun validate(): Boolean {
+            val valid = valueOrNull() != null
+            input.error = if (valid) null else errorMessage()
+            return valid
+        }
+        fun focus() { input.requestFocus() }
+        private fun errorMessage() = context.engineMessage("Enter six hexadecimal digits, such as #4DE2BF.",
+            "أدخل ست خانات ست عشرية مثل #4DE2BF.")
+    }
+
 }

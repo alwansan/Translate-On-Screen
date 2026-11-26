@@ -5,13 +5,13 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "functional_device_validation",
-  "last_verified_code_commit": "1741d437f67f8491fbbb298af3508496dd67f593",
+  "phase": "device_failure_correction",
+  "last_verified_code_commit": "21964e475c2d92cded60827799edf054c82d4773",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45771378480,
-  "last_verified_inventory_ci": 45762908030,
+  "last_verified_android_ci": 45775143669,
+  "last_verified_inventory_ci": 45775143665,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
     "original_apk",
@@ -38,43 +38,81 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "3189a8f84d523aa1e8b853b82fb5048886c255da",
+  "observed_branch_head": "21964e475c2d92cded60827799edf054c82d4773",
   "latest_observed_android_ci": {
-    "run_id": 45774006463,
-    "head_sha": "3189a8f84d523aa1e8b853b82fb5048886c255da",
-    "conclusion": "failure",
-    "reason": "Android test compile: BySelector.textMatches unavailable; corrected to text(Pattern) in this batch"
+    "run_id": 45775143669,
+    "head_sha": "21964e475c2d92cded60827799edf054c82d4773",
+    "conclusion": "success",
+    "jvm_tests": 56,
+    "failed": 0,
+    "skipped": 0,
+    "lint_errors": 0,
+    "lint_warnings": 48
   },
-  "source_checkpoint_parent": "3189a8f84d523aa1e8b853b82fb5048886c255da",
+  "source_checkpoint_parent": "21964e475c2d92cded60827799edf054c82d4773",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "aggregate_compile",
-    "unit_tests_with_required_model_fixtures",
-    "android_lint",
-    "apk_license_signature_alignment",
+    "host_revalidation_after_device_fixes",
     "android_api29_and_api35_device_tests",
-    "final_release_and_owner_acceptance"
+    "updated_visual_requirements_matrix",
+    "acceptance_apk_and_final_owner_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45774006612,
+    "run_id": 45775143685,
+    "head_sha": "21964e475c2d92cded60827799edf054c82d4773",
     "conclusion": "failure",
-    "scope": "Both API29/35 jobs stopped at Android-test compilation; no device runtime verdict"
+    "api29": {
+      "job": 139756888846,
+      "conclusion": "failure",
+      "known_failures": [
+        "CaptureInstrumentationTest.realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast",
+        "HistoryStoreInstrumentationTest.cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag",
+        "ImageEditorInstrumentationTest.cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile"
+      ],
+      "process_crashed": true,
+      "unexecuted_required_suites": [
+        "MainUiInstrumentationTest",
+        "OfflineTranslationInstrumentationTest",
+        "WordbookImportInstrumentationTest"
+      ]
+    },
+    "api35": {
+      "job": 139756888699,
+      "conclusion": "failure",
+      "reported_tests": 28,
+      "reported_failed": 9,
+      "reported_ignored": 0,
+      "known_failures": [
+        "Native Arabic OCR returned no Arabic text",
+        "fixedArea MediaProjection consent not shown",
+        "automaticChangedFrames and outsideTouch fixture launch timeout",
+        "History interruption flag",
+        "All four ImageEditor prepare methods could not find harness"
+      ],
+      "process_crashed": false
+    }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45773473019,
+    "run_id": 45775143669,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
     "independent_sentencepiece_cases": 32,
     "onnx_notice_bytes": 333022,
-    "onnx_notice_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+    "onnx_notice_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
+    "device_parser_tests": 6,
+    "jvm_tests": 56
   },
   "current_fix_batch": [
-    "UiAutomator compatible selector",
-    "live orientation/density with sparse Configuration override",
-    "history full-text bounded atomic storage + opt-out race",
-    "translation output separators counted",
-    "six required Android suites including history",
-    "unit/lint result JSON"
-  ]
+    "Custom accessibility resource IDs",
+    "Preserve cancellation interruption across localized messages/preferences",
+    "Arabic OCR row filter candidate and explicit RTL test layout",
+    "Capture test lifecycle and consent isolation",
+    "Separate screen-result original/translation actions",
+    "Appearance custom colors and live preview",
+    "Source language vs OCR availability labels",
+    "Clear API credential when service address changes",
+    "Download bundle with source,checksum,and90-day artifact retention"
+  ],
+  "last_verified_code_scope": "Host build,56 JVM tests,lint,signature,license,ZIP/ELF alignment only; Android device gate failed"
 }

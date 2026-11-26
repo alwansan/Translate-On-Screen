@@ -311,12 +311,14 @@ class ImageCropView(context: Context) : View(context) {
         private const val BOTTOM = 8
         private const val NEW = 16
         private const val MOVE = 32
-        private val ACTION_TRIM = View.generateViewId()
-        private val ACTION_EXPAND = View.generateViewId()
-        private val ACTION_RESET = View.generateViewId()
-        private val ACTION_LEFT = View.generateViewId()
-        private val ACTION_RIGHT = View.generateViewId()
-        private val ACTION_UP = View.generateViewId()
-        private val ACTION_DOWN = View.generateViewId()
+        // Custom accessibility actions require application resource IDs. Generated view IDs
+        // occupy the standard-action range on older Android versions and can be rejected.
+        private val ACTION_TRIM = R.id.image_crop_action_trim
+        private val ACTION_EXPAND = R.id.image_crop_action_expand
+        private val ACTION_RESET = R.id.image_crop_action_reset
+        private val ACTION_LEFT = R.id.image_crop_action_left
+        private val ACTION_RIGHT = R.id.image_crop_action_right
+        private val ACTION_UP = R.id.image_crop_action_up
+        private val ACTION_DOWN = R.id.image_crop_action_down
     }
 }

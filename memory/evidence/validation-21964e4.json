@@ -1,0 +1,644 @@
+{
+  "schema": 1,
+  "source_commit": "21964e475c2d92cded60827799edf054c82d4773",
+  "verified_date": "2026-11-26",
+  "android_host_run": 45775143669,
+  "android_host_job": 139756888736,
+  "conclusion": "success",
+  "audit_tests": 8,
+  "model_provisioner_tests": 10,
+  "device_parser_tests": 6,
+  "jvm_tests": {
+    "total": 56,
+    "passed": 56,
+    "failed": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+        "name": "cropMappingUsesRoundedPhysicalCropAndRejectsInvalidBoxes",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+        "name": "interactionHasFiniteDebounceAndDoesNotBypassMinimumSpacing",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+        "name": "slowWorkDoesNotOverlapOrCreateCatchUpRequests",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.AutoCaptureScheduleTest",
+        "name": "changedTextAndDimensionChangesInvalidateFingerprint",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+        "name": "regionAndAutomaticModesRemainDistinct",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+        "name": "corruptedNumericSettingsAreBoundedWithoutChangingRequestedMode",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+        "name": "legacyDeadlineApiNeverSchedulesBeyondEnd",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.CaptureOptionsTest",
+        "name": "disabledGesturesSurvivePreferenceNormalization",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+        "name": "acceptsHttpsServerAndDeploymentPrefix",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+        "name": "preventsCredentialsAndSensitiveQueryParametersFromBecomingUrls",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+        "name": "rejectsCleartextMissingHostsAndInvalidPorts",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+        "name": "nativeArabicToEnglishMatchesSixPhraseRegressionHalf",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+        "name": "nativeEnglishToArabicMatchesSixPhraseRegressionHalf",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianRuntimeTest",
+        "name": "cancellationAfterEncoderReleasesRequestStateAndCloseIsIdempotent",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+        "name": "viterbiOptimizesTheWholePathNotTheLongestPiece",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+        "name": "malformedProtobufLengthsAndVarintsAreRejected",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+        "name": "allEightPinnedFilesMatchTheirSizeAndSha256",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+        "name": "modelsMatchThirtyTwoIndependentSentencePieceFixtures",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.MarianTokenizerTest",
+        "name": "unknownSurfacesFuseWithoutFusingNormalPiecesMissingFromSharedVocab",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.OcrGeometryTest",
+        "name": "boxesAreClippedAndDegenerateOrBlankBoxesAreRejected",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.OcrGeometryTest",
+        "name": "xyxyCoordinatesAreScaleInvariantInsideTheCrop",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+        "name": "credentialsQueriesAndEncodedProxyAmbiguityAreRejected",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+        "name": "modelIdentifiersCannotInjectPathsOrQueries",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+        "name": "redirectsAndQuotaErrorsAreTypedWithoutEchoingRemoteBodies",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderEndpointTest",
+        "name": "deploymentPrefixesAndOfficialApiPathsArePreserved",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "baiduSignsRawTextBeforeEncodingAndChecksReturnedOrder",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "llmResponsesUseUniqueIdsNotResponsePosition",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "azureKeepsKeyAndRegionOutOfTheLanguageQuery",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "libreAndDeeplPreserveCardinalityAndSourceAuto",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "googleUsesHeaderAuthenticationAndDecodesEscapesOnce",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "yandexServiceAccountAndUserIamHaveDifferentFolderRules",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "revokedConsentAndMalformedHeadersCannotReachTransport",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.ProviderProtocolsTest",
+        "name": "llmPromptsCarryTextAsDataAndNotCredentials",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "screenCoordinatesMapToTheDownsampledCapture",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "fractionalCropEnclosesSelectedPixelsAndStaysWithinBounds",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "fullCaptureAndTinyCornerSelectionAreNeverZeroSized",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "zeroAreaInvalidDisplayAndNonFiniteCoordinatesAreRejected",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "malformedNormalizedSelectionIsRejected",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "reverseDragHasTheSameCropAsForwardDrag",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.RegionMathTest",
+        "name": "offscreenDragIsClippedWithoutReadingOutsideTheImage",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+        "name": "rejectsOffsetsOutsideTheFileOrInsideItsHeader",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+        "name": "acceptsTheLstmOffsetTableFormat",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+        "name": "rejectsTruncatedFileAndMissingLstmComponent",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+        "name": "rejectsBackwardsComponentOffsets",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+        "name": "rejectsAnHtmlErrorPageInsteadOfPassingItToNativeOcr",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "cancellationStopsTheNextBatchAndDoesNotCachePartialResults",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "theLruCacheIsBoundedAndCanBeCleared",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "outputLimitIncludesNewlinesBetweenTranslatedBlocks",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "duplicateBlocksAreSentOnceAndRestoredInOrder",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "interruptionIsNotClearedByProductionCode",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "utf8LimitsSplitArabicWithoutCuttingText",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.TranslationBatcherTest",
+        "name": "configurationChangesSeparateCachedText",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.UserSettingsPrivacyTest",
+        "name": "diagnosticRepresentationDoesNotExposeCredentialsOrServerAddress",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+        "name": "importRejectsNonDictionaryAndIncompleteEntries",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+        "name": "importRejectsOversizedWordsBeforePersistence",
+        "status": "passed",
+        "message": ""
+      },
+      {
+        "class": "io.github.alwansan.opentranslate.WordbookCodecTest",
+        "name": "roundTripPreservesArabicMultilineAndQuotesWithoutExecutingContents",
+        "status": "passed",
+        "message": ""
+      }
+    ]
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 48,
+    "issues": [
+      {
+        "id": "OldTargetApi",
+        "severity": "Warning",
+        "message": "Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+      },
+      {
+        "id": "AndroidGradlePluginVersion",
+        "severity": "Warning",
+        "message": "A newer version of Gradle than 8.13 is available: 8.14.8"
+      },
+      {
+        "id": "GradleDependency",
+        "severity": "Warning",
+        "message": "A newer version of androidx.test.uiautomator:uiautomator than 2.3.0 is available: 2.4.1"
+      },
+      {
+        "id": "NewerVersionAvailable",
+        "severity": "Warning",
+        "message": "A newer version of com.microsoft.onnxruntime:onnxruntime-android than 1.23.2 is available: 1.32.0"
+      },
+      {
+        "id": "NewerVersionAvailable",
+        "severity": "Warning",
+        "message": "A newer version of com.microsoft.onnxruntime:onnxruntime than 1.23.2 is available: 1.32.0"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.tagline` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.preview_notice` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.screen_title` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.screen_help` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.start_screen` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.stop_screen` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.import_image` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.text_title` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.setup_title` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.models` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.privacy_summary` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.detect_language` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.ocr_language` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.ocr_help` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.server_url` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.api_key` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.network_disclosure` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.enable_network` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.enable_history` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.models_help` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.download` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.download_again` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.import_model` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.delete_model` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.invalid_image` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.original` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.translation` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.result` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.copy` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.speak` appears to be unused"
+      },
+      {
+        "id": "UnusedResources",
+        "severity": "Warning",
+        "message": "The resource `R.string.screen_options` appears to be unused"
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "String literal in `setText` can not be translated. Use Android resources instead."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      },
+      {
+        "id": "SetTextI18n",
+        "severity": "Warning",
+        "message": "Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+      }
+    ]
+  },
+  "note": "Missing reports are not a passing result; workflow gates remain authoritative.",
+  "package": {
+    "bytes": 59726854,
+    "sha256": "bc3d18a82c78cc5f5a1c71d632049ce1a81c4f61fc7a3545f2b049c45ed0150b",
+    "native_libraries": 12,
+    "static_package_checks": "PASS",
+    "onnx_notices_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+  },
+  "device_run": 45775143685,
+  "device_evidence": {
+    "run": 45775143685,
+    "api29": {
+      "job": 139756888846,
+      "conclusion": "failure",
+      "known_failures": [
+        "CaptureInstrumentationTest.realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast",
+        "HistoryStoreInstrumentationTest.cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag",
+        "ImageEditorInstrumentationTest.cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile"
+      ],
+      "process_crashed": true,
+      "unexecuted_required_suites": [
+        "MainUiInstrumentationTest",
+        "OfflineTranslationInstrumentationTest",
+        "WordbookImportInstrumentationTest"
+      ]
+    },
+    "api35": {
+      "job": 139756888699,
+      "conclusion": "failure",
+      "reported_tests": 28,
+      "reported_failed": 9,
+      "reported_ignored": 0,
+      "known_failures": [
+        "Native Arabic OCR returned no Arabic text",
+        "fixedArea MediaProjection consent not shown",
+        "automaticChangedFrames and outsideTouch fixture launch timeout",
+        "History interruption flag",
+        "All four ImageEditor prepare methods could not find harness"
+      ],
+      "process_crashed": false
+    },
+    "note": "No full Android device pass. API35 TestRunner reported 28 tests / 9 failed; full per-case results require artifact or the next runner's summary."
+  }
+}

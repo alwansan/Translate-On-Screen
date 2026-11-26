@@ -9,6 +9,11 @@ import android.widget.EditText
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.Until
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -78,4 +83,28 @@ class MainUiInstrumentationTest {
             }
         }
     }
+    @Test fun changingServiceAddressClearsCredentialsAndRevokesNetworkConsent() {
+        val initialUrl = "https://first.example/translate"
+        val replacementUrl = "https://second.example/translate"
+        SettingsStore.save(context, UserSettings(source = "en", target = "ar", ocrLanguage = "eng",
+            provider = "libretranslate", endpoint = initialUrl,
+            apiKey = "synthetic-first-service-key", networkEnabled = true))
+        val intent = Intent(context, MainActivity::class.java)
+            .putExtra(MainActivity.OPEN_SETTINGS, true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ActivityScenario.launch<MainActivity>(intent).use {
+            val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            assertTrue("Settings dialog did not appear", device.wait(Until.hasObject(By.res("android", "button1")), 5000))
+            UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().text(initialUrl))
+            val endpoint = device.findObject(By.clazz(EditText::class.java).text(initialUrl))
+            assertNotNull("Service endpoint field was not found", endpoint)
+            endpoint!!.text = replacementUrl
+            device.findObject(By.res("android", "button1")).click()
+            device.waitForIdle()
+            val saved = SettingsStore.read(context)
+            assertEquals(replacementUrl, saved.endpoint)
+            assertEquals("A credential must not follow an edited service address", "", saved.apiKey)
+            assertFalse("Changing the destination requires fresh network opt-in", saved.networkEnabled)
+        }
+    }
+
 }

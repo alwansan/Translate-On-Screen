@@ -8,6 +8,7 @@ Only the synthetic-test emulator is inspected; physical devices are rejected bef
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import re
 import subprocess
@@ -24,6 +25,9 @@ RUNNER = PACKAGE + ".test/androidx.test.runner.AndroidJUnitRunner"
 
 def parse_instrumentation(output: str, returncode: int) -> dict:
     cases: list[dict] = []
+    starts: list[dict] = []
+    processes: list[dict] = []
+    evidence: list[dict] = []
     pending: dict[str, str] = {}
     active: set[tuple[str, str]] = set()
     completed: set[tuple[str, str]] = set()
@@ -41,6 +45,7 @@ def parse_instrumentation(output: str, returncode: int) -> dict:
             code = int(match.group(1))
             key = (pending.get("class", ""), pending.get("test", ""))
             if code == 1:
+                starts.append({"class": key[0], "name": key[1]})
                 if not all(key):
                     problems.append("Runner started a test without class/name.")
                 elif key in active or key in completed:
@@ -63,7 +68,16 @@ def parse_instrumentation(output: str, returncode: int) -> dict:
                         "class": key[0], "name": key[1], "status": code,
                         "message": pending.get("stack", pending.get("stream", "")).strip(),
                     })
-            elif code != 2:  # AndroidJUnitRunner can emit progress with STATUS_CODE_IN_PROGRESS.
+            elif code == 2:
+                pid, uid = pending.get("ost_pid", ""), pending.get("ost_uid", "")
+                if pid.isdigit() and uid.isdigit():
+                    process = {"pid": pid, "uid": uid}
+                    if process not in processes:
+                        processes.append(process)
+                if "ost_evidence_reason" in pending and len(evidence) < 20:
+                    evidence.append({key: pending[key] for key in
+                                     ("ost_evidence_reason", "ost_ui_xml", "ost_screenshot_png") if key in pending})
+            else:
                 problems.append("Unexpected instrumentation status code: " + str(code))
             pending = {}
             last_field = None
@@ -96,7 +110,8 @@ def parse_instrumentation(output: str, returncode: int) -> dict:
         problems.append("A test failed, was ignored, or assumed away; device coverage is incomplete.")
     if "FAILURES!!!" in output or "Process crashed" in output:
         problems.append("Runner reported a failure or process crash.")
-    return {"passed": not problems, "tests": cases, "problems": problems, "final_code": final_code}
+    return {"passed": not problems, "tests": cases, "starts": starts, "processes": processes,
+            "evidence": evidence, "problems": problems, "final_code": final_code}
 
 
 def validate_coverage(report: dict, capture_only: bool) -> None:
@@ -106,6 +121,8 @@ def validate_coverage(report: dict, capture_only: bool) -> None:
                          "MainUiInstrumentationTest", "WordbookImportInstrumentationTest", "HistoryStoreInstrumentationTest"})
     executed = {case["class"].rsplit(".", 1)[-1] for case in report["tests"]}
     missing = sorted(required - executed)
+    report["required_suites"] = sorted(required)
+    report["missing_suites"] = missing
     if missing:
         report["problems"].append("Required device suites did not execute: " + ", ".join(missing))
         report["passed"] = False
@@ -170,15 +187,35 @@ def restore_radios(adb: list[str], previous: dict[str, str]) -> None:
         command(adb + ["shell", "svc", "data", "enable" if previous["mobile_data"] == "1" else "disable"], check=False)
 
 
-def diagnostics(adb: list[str], output: Path, uid: str | None) -> None:
+def diagnostics(adb: list[str], output: Path, uid: str | None, processes: list[dict]) -> None:
     if uid and uid.isdigit():
         try:
-            result = command(adb + ["logcat", "-d", "-b", "main", "-b", "crash", "--uid=" + uid, "-t", "2000"], check=False)
-            (output / "app-logcat.txt").write_text(result.stdout, encoding="utf-8")
+            help_text = command(adb + ["logcat", "--help"], check=False).stdout
+            logs = []
+            if "--uid" in help_text:
+                result = command(adb + ["logcat", "-d", "-b", "main", "-b", "crash",
+                                        "--uid=" + uid, "-t", "2000"], check=False)
+                if result.returncode == 0 and "Usage: logcat" not in result.stdout:
+                    logs.append(result.stdout)
+            elif "--pid" in help_text:
+                # Older Android logcat has no UID option. Instrumentation reports its own
+                # PID/UID before tests. run-as adds a second UID boundary even after a crash.
+                pids = {entry["pid"] for entry in processes
+                        if entry.get("uid") == uid and entry.get("pid", "").isdigit()}
+                for pid in command(adb + ["shell", "pidof", PACKAGE], check=False).stdout.split():
+                    if pid.isdigit() and command(adb + ["shell", "stat", "-c", "%u", "/proc/" + pid],
+                                                check=False).stdout.strip() == uid:
+                        pids.add(pid)
+                for pid in sorted(pids):
+                    result = command(adb + ["shell", "run-as", PACKAGE, "logcat", "-d", "-b", "main",
+                                            "-b", "crash", "--pid=" + pid, "-t", "2000",
+                                            "*:S", "AndroidRuntime:E", "TestRunner:V", "libc:F"], check=False)
+                    if result.returncode == 0 and "Usage: logcat" not in result.stdout:
+                        logs.append(result.stdout)
+            (output / "app-logcat.txt").write_text("\n".join(logs) if logs else
+                "Application-scoped logcat was unavailable; no device-wide fallback was used.\n", encoding="utf-8")
         except (OSError, subprocess.SubprocessError):
             pass
-    # This function is called only after confirming ro.kernel.qemu=1. The tests display
-    # generated text/graphics and test consent prompts; no physical-device diagnostics.
     try:
         result = subprocess.run(adb + ["exec-out", "screencap", "-p"], stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE, timeout=30)
@@ -186,6 +223,47 @@ def diagnostics(adb: list[str], output: Path, uid: str | None) -> None:
             (output / "emulator-final.png").write_bytes(result.stdout)
     except (OSError, subprocess.SubprocessError):
         pass
+
+
+def save_evidence(output: Path, report: dict) -> None:
+    saved = []
+    for index, item in enumerate(report.pop("evidence", []), 1):
+        entry = {"reason": item.get("ost_evidence_reason", "")[:300]}
+        for key, suffix, limit in (("ost_ui_xml", "xml", 100_000), ("ost_screenshot_png", "png", 350_000)):
+            encoded = item.get(key, "")
+            if not encoded or len(encoded) > 500_000:
+                continue
+            try:
+                data = base64.b64decode(encoded, validate=True)
+            except (ValueError, TypeError):
+                continue
+            if len(data) > limit or (suffix == "png" and not data.startswith(b"\x89PNG\r\n\x1a\n")):
+                continue
+            name = "failure-evidence-" + str(index) + "." + suffix
+            (output / name).write_bytes(data)
+            entry[suffix] = name
+            if not report["passed"]:
+                print("OST_EVIDENCE_REASON=" + json.dumps(entry["reason"], ensure_ascii=True))
+                print(("OST_SCREENSHOT_PNG_BASE64=" if suffix == "png" else "OST_UI_XML_BASE64=") + encoded)
+        saved.append(entry)
+    report["evidence_files"] = saved
+
+
+def evidence_summary(report: dict, api: int | None, network: dict, emulator: bool) -> dict:
+    finished = [{key: case[key] for key in ("class", "name", "status")} for case in report["tests"]]
+    return {
+        "schema": 1, "passed": report["passed"], "api": api, "emulator": emulator,
+        "network_state_during_tests": network, "final_code": report["final_code"],
+        "started": len(report.get("starts", [])), "finished": len(finished),
+        "passed_cases": sum(case["status"] == 0 for case in finished),
+        "failed_cases": sum(case["status"] in (-1, -2) for case in finished),
+        "ignored_or_assumed_cases": sum(case["status"] in (-3, -4) for case in finished),
+        "started_cases": report.get("starts", []), "finished_cases": finished,
+        "required_suites": report.get("required_suites", []),
+        "missing_suites": report.get("missing_suites", []),
+        "failures": [case for case in finished if case["status"] != 0],
+        "runner_error_count": len(report["problems"]),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -207,6 +285,8 @@ def main(argv: list[str] | None = None) -> int:
     installed = False
     previous: dict[str, str] = {}
     uid = None
+    api = None
+    test_network: dict[str, str] = {}
     raw = ""
     report = {"passed": False, "tests": [], "problems": [], "final_code": None}
     try:
@@ -214,6 +294,8 @@ def main(argv: list[str] | None = None) -> int:
         if command(adb + ["shell", "getprop", "ro.kernel.qemu"]).stdout.strip() != "1":
             raise RuntimeError("Device tests require an emulator (ro.kernel.qemu=1); physical device unchanged.")
         verified_emulator = True
+        sdk = command(adb + ["shell", "getprop", "ro.build.version.sdk"]).stdout.strip()
+        api = int(sdk) if sdk.isdigit() else None
         if not args.apk.is_file() or not args.test_apk.is_file():
             raise RuntimeError("Build assembleDebug and assembleDebugAndroidTest first; APK missing.")
         command(adb + ["install", "-r", "-t", str(args.apk.resolve())], timeout=180)
@@ -226,13 +308,13 @@ def main(argv: list[str] | None = None) -> int:
         provision_device(adb, args.model_cache, manifest)
         previous = {key: device_setting(adb, key) for key in ("airplane_mode_on", "wifi_on", "mobile_data")}
         disable_radios(adb)
+        test_network = {key: device_setting(adb, key) for key in ("airplane_mode_on", "wifi_on", "mobile_data")}
         selector = ["-e", "class", PACKAGE + ".CaptureInstrumentationTest"] if args.capture_only else ["-e", "package", PACKAGE]
         try:
             result = command(adb + ["shell", "am", "instrument", "-w", "-r"] + selector + [RUNNER],
                              timeout=max(60, args.timeout), check=False)
             raw = result.stdout
             report = parse_instrumentation(raw, result.returncode)
-            validate_coverage(report, args.capture_only)
         except subprocess.TimeoutExpired as error:
             raw = error.stdout or ""
             if isinstance(raw, bytes):
@@ -245,7 +327,7 @@ def main(argv: list[str] | None = None) -> int:
         report["passed"] = False
     finally:
         if verified_emulator:
-            diagnostics(adb, output, uid)
+            diagnostics(adb, output, uid, report.get("processes", []))
             if installed:
                 try:
                     command(adb + ["shell", "am", "force-stop", PACKAGE], check=False)
@@ -257,6 +339,8 @@ def main(argv: list[str] | None = None) -> int:
                 except (OSError, subprocess.SubprocessError) as error:
                     report["problems"].append("Could not restore emulator radio state: " + str(error))
                     report["passed"] = False
+        validate_coverage(report, args.capture_only)
+        save_evidence(output, report)
         (output / "instrumentation.txt").write_text(raw, encoding="utf-8")
         (output / "result.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         write_junit(output / "results.xml", report)
@@ -270,6 +354,7 @@ def main(argv: list[str] | None = None) -> int:
         log_path = output / "app-logcat.txt"
         if verified_emulator and log_path.is_file():
             print("Application UID diagnostic tail:\n" + log_path.read_text(encoding="utf-8")[-16000:])
+    print("DEVICE_TEST_SUMMARY=" + json.dumps(evidence_summary(report, api, test_network, verified_emulator), ensure_ascii=True, separators=(",", ":")))
     print("Device tests passed." if report["passed"] else "Device tests failed: " + "; ".join(report["problems"]))
     return 0 if report["passed"] else 1
 

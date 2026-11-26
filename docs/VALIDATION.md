@@ -24,6 +24,25 @@ The local execution environment became unavailable before the planned Android de
 
 The owner reported that0.1 floating bubble, overlay and basic OCR worked on their phone without a crash in a simple trial. Device/OS details were not supplied. This is an owner report, not full coverage or evidence of the new local translation engine.
 
+## Full0.2 host result and first device failures
+
+Source `21964e475c2d92cded60827799edf054c82d4773`: [host run45775143669](https://github.com/alwansan/Translate-On-Screen/actions/runs/45775143669) **PASS**. The exact structured summary is preserved in [validation-21964e4.json](../memory/evidence/validation-21964e4.json).
+
+- 56 JVM tests passed,0 failed,0 skipped; includes3 real native Marian test methods with six exact translation cases and cancellation/reuse/close checks.
+- 32 independent SentencePiece fixtures and all eight pinned translation files were checked.
+- Audit8, model provisioner10 and device parser6 Python tests passed.
+- Lint:0 errors,48 warnings. Warnings concern version availability, unused resources and text construction in the explicitly bilingual UI. This is not a zero-warning claim.
+- APK:59,726,854 bytes; SHA256 `bc3d18a82c78cc5f5a1c71d632049ce1a81c4f61fc7a3545f2b049c45ed0150b`;12 native libraries. Signature, packaged licenses and static ZIP/ELF alignment passed.
+
+[Device run45775143685](https://github.com/alwansan/Translate-On-Screen/actions/runs/45775143685) **FAIL** on both API29 and35:
+
+| Device | What actually happened |
+| --- | --- |
+| API29 / job139756888846 | Arabic OCR fixture returned no Arabic, history cancellation lost the interruption flag, and ImageCropView threw Invalid standard action id during accessibility inspection. The process crashed before MainUi, OfflineTranslation and Wordbook suites executed. |
+| API35 / job139756888699 | TestRunner reported28 tests,9 failed,0 ignored. Failures covered Arabic OCR, one projection-consent prompt, two later fixture launches, history interruption and four ImageEditor setup attempts. No full passing device gate. |
+
+The corrective source batch uses app resource IDs for custom accessibility actions, preserves interruption across localized preference reads, addresses Arabic row rejection and test rendering, and repairs capture fixture/session isolation. Assertions remain in place. Pending UI closures include distinct screen-result copy actions, live appearance preview/custom colors, explicit OCR language availability and credential clearing when an endpoint changes. These changes require new host and device results; the successful21964 host result is not inherited automatically.
+
 ## Packaging evidence already obtained
 
 The build extracted the official ONNX Runtime1.23.2 third-party notices from its JVM artifact and verified source commit `a83fc4d58cb48eb68890dd689f94f28288cf2278`.
@@ -43,7 +62,7 @@ The build extracted the official ONNX Runtime1.23.2 third-party notices from its
 - Wordbook/history integrity, Unicode and length/size boundaries, opt-out and cancellation.
 - Interface language/theme, draft preservation and language swap updating the OCR language.
 
-Workflows retain artifacts for14 days. Commit durable summaries with the app source and retain the delivery artifact separately; do not rely on temporary artifact URLs as permanent memory.
+The corrected workflow retains downloadable APK bundles for90 days and detailed reports for14 days. Commit durable summaries with the app source and retain the delivery artifact separately; do not rely on temporary artifact URLs as permanent memory.
 
 ## Remaining practical limits
 

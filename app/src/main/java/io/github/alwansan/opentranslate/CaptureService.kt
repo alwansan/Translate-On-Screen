@@ -278,7 +278,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
         try {
             // Required ordering for current Android: typed foreground service before projection.
-            val notification = notification(ui("Tap the bubble; hold to select an area.", "اضغط الفقاعة للترجمة، أو مطوّلاً لتحديد منطقة."))
+            val notification = notification(ui("Screen sharing is ready.", "مشاركة الشاشة جاهزة."))
             if (Build.VERSION.SDK_INT >= 29) {
                 startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION)
             } else startForeground(NOTIFICATION_ID, notification)
@@ -308,7 +308,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             phase = Phase.IDLE
             isRunning = true
             showBubble()
-            toast(ui("Tap to translate; double-tap for modes; hold to select an area.", "اضغط للترجمة، مرتين للأوضاع، أو مطوّلاً للمنطقة."))
+            toast(ui("Use your configured bubble gestures. The notification can stop sharing.", "استخدم إيماءات الفقاعة المختارة. يمكنك إنهاء المشاركة من الإشعار."))
             if (options.automatic) startAutomatic()
         } catch (error: Exception) {
             toast(ui("Could not start screen capture. Open the app and grant permission again.", "تعذّر بدء التقاط الشاشة. افتح التطبيق وامنح الموافقة مجدداً."))
@@ -361,9 +361,9 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         settings.networkEnabled || ProviderCatalog.find(settings.provider)?.requiresNetwork == false
 
     private fun readyMessage(): String = when {
-        isAutoRunning -> ui("Automatic translation running. Tap the bubble to pause.", "الترجمة التلقائية تعمل. اضغط الفقاعة للتوقيف.")
-        options.automatic -> ui("Automatic translation paused. Tap to resume.", "الترجمة التلقائية متوقفة مؤقتاً. اضغط للاستئناف.")
-        else -> ui("Ready. Tap the bubble to translate.", "جاهز. اضغط الفقاعة للترجمة.")
+        isAutoRunning -> ui("Automatic translation running.", "الترجمة التلقائية تعمل.")
+        options.automatic -> ui("Automatic translation paused.", "الترجمة التلقائية متوقفة مؤقتاً.")
+        else -> ui("Ready. Use your configured bubble gestures.", "جاهز. استخدم إيماءات الفقاعة التي اخترتها.")
     }
 
     private fun chooseAction(action: BubbleAction) {
@@ -443,7 +443,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         })
         panel.addView(button(ui("Settings", "الإعدادات")) {
             removeMenu()
-            startActivity(Intent(this, MainActivity::class.java).putExtra("open_settings", true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            openLanguageSettings()
         })
         panel.addView(button(ui("Close", "إغلاق")) { removeMenu(); showBubble() })
         panel.addView(button(ui("Stop screen sharing", "إنهاء مشاركة الشاشة")) { cleanup(); stopSelf() })
@@ -1123,7 +1123,10 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             row.addView(it, LinearLayout.LayoutParams(0, dp(48), 1f))
         }
         val first = actionRow()
-        addAction(first, ui("Copy", "نسخ")) { copyText(output) }.isEnabled = output.isNotBlank()
+        addAction(first, ui("Copy original", "نسخ الأصل")) { copyText(result.original) }.isEnabled = result.original.isNotBlank()
+        addAction(first, ui("Copy translation", "نسخ الترجمة")) {
+            result.translated?.takeIf { it.isNotBlank() }?.let(::copyText)
+        }.isEnabled = !result.translated.isNullOrBlank()
         addAction(first, ui("Speak", "نطق")) {
             speak(output, if (!result.translated.isNullOrBlank()) settings.target else settings.source)
         }.isEnabled = output.isNotBlank()
@@ -1138,6 +1141,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
         if (options.automatic) autoControl = addAction(second, if (isAutoRunning) ui("Pause", "توقيف") else ui("Resume", "استئناف")) { toggleAutomatic() }
         addAction(second, ui("Modes", "أوضاع")) { pauseAutomatic(); cancelCurrentCapture(); showModeMenu() }
+        addAction(second, ui("Languages / provider", "اللغات / المزوّد")) { openLanguageSettings() }
         addAction(second, ui("Close", "إغلاق")) { hideResults() }
         panel.measure(View.MeasureSpec.makeMeasureSpec(panelWidth, View.MeasureSpec.EXACTLY),
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
@@ -1151,6 +1155,17 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
         showBubble()
         armResultTimeout()
+    }
+
+    private fun openLanguageSettings() {
+        pauseAutomatic()
+        cancelCurrentCapture()
+        hideResults()
+        removeMenu()
+        runCatching {
+            startActivity(Intent(this, MainActivity::class.java).putExtra("open_settings", true)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+        }.onFailure { toast(ui("Open the app to change language and provider settings.", "افتح التطبيق لتغيير اللغة ومزوّد الترجمة.")) }
     }
 
     private fun resultY(height: Int, fallback: Int): Int {
