@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "status": "ready_for_owner_acceptance",
-  "updated_date": "2026-11-26",
+  "status": "historical_build_delivery_deferred",
+  "updated_date": "2026-11-27",
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
@@ -90,7 +90,7 @@
   },
   "evidence": "memory/evidence/validation-f0388b2.json",
   "acceptance_guide": "docs/ACCEPTANCE_AR.md",
-  "owner_acceptance": "pending",
+  "owner_acceptance": "deferred_until_hm_behavior_completion",
   "limitations": [
     "Offline translation en<->ar only",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",

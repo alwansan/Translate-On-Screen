@@ -1,5 +1,9 @@
 # Validation record
 
+## التحقق من الدفعة 006 ومتابعة الدفعة 007
+
+نجح [البناء والتدقيق](https://github.com/alwansan/Translate-On-Screen/actions/runs/45896196263) و[اختبار المحاكي API 29 و35](https://github.com/alwansan/Translate-On-Screen/actions/runs/45896196247) للمصدر `2fccd59d5c8cab8e0ca63b428c3d55b0108794d9`. تشمل شجرة المصدر اختباري سحب الفقاعة وإغلاق الغطاء التلقائي باللمس. دفعة 007 تضيف اختبار تأخير التثبيت وإعداد خلفية المانغا، ونتائج هذا المصدر الجديد قيد التحقق. حزمة f0388b2 مدرجة أدناه كدليل تاريخي، وقد أُجّل قبول المالك.
+
 Updated: **2026-11-26**. Current development version: `0.2.0-dev`. Results are tied to commits and scope; a failed overall build is not a passing app release.
 
 ## Current acceptance build: all required gates passed

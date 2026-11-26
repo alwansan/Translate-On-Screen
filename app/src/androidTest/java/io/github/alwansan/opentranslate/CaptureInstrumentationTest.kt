@@ -180,6 +180,28 @@ class CaptureInstrumentationTest {
         assertTrue(CaptureOptionsStore.readRegion(context, false) == null)
     }
 
+    @Test fun assignedRegionActionDelaysBubbleDocking() {
+        configure(CaptureOptions(mode = CaptureMode.FULL, long = BubbleAction.REGION,
+            bubbleAutoDock = true, bubbleAutoDim = false))
+        CaptureOptionsStore.saveBubblePosition(context, false, .25f, .40f)
+        authorize()
+        awaitFixtureForeground("moving the floating bubble")
+        val selector = By.descStartsWith("Translation bubble.")
+        await(10_000, "Translation bubble did not appear") { device.hasObject(selector) }
+        val start = requireNotNull(device.findObject(selector)).visibleCenter
+        assertTrue(device.swipe(start.x, start.y, device.displayWidth / 3, start.y, 20))
+        fun savedHorizontalPosition() = CaptureOptionsStore.bubblePosition(context, false)?.first
+        await(1_500, "Free bubble position was not saved") {
+            savedHorizontalPosition()?.let { it in .27f..0.48f } == true
+        }
+        assertRemains(3_000, "Bubble docked before the delay elapsed") {
+            savedHorizontalPosition()?.let { it > .20f } == true
+        }
+        await(4_000, "Bubble did not dock at the left edge after the delay") {
+            savedHorizontalPosition() == 0f
+        }
+    }
+
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()

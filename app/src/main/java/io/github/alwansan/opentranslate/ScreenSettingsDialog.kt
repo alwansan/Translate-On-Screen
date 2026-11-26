@@ -155,6 +155,20 @@ object ScreenSettingsDialog {
         val outline = toggle(ui("Text outline", "حدود حول النص"), old.outlineText)
         val upper = toggle(ui("Uppercase output", "أحرف لاتينية كبيرة"), old.uppercaseText)
         val smart = toggle(ui("Sample text background colors", "مطابقة ألوان خلفية النص"), old.smartColors)
+        val mangaBackground = Button(c).apply {
+            text = ui("Apply manga background", "تطبيق خلفية المانغا")
+            isAllCaps = false
+            setOnClickListener {
+                bg.setValue(Color.WHITE)
+                textColor.setValue(Color.BLACK)
+                bgAlpha.progress = 85
+                positioned.isChecked = true
+                smart.isChecked = true
+                border.isChecked = false
+                refreshPreview?.invoke()
+            }
+        }
+        panel.addView(mangaBackground)
         val skip = toggle(ui("Skip unchanged frames", "تجاوز الصور غير المتغيرة"), old.skipUnchangedFrames)
         val threshold = slider(ui("Change sensitivity threshold", "عتبة تغير الصورة"), 1, 40, old.changeThreshold)
         val clearOverlay = toggle(ui("Clearer automatic overlay · tap the screen to dismiss", "عرض تلقائي أوضح · المس الشاشة لإغلاق النتيجة"), old.tapToDismissAutoOverlay)
@@ -170,6 +184,7 @@ object ScreenSettingsDialog {
         mode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                mangaBackground.visibility = if (modes[position] == CaptureMode.MANGA) View.VISIBLE else View.GONE
                 val profile = ScreenPreferences.read(c, modes[position])
                 interval.progress = profile.intervalSeconds - 1
                 display.progress = profile.displaySeconds

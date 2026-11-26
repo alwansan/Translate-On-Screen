@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "updated_date": "2026-11-26",
+  "updated_date": "2026-11-27",
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "003",
+  "session": "007",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+  "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45787527099,
+  "last_verified_android_ci": 45896196263,
   "last_verified_inventory_ci": 45784175402,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -19,13 +19,15 @@
     "23_ui_screenshots"
   ],
   "active_tracks": [
-    "owner_final_acceptance"
+    "hm_behavior_audit",
+    "android_implementation",
+    "ci_validation"
   ],
   "completion_claim": false,
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/003-reference-evidence-recheck.md",
+  "session_checkpoint": "memory/sessions/007-manga-and-docking.md",
   "environment": {
     "status": "unavailable",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -42,56 +44,27 @@
       "available_execution_path": "GitHub connector and GitHub Actions for Android; Python for attachment inspection"
     }
   },
-  "observed_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
+  "observed_branch_head": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
   "latest_observed_android_ci": {
-    "run_id": 45787527099,
-    "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-    "conclusion": "success",
-    "jvm_tests": 68,
-    "failed": 0,
-    "skipped": 0,
-    "lint_errors": 0,
-    "lint_warnings": 49,
-    "variants": [
-      "debug",
-      "release_unsigned",
-      "debugAndroidTest"
-    ]
+    "run_id": 45896196263,
+    "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
+    "conclusion": "success"
   },
   "source_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
+    "hm_behavior_audit",
+    "current_source_android_ci",
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45787527216,
-    "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "run_id": 45896196247,
+    "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
     "conclusion": "success",
-    "api29": {
-      "job": 139797985085,
-      "started": 32,
-      "finished": 32,
-      "passed": 32,
-      "failed": 0,
-      "skipped": 0,
-      "missing_suites": [],
-      "runner_errors": 0
-    },
-    "api35": {
-      "job": 139797984581,
-      "started": 32,
-      "finished": 32,
-      "passed": 32,
-      "failed": 0,
-      "skipped": 0,
-      "missing_suites": [],
-      "runner_errors": 0
-    },
-    "network_state": {
-      "airplane_mode_on": "1",
-      "wifi_on": "0",
-      "mobile_data": "0"
-    }
+    "apis": [
+      29,
+      35
+    ]
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -174,5 +147,15 @@
       "45895016302": "cancelled",
       "45895474474": "success"
     }
+  },
+  "hm_behavior_verification": {
+    "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
+    "host_run": 45896196263,
+    "device_run": 45896196247,
+    "conclusion": "success",
+    "apis": [
+      29,
+      35
+    ]
   }
 }
