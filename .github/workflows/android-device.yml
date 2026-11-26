@@ -71,6 +71,15 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      - name: Create 16 KiB AVD with the SDK device tag
+        if: matrix.expected_page_size == 16384
+        run: |
+          image='system-images;android-35;google_apis_ps16k;x86_64'
+          sdkmanager "$image"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/ost-avd"
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
+          printf 'no\n' | avdmanager create avd --name ost-16k --package "$image" --device pixel_2
       - name: Run native behavior with networking disabled
         uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
         with:
@@ -78,6 +87,8 @@ jobs:
           target: ${{ matrix.target }}
           arch: x86_64
           profile: pixel_2
+          avd-name: ${{ matrix.expected_page_size == 16384 && 'ost-16k' || 'test' }}
+          force-avd-creation: ${{ matrix.expected_page_size != 16384 }}
           ram-size: 4096M
           heap-size: 512M
           disk-size: 4096M

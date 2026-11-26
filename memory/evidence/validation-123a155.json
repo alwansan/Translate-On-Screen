@@ -1,0 +1,26 @@
+{
+  "source": "123a155f1d047d0c0d0084cf6907c900037959b0",
+  "host": {
+    "run": 45910963570,
+    "conclusion": "success"
+  },
+  "device": {
+    "run": 45910963526,
+    "conclusion": "success",
+    "apis": {
+      "29": {
+        "job": 140218941426,
+        "passed": 40,
+        "failed": 0,
+        "java_heap_limit_bytes": 603979776
+      },
+      "35": {
+        "job": 140218941681,
+        "passed": 40,
+        "failed": 0,
+        "java_heap_limit_bytes": 201326592
+      }
+    }
+  },
+  "verified_case": "nativeEnglishToJapaneseWorksWithNetworkDisabled"
+}
