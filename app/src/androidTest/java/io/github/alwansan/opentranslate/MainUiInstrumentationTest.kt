@@ -2,6 +2,14 @@ package io.github.alwansan.opentranslate
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.view.Display
+import android.view.Surface
+import android.os.SystemClock
+import android.util.Base64
+import android.view.accessibility.AccessibilityWindowInfo
+import java.io.File
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -31,12 +39,24 @@ class MainUiInstrumentationTest {
         oldSettings = SettingsStore.read(context)
         oldAppearance = AppPreferences.read(context)
         context.stopService(Intent(context, CaptureService::class.java))
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        device.wakeUp()
+        device.executeShellCommand("wm dismiss-keyguard")
+        if (Build.VERSION.SDK_INT >= 30) device.setOrientationNatural(Display.DEFAULT_DISPLAY)
+        else device.setOrientationNatural()
+        val deadline = SystemClock.elapsedRealtime() + 10_000
+        while ((device.displayRotation != Surface.ROTATION_0 || device.displayWidth > device.displayHeight) &&
+            SystemClock.elapsedRealtime() < deadline) SystemClock.sleep(80)
+        assertTrue("UI fixture did not settle in portrait",
+            device.displayRotation == Surface.ROTATION_0 && device.displayHeight >= device.displayWidth)
         AppPreferences.saveAppearance(context, "en", "light")
         SettingsStore.save(context, UserSettings(source = "en", target = "ar", ocrLanguage = "eng"))
     }
     @After fun restore() {
         SettingsStore.save(context, oldSettings)
         AppPreferences.save(context, oldAppearance)
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        if (Build.VERSION.SDK_INT >= 30) device.unfreezeRotation(Display.DEFAULT_DISPLAY) else device.unfreezeRotation()
     }
 
     private fun descendants(view: View): List<View> =
@@ -92,18 +112,60 @@ class MainUiInstrumentationTest {
         val intent = Intent(context, MainActivity::class.java)
             .putExtra(MainActivity.OPEN_SETTINGS, true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         ActivityScenario.launch<MainActivity>(intent).use {
-            val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-            assertTrue("Settings dialog did not appear", device.wait(Until.hasObject(By.res("android", "button1")), 5000))
-            UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().text(initialUrl))
-            val endpoint = device.findObject(By.clazz(EditText::class.java).text(initialUrl))
-            assertNotNull("Service endpoint field was not found", endpoint)
-            endpoint!!.text = replacementUrl
-            device.findObject(By.res("android", "button1")).click()
-            device.waitForIdle()
-            val saved = SettingsStore.read(context)
-            assertEquals(replacementUrl, saved.endpoint)
-            assertEquals("A credential must not follow an edited service address", "", saved.apiKey)
-            assertFalse("Changing the destination requires fresh network opt-in", saved.networkEnabled)
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            val device = UiDevice.getInstance(instrumentation)
+            try {
+                val saveSelector = By.pkg(context.packageName).res("android:id/button1")
+                assertTrue("Settings dialog did not appear", device.wait(Until.hasObject(saveSelector), 5000))
+                UiScrollable(UiSelector().packageName(context.packageName).scrollable(true))
+                    .scrollIntoView(UiSelector().text(initialUrl))
+                val endpoint = device.findObject(By.pkg(context.packageName).clazz(EditText::class.java).text(initialUrl))
+                assertNotNull("Service endpoint field was not found", endpoint)
+                endpoint!!.text = replacementUrl
+                assertTrue("The new URL must first reach the editable field",
+                    device.wait(Until.hasObject(By.pkg(context.packageName).clazz(EditText::class.java).text(replacementUrl)), 5000))
+                if (instrumentation.uiAutomation.windows.any { window -> window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }) {
+                    device.pressBack()
+                    val imeDeadline = SystemClock.elapsedRealtime() + 5000
+                    while (instrumentation.uiAutomation.windows.any { window ->
+                        window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD } &&
+                        SystemClock.elapsedRealtime() < imeDeadline) SystemClock.sleep(80)
+                }
+                val save = device.wait(Until.findObject(saveSelector), 5000)
+                assertNotNull("Save action disappeared before confirmation", save)
+                assertTrue("Save action is outside the visible dialog", save!!.visibleBounds.height() > 0)
+                save.click()
+                assertTrue("Settings dialog did not close after saving the edited endpoint",
+                    device.wait(Until.gone(saveSelector), 10_000))
+                instrumentation.waitForIdleSync()
+                val saved = SettingsStore.read(context)
+                assertEquals(replacementUrl, saved.endpoint)
+                assertEquals("A credential must not follow an edited service address", "", saved.apiKey)
+                assertFalse("Changing the destination requires fresh network opt-in", saved.networkEnabled)
+            } catch (error: Throwable) {
+                recordUiEvidence("endpoint_settings_save")
+                throw error
+            }
+        }
+    }
+
+    /** Only the generated endpoint fixture is captured, before ActivityScenario teardown. */
+    private fun recordUiEvidence(reason: String) {
+        runCatching {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            val device = UiDevice.getInstance(instrumentation)
+            val xml = File(context.cacheDir, "main-ui-test-window.xml")
+            val png = File(context.cacheDir, "main-ui-test-window.png")
+            try {
+                device.dumpWindowHierarchy(xml)
+                val captured = device.takeScreenshot(png, .5f, 70)
+                instrumentation.sendStatus(2, Bundle().apply {
+                    putString("ost_evidence_reason", reason)
+                    putString("ost_ui_xml", Base64.encodeToString(xml.readBytes().take(100_000).toByteArray(), Base64.NO_WRAP))
+                    if (captured && png.length() <= 350_000)
+                        putString("ost_screenshot_png", Base64.encodeToString(png.readBytes(), Base64.NO_WRAP))
+                })
+            } finally { xml.delete(); png.delete() }
         }
     }
 

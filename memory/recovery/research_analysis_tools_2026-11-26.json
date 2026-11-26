@@ -62,9 +62,9 @@
     },
     {
       "path": "app/src/main/java/io/github/alwansan/opentranslate/ImageCropView.kt",
-      "git_blob_sha": "351d1872a27d02ef286dc43192df8eb4cbfb3122",
-      "content_saved": "complete UTF-8 text, not a description",
-      "characters": 15119
+      "git_blob_sha": "d61b70c0c5953c4914702ca3cd34801d944a6e87",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 15347
     },
     {
       "path": "app/src/main/java/io/github/alwansan/opentranslate/ImageEditorActivity.kt",
@@ -74,9 +74,9 @@
     },
     {
       "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/ImageEditorInstrumentationTest.kt",
-      "git_blob_sha": "e186c1a6fcf1f78e43db01d3a4ad73146968c98e",
-      "content_saved": "complete UTF-8 text, not a description",
-      "characters": 17997
+      "git_blob_sha": "9e3531496a93ea8536bef02fa6b366aa8e6ce9b9",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 21337
     },
     {
       "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/WordbookImportInstrumentationTest.kt",
@@ -92,9 +92,9 @@
     },
     {
       "path": "app/src/debug/java/io/github/alwansan/opentranslate/ImageEditorHarnessActivity.kt",
-      "git_blob_sha": "8f294a3e76f4e1504dfcc77ad7e4e8b98ff223b7",
-      "content_saved": "complete UTF-8 text, not a description",
-      "characters": 1901
+      "git_blob_sha": "0b4ca8ff3a336b7e60eb55166cc374be962828b7",
+      "content_saved": "Root compile fix verified by reading the exact file at 1301701; Intent.clipData is assigned in apply because setClipData returns void.",
+      "characters": 1909
     },
     {
       "path": "memory/evidence/reference-verification-recovery.json",
@@ -122,15 +122,63 @@
     },
     {
       "path": "app/src/main/java/io/github/alwansan/opentranslate/HistoryStore.kt",
-      "git_blob_sha": "b2afb74b93370ce773a42f2e5fb1efc0cc747292",
-      "content_saved": "complete UTF-8 source; new history-integrity fix after recovery, not a claim of original-file restoration",
-      "characters": 11371
+      "git_blob_sha": "f365760e7157ad2516c28d9a3c121a9fb2ba609d",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 11778
     },
     {
       "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/HistoryStoreInstrumentationTest.kt",
       "git_blob_sha": "388e5a26d5ca37109a5dfa339bfb2c86c62e88de",
       "content_saved": "complete UTF-8 source; new history-integrity fix after recovery, not a claim of original-file restoration",
       "characters": 14315
+    },
+    {
+      "path": "app/src/main/res/values/image_accessibility_ids.xml",
+      "git_blob_sha": "8fd0039b4a9491e0577559101256f77308993273",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 437
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/DictionaryProtocol.kt",
+      "git_blob_sha": "264d0ceb7768eb19a4d9502ebcf8e432858a734c",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 13807
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/DictionaryClient.kt",
+      "git_blob_sha": "aea4cf162a756fcb700be9684f98764e43d6a03e",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 5792
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/DictionaryActivity.kt",
+      "git_blob_sha": "df0700c8b9a95241b72b95c6e6e6a58c344b6072",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 25418
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/DictionaryProtocolTest.kt",
+      "git_blob_sha": "6df1172f11f98d7f5f794c81ef36863f8f8f2808",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 7884
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/DictionaryClientTest.kt",
+      "git_blob_sha": "6f2283673c4f13475ce8f747aeb197c020d561f1",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 8871
+    },
+    {
+      "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/DictionaryActivityInstrumentationTest.kt",
+      "git_blob_sha": "54e240e607086d9ed9f0373a59c21016c3f3e6e7",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 6012
+    },
+    {
+      "path": "docs/DICTIONARY_API.md",
+      "git_blob_sha": "bd40266de8bb2c6d7bc9b407a8c2b3c5dbd5c1c6",
+      "content_saved": "complete UTF-8 source or document; use this checkpoint rather than earlier saved versions",
+      "characters": 7036
     }
   ],
   "recovered_by_other_agent": [
@@ -148,9 +196,9 @@
   "fidelity": {
     "wordbook": "Full source and tests recovered from complete visible reads plus applied patches. Not claimed byte-identical to the lost local file without its original digest.",
     "provider": "Complete rebuilt file retaining validated URI/canonical path, random private camera files, no MODE_CREATE, temporary grants, deletion and stale cleanup contracts.",
-    "image_crop": "The fit-center geometry and drag logic were recovered from full reads; the accessible/keyboard tail was reconstructed with the same behavior and independent localized labels. Must be rebuilt and exercised.",
+    "image_crop": "Recovered native fit-center/crop view, with declared resource IDs for custom accessibility actions. API29 and API35 image instrumentation passed at 1301701; this is not evidence of every EXIF orientation or all devices.",
     "image_editor": "Cancellation, bitmap ownership, bounded decode, EXIF, crop/rotation, lifecycle and result contracts recovered in full. Presentation helper moved into the file to remove dependency on the unrecovered NativeUi; uses the root-agreed AppPreferences.wrap/applyTheme/read contracts.",
-    "instrumentation": "Four image editor/provider tests and five wordbook persistence tests are fully saved, plus debug harness and three JVM codec tests. Existence of these tests is not a passed result.",
+    "instrumentation": "Four image, five wordbook and eight history Android tests passed on both tested API29/API35 environments at 1301701 as reported by root and capture owner. Two new dictionary disclosure tests are authored but pending CI.",
     "reference_report": "A new explicit recovery edition restores known inspection observations and all 44 requirements; it does not pretend to reproduce the lost 39 KB report verbatim.",
     "licenses": "New notice text was built from the remote prior notices and verified artifact/source-card facts. Integrate with matching runtime dependencies and recovered full ONNX third-party text."
   },
@@ -170,10 +218,6 @@
     {
       "path": "memory/evidence/*signature*.txt",
       "status": "Four original apksigner logs not recovered; rerun on stored originals without installing them."
-    },
-    {
-      "path": "app/src/main/assets/licenses/ONNX-RUNTIME-THIRD-PARTY.txt",
-      "status": "Full 333022-byte text unavailable in retained context. Recover exact ThirdPartyNotices.txt entry from official onnxruntime-1.23.2.jar; do not ship a summary instead."
     }
   ],
   "public_contracts": {
@@ -183,25 +227,48 @@
     "geometry": "NormalizedRegion(left,top,right,bottom); RegionMath.validated(region) and toPixels(region,width,height)->PixelRegion(left,top,width,height)",
     "appearance": "AppPreferences.wrap(Context), applyTheme(Activity), read(Context).theme; tests also language(Context), theme(Context), saveAppearance(Context,language,theme)",
     "debug_manifest": "ImageEditorHarnessActivity exported=false and configChanges=orientation|screenSize. Production ImageEditorActivity must recreate on orientation changes.",
-    "wordbook": "SavedWord data class; WordbookStore.read returns List and lastReadWarning; put/remove/merge use strict read. clear remains explicit and permits removal of a damaged file."
+    "wordbook": "SavedWord data class; WordbookStore.read returns List and lastReadWarning; put/remove/merge use strict read. clear remains explicit and permits removal of a damaged file.",
+    "dictionary": "Non-exported DictionaryActivity; EXTRA_WORD=io.github.alwansan.opentranslate.dictionary.WORD and EXTRA_LANGUAGE=io.github.alwansan.opentranslate.dictionary.LANGUAGE. Prefill only, every lookup confirmed. AppPreferences wrap/applyTheme/isDark/applySpeech; no added dependency/permission."
   },
   "validation": {
     "local_build_after_reconstruction": false,
     "device_tests_executed_by_this_agent": false,
     "source_checks": "No unexpanded reconstruction placeholders, no trailing whitespace, newline at EOF.",
     "required_next": [
-      "Root integrates blobs into one tree/commit with branch lease",
-      "Restore full ONNX third-party notice from official artifact",
-      "Run Android build, unit tests and lint",
-      "Run actual instrumentation with explicitly provisioned models",
-      "Recreate missing reference raw logs and per-image hash index when original inputs are available"
+      "Root integrates the dictionary source/test/doc blobs and the required seventh instrumentation suite",
+      "Run Android compilation, JVM tests, lint and the complete API29/API35 device suites for the integrated dictionary batch",
+      "Keep dictionary live-service probing non-gating; simulated transport tests do not prove public-service availability",
+      "Regenerate missing reference raw logs and per-image hash index if the original inputs become available"
     ],
     "camera_limits": [
       "External camera handoff not exercised by these synthetic tests",
       "Eight EXIF orientations not exhaustively device-tested",
       "Cross-UID URI permission revocation not proven by in-process provider tests",
       "SAF grant lifetime, process death and memory pressure require further execution evidence"
-    ]
+    ],
+    "device_evidence_at_1301701": {
+      "commit": "1301701a7d3466469cdfdceb444b3de4e7306085",
+      "api29": {
+        "job_id": 139763512785,
+        "total": 29,
+        "passed": 29,
+        "failed": 0,
+        "skipped": 0
+      },
+      "api35": {
+        "total": 29,
+        "passed": 26,
+        "failed": 3,
+        "scope": "History 8/8, ImageEditor 4/4 and Wordbook 5/5 passed; remaining failures belong to capture fixtures and Main UI. Do not claim complete API35 pass."
+      },
+      "source": "Root and audit_reference_app messages from parsed DEVICE_TEST_SUMMARY; this agent did not execute an emulator locally."
+    },
+    "dictionary": {
+      "jvm_tests_authored": 12,
+      "android_tests_authored": 2,
+      "execution": "pending integration/CI",
+      "live_service_request": "not performed by this agent"
+    }
   },
   "provisioner_reconstruction": {
     "python": "3.10+ standard library",
@@ -302,7 +369,8 @@
         "no-op Boolean result without file creation"
       ]
     },
-    "integration_owner": "root; this agent did not mutate a branch or MainActivity"
+    "integration_owner": "root; this agent did not mutate a branch or MainActivity",
+    "interrupt_regression_fix": "The localized cancellation exception restores the thread flag after SharedPreferences access and after rollback/close; common EngineMessages preservation is owned by engine agent. Original integrity assertions remain unchanged."
   },
   "confirmed_ci_notice_gate": {
     "reported_by": "root and engine agent",
@@ -311,5 +379,14 @@
     "bytes": 333022,
     "sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
     "scope": "Upstream notices generation gate passed; does not by itself assert a completed packaged APK or device runtime pass."
-  }
+  },
+  "index_scope": "Saved source checkpoints owned by this agent, not an authoritative manifest of current HEAD. Root controls integration and current validation reports.",
+  "resolved_recovery_items": [
+    {
+      "path": "app/src/main/assets/licenses/ONNX-RUNTIME-THIRD-PARTY.txt",
+      "status": "CI notice-generation gate extracted and verified the exact official onnxruntime-1.23.2.jar ThirdPartyNotices.txt entry; the earlier full-text recovery blocker is closed.",
+      "bytes": 333022,
+      "sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+    }
+  ]
 }

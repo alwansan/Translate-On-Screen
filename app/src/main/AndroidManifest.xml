@@ -39,6 +39,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ImageEditorActivity" android:exported="false" />
+        <activity android:name=".DictionaryActivity" android:exported="false" />
         <provider android:name=".CaptureImageProvider"
             android:authorities="${applicationId}.capture-images"
             android:exported="false" android:grantUriPermissions="true" />

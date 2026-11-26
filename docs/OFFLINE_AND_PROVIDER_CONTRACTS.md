@@ -4,7 +4,7 @@
 
 This document describes source reconstructed after the executor outage on 2026-11-26. Git blobs preserve that source; reconstruction alone does not establish a successful build or native run. [VALIDATION.md](VALIDATION.md) records the exact tested commit, CI results and Android evidence. The [feature matrix](FEATURE_MATRIX_AR.md) maps the current Git source and separately identified pending changes; it retains the earlier local review as history.
 
-The reconstructed host path has now passed new checks at commit `21964e475c2d92cded60827799edf054c82d4773`, independently of pre-outage observations. Android instrumentation separately verifies packaged JNI and the app path; its current overall gate failed and needs correction. No paid translation account was tested with real credentials.
+The reconstructed host path passed new checks at commits `21964e475c2d92cded60827799edf054c82d4773` and `1301701a7d3466469cdfdceb444b3de4e7306085`, independently of pre-outage observations. At `1301701`, native Arabic OCR and both offline translation directions passed on API29 and API35 with networking disabled. The API35 overall gate still has three capture/UI failures; scoped native success is not a whole-app acceptance result. No paid translation account was tested with real credentials.
 
 ## API and coordinates
 
@@ -12,7 +12,7 @@ The reconstructed host path has now passed new checks at commit `21964e475c2d92c
 
 `TranslationResult` contains original text, nullable translated text, nullable warning, and an empty-by-default list of `OcrBlock`. A block contains original/translated text, left/top/right/bottom, and confidence. Coordinates and confidence are **0–1**. Bounds refer to the **input bitmap, including a crop**, rather than the full display.
 
-The engine retains Tesseract iterator order instead of reversing or sorting it itself. This does not establish Arabic recognition quality; the current device fixture must pass. The [4.9.0 JNI](https://github.com/adaptech-cz/Tesseract4Android/blob/4.9.0/tesseract4android/src/main/cpp/tesseract/pageiterator.cpp) returns x1/y1/x2/y2; the short Java x/y/w/h comment does not describe those actual native values.
+The engine retains Tesseract iterator order instead of reversing or sorting it itself. The synthetic Arabic and English native fixtures passed at `1301701` on API29/API35; this does not establish accuracy on arbitrary scripts, fonts, columns or screenshots. The [4.9.0 JNI](https://github.com/adaptech-cz/Tesseract4Android/blob/4.9.0/tesseract4android/src/main/cpp/tesseract/pageiterator.cpp) returns x1/y1/x2/y2; the short Java x/y/w/h comment does not describe those actual native values.
 
 | Setting | Values | Operation |
 | --- | --- | --- |
@@ -23,19 +23,19 @@ Paragraph grouping occurs before translation. It does not merely join separately
 
 The [OCR catalog](../app/src/main/java/io/github/alwansan/opentranslate/ModelStore.kt) contains 18 files pinned to [tessdata_fast 87416418657359cb625c412a48b6e1d6d41c29bd](https://github.com/tesseract-ocr/tessdata_fast/tree/87416418657359cb625c412a48b6e1d6d41c29bd): English, Arabic, French, German, Spanish, Italian, Portuguese, Russian, Hindi, Turkish, Japanese, simplified/traditional Chinese, Korean, and CJK vertical variants. Multiple installed languages use `+`. Download size/SHA checks and bounded SAF import precede installation; catalog presence is not proof of equal OCR quality.
 
-## Arabic OCR correction under device validation
+## Arabic OCR correction and scoped device evidence
 
 The API29 and API35 runs at `21964e4` failed the synthetic Arabic OCR assertion. The exact fixture cause has not yet been isolated; the assertion remains strict and is not replaced with a skip.
 
 Tesseract4Android 4.9.0 is pinned at [`15c534717b1cb58261b58d4e4c1200c7f81f668c`](https://github.com/adaptech-cz/Tesseract4Android/commit/15c534717b1cb58261b58d4e4c1200c7f81f668c). Its vendored [VERSION](https://github.com/adaptech-cz/Tesseract4Android/blob/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/tesseract/src/VERSION) is 5.5.1. The bundled [row cleanup](https://github.com/adaptech-cz/Tesseract4Android/blob/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/tesseract/src/src/textord/tordmain.cpp) uses the word noise ratio when deciding whether to discard an entire row. Upstream [issue4582](https://github.com/tesseract-ocr/tesseract/issues/4582) reports whole-line loss for dotted Arabic-script text; [open PR4638](https://github.com/tesseract-ocr/tesseract/pull/4638) proposes restoring the separate row threshold. That upstream report supports a candidate mitigation; it does not prove the cause of our fixture failure.
 
-The pending OCR change sets `textord_noise_rejrows=0` **only when the selected OCR languages include `ara`**, after successful native initialization. It checks that the supported parameter was accepted. Word filtering, the selected page mode, model hashes and geometry assertions remain unchanged. A change of OCR languages changes ModelStore.signature, recycles the old TessBaseAPI and creates a new native instance, so the Arabic setting is not reused for an English-only initialization. Interrupt gates remain around native boundaries.
+The OCR change integrated at `1301701` sets `textord_noise_rejrows=0` **only when the selected OCR languages include `ara`**, after successful native initialization. It checks that the supported parameter was accepted. Word filtering, the selected page mode, model hashes and geometry assertions remain unchanged. A change of OCR languages changes ModelStore.signature, recycles the old TessBaseAPI and creates a new native instance, so the Arabic setting is not reused for an English-only initialization. Interrupt gates remain around native boundaries.
 
-The capture-test owner is also correcting the Arabic fixture to use explicit RTL layout. A passing rerun will establish the combined corrected path, not isolate which change alone fixed the original failure. OCR quality, false positives on noisy screens and arbitrary Arabic fonts still require representative acceptance samples.
+The Arabic fixture was also changed to explicit RTL layout. The rerun at `1301701` passed the strict Arabic-presence and normalized-geometry assertions on both API29 and API35, alongside English OCR and native color-contrast checks. This verifies the combined corrected path; it does not isolate which change alone fixed the original failure. OCR quality, false positives on noisy screens and arbitrary Arabic fonts still require representative acceptance samples.
 
 ## Cancellation messages
 
-Android10 [SharedPreferencesImpl.awaitLoadedLocked](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-10.0.0_r47/core/java/android/app/SharedPreferencesImpl.java) catches InterruptedException during the first preference load. A locale lookup can therefore consume an existing interrupt while formatting an error. The pending EngineMessages change records the entry flag and restores it in a finally block. HistoryStore additionally preserves cancellation at its write boundary. Device tests retain the original interrupt assertions; error translation must not turn a cancelled request back into active work.
+Android10 [SharedPreferencesImpl.awaitLoadedLocked](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-10.0.0_r47/core/java/android/app/SharedPreferencesImpl.java) catches InterruptedException during the first preference load. A locale lookup can therefore consume an existing interrupt while formatting an error. The EngineMessages change integrated at `1301701` records the entry flag and restores it in a finally block. HistoryStore additionally preserves cancellation at its write boundary. All eight history tests, including the unchanged interrupt assertion, passed on API29 and API35. Error translation must not turn a cancelled request back into active work.
 
 ## Provider contracts
 
@@ -95,6 +95,21 @@ Missing models or generated fixtures fail explicitly; there are no model-test sk
 [Run45775143669](https://github.com/alwansan/Translate-On-Screen/actions/runs/45775143669), commit `21964e475c2d92cded60827799edf054c82d4773`, passed **56 JVM tests with zero failures and zero skips**. All three MarianRuntimeTest methods passed: the six exact phrase regressions and the cancellation/reuse/close scenario. All five MarianTokenizerTest methods passed, including the32 independent SentencePiece cases and all eight pinned file size/SHA checks. The boundary test includes newlines between translated blocks in the48000-character output limit. This is fresh evidence for the reconstructed host implementation.
 
 The same run built app/test APKs, reported lint0 errors/48 warnings and passed the signature/static alignment/packaged-notice checks. The Android [device run45775143685](https://github.com/alwansan/Translate-On-Screen/actions/runs/45775143685) still failed overall: API29 crashed before all suites ran; API35 executed28 tests with9 failures. Arabic OCR, history cancellation, capture-consent lifecycle and image-editor preparation are being corrected. A successful host run or a failed overall device run does not by itself establish the native Android translation verdict; use the per-test device evidence in VALIDATION.md.
+
+
+
+### Runtime-fix checkpoint 1301701
+
+At [commit1301701a7d3466469cdfdceb444b3de4e7306085](https://github.com/alwansan/Translate-On-Screen/commit/1301701a7d3466469cdfdceb444b3de4e7306085), [host run45777167844](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167844) again passed56/56 JVM tests with zero failures/skips, including all Marian and tokenizer checks. App/test APK builds, lint0 errors/48 warnings, and packaged license/signature/static-alignment checks passed.
+
+The [device run45777167852](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167852) produced explicit per-case summaries:
+
+| Device job | Result | Native engine evidence |
+| --- | --- | --- |
+| [API29 /139763512785](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167852/job/139763512785) |29 started/finished/passed;0 failed or ignored; all six required suites present | English/Arabic OCR plus normalized geometry/colors, and both en→ar/ar→en offline tests passed. |
+| [API35 /139763512423](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167852/job/139763512423) |29 finished;26 passed/3 failed;0 ignored; no missing suites | The same OCR and both offline tests explicitly passed. All History8 and Image4 tests also passed. |
+
+Both summaries record airplane_mode_on=1, wifi_on=0 and mobile_data=0 during testing. The remaining API35 failures are screen output after rotation, a later capture-consent prompt, and the UI test that edits/saves a service address. They remain open; the current evidence does not justify an engine change for them without further diagnosis. The six exact phrase regressions run on host; Android tests assert actual target-language/meaning output and geometry, not a full quality benchmark or a latency guarantee.
 
 
 ## ONNX license provenance

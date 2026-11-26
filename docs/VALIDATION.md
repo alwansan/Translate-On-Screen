@@ -43,6 +43,21 @@ Source `21964e475c2d92cded60827799edf054c82d4773`: [host run45775143669](https:/
 
 The corrective source batch uses app resource IDs for custom accessibility actions, preserves interruption across localized preference reads, addresses Arabic row rejection and test rendering, and repairs capture fixture/session isolation. Assertions remain in place. Pending UI closures include distinct screen-result copy actions, live appearance preview/custom colors, explicit OCR language availability and credential clearing when an endpoint changes. These changes require new host and device results; the successful21964 host result is not inherited automatically.
 
+
+## Corrective checkpoint1301701: API29 passes, API35 has three remaining failures
+
+Source [`1301701a7d3466469cdfdceb444b3de4e7306085`](https://github.com/alwansan/Translate-On-Screen/commit/1301701a7d3466469cdfdceb444b3de4e7306085). Durable structured evidence: [validation-1301701.json](../memory/evidence/validation-1301701.json).
+
+- [Host45777167844](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167844): **PASS**,56/56 JVM,0 failed/skipped; audit8, provisioner10, parser7; lint0 errors/48 warnings.
+- APK59,743,722 bytes; SHA256 `a2fe3da23c6867b3fe3d7394b2e0e7262a52f154e3200fbcb14288c3a322375e`. Signature, licenses,12 native libraries and ZIP/ELF alignment passed.
+- [Device45777167852](https://github.com/alwansan/Translate-On-Screen/actions/runs/45777167852): **API29 passed29/29**; **API35 passed26/29 and failed3**;0 ignored/assumed cases, all six required suites executed, final instrumentation code-1 on both. Airplane mode was1, Wi-Fi0 and mobile data0.
+- Native English/Arabic OCR, eight History cases, four ImageEditor cases, five Wordbook cases and both local translation directions passed on both systems. The Arabic fixture layout and Arabic-only row-filter setting changed together; their individual causal contribution was not isolated.
+- Remaining API35 failures: capture after rotation, fixed-area consent UI, and endpoint-dialog save/credential clearing. The latter passed on29; this is not grounds to mark35 as passed.
+
+Failure screenshots show a real system consent dialog in landscape with its action below a scrollable viewport. They do not show the pre-OCR rotated frame, so no speculative OCR/capture fix is justified. The next checkpoint uses display-specific rotation controls, scrolls the real system prompt, waits on dialog semantics, and records a bounded synthetic pre-OCR frame only when explicitly enabled by instrumentation. The release implementation of that probe is a no-op.
+
+The same next checkpoint integrates a lexical dictionary, separate original/translation sharing and twelve JVM plus two Android dictionary tests. Expected totals are68 JVM and31 device cases; these are **planned counts, not passing results**. The optional public dictionary probe uses only the fixed word `hello`, reports schema/availability, and cannot substitute for hermetic protocol/UI tests. Release-variant compilation is added; production signing is still unconfigured.
+
 ## Packaging evidence already obtained
 
 The build extracted the official ONNX Runtime1.23.2 third-party notices from its JVM artifact and verified source commit `a83fc4d58cb48eb68890dd689f94f28288cf2278`.

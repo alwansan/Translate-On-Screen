@@ -57,7 +57,7 @@ jobs:
       - name: Build, unit tests and Android lint
         env:
           OFFLINE_MODEL_TEST_ROOT: ${{ runner.temp }}/ost-test-models
-        run: ./gradlew --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug :app:assembleDebugAndroidTest
+        run: ./gradlew --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:lintDebug :app:assembleDebugAndroidTest :app:assembleRelease
       - name: Record unit-test and lint evidence
         if: always()
         run: python3 tools/summarize_validation.py

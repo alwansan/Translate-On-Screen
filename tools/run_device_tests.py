@@ -118,7 +118,8 @@ def validate_coverage(report: dict, capture_only: bool) -> None:
     required = {"CaptureInstrumentationTest"}
     if not capture_only:
         required.update({"OfflineTranslationInstrumentationTest", "ImageEditorInstrumentationTest",
-                         "MainUiInstrumentationTest", "WordbookImportInstrumentationTest", "HistoryStoreInstrumentationTest"})
+                         "MainUiInstrumentationTest", "WordbookImportInstrumentationTest", "HistoryStoreInstrumentationTest",
+                         "DictionaryActivityInstrumentationTest"})
     executed = {case["class"].rsplit(".", 1)[-1] for case in report["tests"]}
     missing = sorted(required - executed)
     report["required_suites"] = sorted(required)

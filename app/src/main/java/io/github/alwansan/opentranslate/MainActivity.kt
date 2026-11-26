@@ -19,7 +19,10 @@ import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.ActionMode
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import org.json.JSONArray
@@ -423,14 +426,15 @@ class MainActivity : Activity() {
         val card = ui.card(body, t("Result", "النتيجة"))
         value.warning?.let { card.addView(ui.secondary(it)) }
         card.addView(ui.label(languageName(resultSource), 13f, true))
-        card.addView(ui.label(value.original, 17f).apply { setTextIsSelectable(true) })
+        card.addView(selectableResultText(value.original, 17f, resultSource))
         val originalActions = ui.row()
         card.addView(originalActions)
         ui.smallButton(originalActions, t("Copy original", "نسخ الأصل")) { copy(value.original) }
         ui.smallButton(originalActions, t("Read original", "نطق الأصل")) { speak(value.original, resultSource) }
+        ui.smallButton(originalActions, t("Share original", "مشاركة الأصل")) { shareText(value.original) }
         value.translated?.let { translation ->
             card.addView(ui.label(languageName(resultTarget), 13f, true))
-            card.addView(ui.label(translation, 21f).apply { setTextIsSelectable(true) })
+            card.addView(selectableResultText(translation, 21f, resultTarget))
             val actions = ui.row()
             card.addView(actions)
             ui.smallButton(actions, t("Copy translation", "نسخ الترجمة")) { copy(translation) }
@@ -457,10 +461,53 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun openDictionary(word: String = "", language: String = SettingsStore.read(this).source) {
+        val selected = word.trim()
+        if (selected.length > 80) {
+            Toast.makeText(this, t("Select a word or short phrase up to 80 characters.",
+                "حدد كلمة أو عبارة قصيرة لا تتجاوز80 حرفاً."), Toast.LENGTH_LONG).show()
+            return
+        }
+        startActivity(Intent(this, DictionaryActivity::class.java)
+            .putExtra(DictionaryActivity.EXTRA_WORD, selected)
+            .putExtra(DictionaryActivity.EXTRA_LANGUAGE, language))
+    }
+
+    private fun selectableResultText(value: String, size: Float, language: String): TextView =
+        ui.label(value, size).apply {
+            setTextIsSelectable(true)
+            val textView = this
+            customSelectionActionModeCallback = object : ActionMode.Callback {
+                override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+                    menu.add(Menu.NONE, R.id.dictionary_lookup, Menu.NONE, t("Word meaning", "معنى الكلمة"))
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                    return true
+                }
+                override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+                    val length = kotlin.math.abs(textView.selectionEnd - textView.selectionStart)
+                    menu.findItem(R.id.dictionary_lookup)?.isVisible = length in 1..80
+                    return true
+                }
+                override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+                    if (item.itemId != R.id.dictionary_lookup) return false
+                    val start = minOf(textView.selectionStart, textView.selectionEnd).coerceIn(0, textView.text.length)
+                    val end = maxOf(textView.selectionStart, textView.selectionEnd).coerceIn(start, textView.text.length)
+                    openDictionary(textView.text.subSequence(start, end).toString(), language)
+                    mode.finish()
+                    return true
+                }
+                override fun onDestroyActionMode(mode: ActionMode) = Unit
+            }
+        }
+
     private fun renderMore(body: LinearLayout) {
         val library = ui.card(body, t("Your saved text", "نصوصك المحفوظة"))
         ui.button(library, t("Translation history", "سجل الترجمات")) { showHistory() }
         ui.button(library, t("Personal wordbook", "القاموس الشخصي")) { showWordbook() }
+        val dictionary = ui.card(body, t("Word meanings", "معاني الكلمات"))
+        dictionary.addView(ui.secondary(t("Look up a word's definitions, pronunciation and examples. You choose when to connect to the dictionary service.",
+            "ابحث عن معاني كلمة ولفظها وأمثلتها. أنت تختار متى يتم الاتصال بخدمة القاموس.")))
+        ui.button(dictionary, t("Dictionary lookup", "البحث في القاموس المعجمي")) { openDictionary() }
         val preferences = ui.card(body, t("Preferences", "التفضيلات"))
         ui.button(preferences, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
         ui.button(preferences, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
@@ -1033,11 +1080,13 @@ class MainActivity : Activity() {
             t("\nDrag the bubble to move it. Change these actions in Screen modes and appearance.\n\n" +
                 "4. Select a region by dragging; fixed regions are stored separately for each orientation. Automatic modes repeat after work finishes and can be paused or stopped.\n\n" +
                 "5. Stop from the notification or floating menu. Locking the screen ends sharing. Protected content can appear blank under Android rules.\n\n" +
-                "If Android or the device maker stops the service, reopen the app and start a fresh session. There is no hidden background restart. For images, use the crop/rotate preview before reading.",
+                "If Android or the device maker stops the service, reopen the app and start a fresh session. There is no hidden background restart. For images, use the crop/rotate preview before reading.\n\n" +
+                "For word definitions, select one word in a result and choose Word meaning, or open Dictionary lookup from More. Network lookup needs its own confirmation.",
                 "\nاسحب الفقاعة لنقلها. غيّر هذه الإيماءات من أوضاع الشاشة والمظهر.\n\n" +
                 "٤. حدد منطقة بالسحب؛ تُحفظ المناطق الثابتة لكل اتجاه شاشة بصورة مستقلة. تكرر الأوضاع التلقائية العمل بعد انتهاء كل دورة ويمكن إيقافها مؤقتاً أو إنهاؤها.\n\n" +
                 "٥. أوقف المشاركة من الإشعار أو القائمة العائمة. ينهي قفل الشاشة المشاركة. قد يظهر المحتوى المحمي فارغاً وفق قواعد Android.\n\n" +
-                "إذا أوقف Android أو نظام الجهاز الخدمة، افتح التطبيق وابدأ جلسة جديدة. لا توجد إعادة تشغيل خلفية خفية. للصور، استخدم معاينة القص والتدوير قبل القراءة.")
+                "إذا أوقف Android أو نظام الجهاز الخدمة، افتح التطبيق وابدأ جلسة جديدة. لا توجد إعادة تشغيل خلفية خفية. للصور، استخدم معاينة القص والتدوير قبل القراءة.\n\n" +
+                "لمعاني الكلمات، حدد كلمة في النتيجة واختر معنى الكلمة، أو افتح القاموس المعجمي من المزيد. يحتاج البحث الشبكي موافقة مستقلة.")
         textDialog(t("Quick guide", "الدليل السريع"), text)
     }
 
@@ -1046,11 +1095,13 @@ class MainActivity : Activity() {
             t("Screen sharing is active only after Android consent and remains visible in a foreground notification. Stop or lock the screen to end the session.\n\n" +
                 "OCR runs on the device. Screen captures are processed in memory. Camera input uses a temporary private file that is deleted when the editor finishes or is cancelled; abandoned files are cleared later. Imported images remain under your control.\n\n" +
                 "Online translation sends text only to the explicitly enabled provider. Offline translation requires downloaded language packs and does not use a translation server. There are no ads, analytics or built-in service keys.\n\n" +
+                "Dictionary lookups send the selected word to the public dictionary only after a separate confirmation. Dictionary entries are not saved automatically. Opening an external dictionary also asks first.\n\n" +
                 "API keys are encrypted with Android Keystore. History is off until you enable it and keeps up to 100 entries. Wordbook entries are saved only when you ask. You can export or clear both.\n\n" +
                 "Speech input and reading voices are supplied by installed Android services; online voices have their own opt-in. Downloads fetch verified open model files. You can remove downloaded models in Language models.",
                 "تعمل مشاركة الشاشة بعد موافقة Android وتظهر بإشعار خدمة مستمرة. أوقف الجلسة أو اقفل الشاشة لإنهائها.\n\n" +
                 "تُقرأ الصور على الجهاز. تُعالج لقطات الشاشة في الذاكرة. تستخدم الكاميرا ملفاً خاصاً مؤقتاً يُحذف عند إنهاء المحرر أو إلغائه؛ وتُزال الملفات المتروكة لاحقاً. تبقى الصور المستوردة تحت تحكمك.\n\n" +
                 "ترسل الترجمة الشبكية النص فقط إلى المزوّد الذي فعّلته صراحةً. تحتاج الترجمة المحلية حزم لغات منزّلة، ولا تستخدم خادم ترجمة. لا توجد إعلانات أو تحليلات استخدام أو مفاتيح خدمة مدمجة.\n\n" +
+                "يرسل البحث المعجمي الكلمة المختارة إلى القاموس العام بعد تأكيد مستقل فقط. لا تُحفظ النتائج تلقائياً. فتح معجم خارجي يحتاج موافقتك أيضاً.\n\n" +
                 "تُشفّر مفاتيح API بمخزن مفاتيح Android. السجل معطل حتى تفعّله ويحفظ حتى ١٠٠ مدخل. لا تُحفظ عبارات القاموس إلا بطلبك، ويمكن تصدير البيانات أو مسحها.\n\n" +
                 "توفر خدمات Android المثبتة الإدخال الصوتي وأصوات القراءة؛ وتحتاج الأصوات الشبكية تفعيل خيارها. تجلب التنزيلات نماذج مفتوحة مفحوصة، ويمكن حذفها من مدير النماذج."))
     }

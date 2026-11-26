@@ -1,0 +1,28 @@
+name: Public dictionary service observation
+on:
+  push:
+    branches: [feature/open-screen-translate]
+    paths:
+      - 'app/src/main/java/io/github/alwansan/opentranslate/Dictionary*.kt'
+      - '.github/workflows/dictionary-service-probe.yml'
+      - '.github/scripts/probe_dictionary.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Observe public English dictionary with one synthetic lookup
+        run: python3 .github/scripts/probe_dictionary.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: dictionary-service-observation-${{ github.sha }}
+          path: dictionary-service-observation.json
+          retention-days: 14
+          if-no-files-found: error

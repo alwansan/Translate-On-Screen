@@ -104,6 +104,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val contentHeight: Int,
         val automatic: Boolean,
         val previousFingerprint: FrameFingerprint?,
+        val diagnosticGeometry: String,
     )
     private data class CapturedResult(
         val result: TranslationResult,
@@ -647,8 +648,15 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val fresh = newReader(bufferWidth, bufferHeight)
         val previous = reader
         reader = fresh
+        val diagnosticGeometry = if (CaptureDebugProbe.enabled) {
+            val physical = screenSize()
+            "request=" + id + "; content=" + contentWidth + "x" + contentHeight +
+                "; buffer=" + bufferWidth + "x" + bufferHeight +
+                "; display=" + physical.x + "x" + physical.y +
+                "; rotation=" + (displays.getDisplay(Display.DEFAULT_DISPLAY)?.rotation ?: -1)
+        } else ""
         pending.set(FrameRequest(id, generation, fresh, region, settings, options,
-            contentWidth, contentHeight, automatic, previousFingerprint))
+            contentWidth, contentHeight, automatic, previousFingerprint, diagnosticGeometry))
         try {
             display.surface = fresh.surface
         } catch (error: Exception) {
@@ -681,7 +689,16 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 }
             }
             actualRegion = RegionMath.actualCrop(next.region, image.width, image.height)
-            bitmap = copyPixels(image, next.region)
+            val copied = copyPixels(image, next.region)
+            bitmap = copied
+            if (CaptureDebugProbe.enabled) {
+                val plane = image.planes.first()
+                CaptureDebugProbe.record(copied, next.diagnosticGeometry +
+                    "; image=" + image.width + "x" + image.height +
+                    "; crop=" + copied.width + "x" + copied.height +
+                    "; rowStride=" + plane.rowStride + "; pixelStride=" + plane.pixelStride +
+                    "; capturedAtMs=" + SystemClock.elapsedRealtime())
+            }
         } catch (_: OutOfMemoryError) {
             request?.let { failFromWorker(it, ui("Not enough memory. Try a smaller area.", "الذاكرة غير كافية. جرّب منطقة أصغر.")) }
         } catch (_: Exception) {
@@ -1082,11 +1099,6 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val panel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(12), dp(16), dp(10))
-            background = background(Color.argb(options.backgroundOpacity * 255 / 100,
-                Color.red(options.backgroundColor), Color.green(options.backgroundColor), Color.blue(options.backgroundColor)), 18).apply {
-                if (options.backgroundBorder) setStroke(dp(2), options.borderColor)
-            }
-            elevation = dp(10).toFloat()
         }
         panel.addView(text(ui("Screen translation", "ترجمة الشاشة"), 19f).apply { setTypeface(null, Typeface.BOLD); setTextColor(options.textColor) })
         val content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -1112,15 +1124,14 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             content.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(options.textColor) })
             content.addView(text(result.original, 14f).apply { setTextColor(options.textColor); setTextIsSelectable(true) })
         }
-        val scroll = ScrollView(this).apply { addView(content) }
+        panel.addView(content, LinearLayout.LayoutParams(-1, -2))
         val panelWidth = (screen.x * options.panelWidthPercent / 100).coerceIn(min(dp(160), screen.x - dp(16)), screen.x - dp(16))
-        content.measure(View.MeasureSpec.makeMeasureSpec(max(dp(100), panelWidth - dp(32)), View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        panel.addView(scroll, LinearLayout.LayoutParams(-1, min(content.measuredHeight + dp(8), max(dp(60), (screen.y * .42).toInt()))))
         fun actionRow(): LinearLayout = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; panel.addView(this) }
         fun addAction(row: LinearLayout, label: String, action: () -> Unit): Button = button(label, action).also {
             it.textSize = 12f
-            row.addView(it, LinearLayout.LayoutParams(0, dp(48), 1f))
+            it.minimumHeight = dp(48)
+            it.setPadding(dp(5), dp(6), dp(5), dp(6))
+            row.addView(it, LinearLayout.LayoutParams(0, -2, 1f))
         }
         val first = actionRow()
         addAction(first, ui("Copy original", "نسخ الأصل")) { copyText(result.original) }.isEnabled = result.original.isNotBlank()
@@ -1130,11 +1141,15 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         addAction(first, ui("Speak", "نطق")) {
             speak(output, if (!result.translated.isNullOrBlank()) settings.target else settings.source)
         }.isEnabled = output.isNotBlank()
-        addAction(first, ui("Share", "مشاركة")) {
-            pauseAutomatic(); cancelCurrentCapture(); hideResults()
-            val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, output)
-            runCatching { startActivity(Intent.createChooser(send, ui("Share translation", "مشاركة الترجمة")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
-        }.isEnabled = output.isNotBlank()
+        val sharing = actionRow()
+        addAction(sharing, ui("Share original", "مشاركة الأصل")) {
+            shareText(result.original, ui("Share original text", "مشاركة النص الأصلي"))
+        }.isEnabled = result.original.isNotBlank()
+        addAction(sharing, ui("Share translation", "مشاركة الترجمة")) {
+            result.translated?.takeIf { it.isNotBlank() }?.let { value ->
+                shareText(value, ui("Share translation", "مشاركة الترجمة"))
+            }
+        }.isEnabled = !result.translated.isNullOrBlank()
         val second = actionRow()
         addAction(second, ui("Area", "منطقة")) {
             pauseAutomatic(); cancelCurrentCapture(); showRegionSelector(saveFixed = options.requiresFixedRegion)
@@ -1143,18 +1158,43 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         addAction(second, ui("Modes", "أوضاع")) { pauseAutomatic(); cancelCurrentCapture(); showModeMenu() }
         addAction(second, ui("Languages / provider", "اللغات / المزوّد")) { openLanguageSettings() }
         addAction(second, ui("Close", "إغلاق")) { hideResults() }
-        panel.measure(View.MeasureSpec.makeMeasureSpec(panelWidth, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+        // One viewport contains the complete result and every action. Fixed action rows
+        // outside a text-only scroller could exceed a landscape screen at large font scales.
+        val viewport = ScrollView(this).apply {
+            background = background(Color.argb(options.backgroundOpacity * 255 / 100,
+                Color.red(options.backgroundColor), Color.green(options.backgroundColor), Color.blue(options.backgroundColor)), 18).apply {
+                if (options.backgroundBorder) setStroke(dp(2), options.borderColor)
+            }
+            elevation = dp(10).toFloat()
+            clipToOutline = true
+            addView(panel, FrameLayout.LayoutParams(-1, -2))
+        }
+        val maxHeight = max(1, screen.y - dp(56))
+        viewport.measure(View.MeasureSpec.makeMeasureSpec(panelWidth, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST))
+        val panelHeight = viewport.measuredHeight.coerceIn(1, maxHeight)
         try {
-            windows.addView(panel, overlayParams(panelWidth, -2).apply {
-                x = max(0, (screen.x - panelWidth) / 2); y = resultY(panel.measuredHeight, dp(64).coerceAtMost(max(0, screen.y / 6)))
+            windows.addView(viewport, overlayParams(panelWidth, panelHeight).apply {
+                x = max(0, (screen.x - panelWidth) / 2); y = resultY(panelHeight, dp(64).coerceAtMost(max(0, screen.y / 6)))
             })
-            resultPanel = panel
+            resultPanel = viewport
         } catch (_: RuntimeException) {
             toast(ui("Could not display the result. Check overlay permission.", "تعذّر عرض النتيجة. تحقق من إذن الظهور فوق التطبيقات."))
         }
         showBubble()
         armResultTimeout()
+    }
+
+    /** The chooser hands text to an app explicitly selected by the user. */
+    private fun shareText(value: String, title: String) {
+        if (value.isBlank()) return
+        pauseAutomatic()
+        cancelCurrentCapture()
+        hideResults()
+        val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, value)
+        runCatching {
+            startActivity(Intent.createChooser(send, title).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }.onFailure { toast(ui("No app is available to share this text.", "لا يوجد تطبيق متاح لمشاركة هذا النص.")) }
     }
 
     private fun openLanguageSettings() {

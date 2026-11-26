@@ -3,6 +3,9 @@ package io.github.alwansan.opentranslate
 import android.app.KeyguardManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Build
+import android.view.Display
+import android.view.Surface
 import android.os.Process
 import android.text.Layout
 import android.text.StaticLayout
@@ -25,6 +28,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject2
+import androidx.test.uiautomator.Direction
 import java.util.regex.Pattern
 import org.junit.After
 import org.junit.Assert.*
@@ -53,6 +58,7 @@ class CaptureInstrumentationTest {
         })
         stopCapture()
         finishLeakedFixtures()
+        CaptureDebugProbe.start()
         oldSettings = SettingsStore.read(context)
         oldAppearance = AppPreferences.read(context)
         oldScreenPreferences = context.getSharedPreferences("screen_options", Context.MODE_PRIVATE).all.toMap()
@@ -64,7 +70,7 @@ class CaptureInstrumentationTest {
             !context.getSystemService(KeyguardManager::class.java).isKeyguardLocked
         }
         device.pressHome()
-        device.setOrientationNatural()
+        orientToPortrait()
         device.executeShellCommand("appops set " + context.packageName + " SYSTEM_ALERT_WINDOW allow")
         AppPreferences.save(context, AppAppearance("en", "light"))
         assertTrue("Install the pinned eng model with tools/provision_test_models.py before device tests.", ModelStore.has(context, "eng"))
@@ -86,7 +92,7 @@ class CaptureInstrumentationTest {
     }
 
     @After fun restore() {
-        stopCapture()
+        try { stopCapture() } finally { CaptureDebugProbe.stop() }
         if (touchFixtureStarted) {
             device.executeShellCommand("am start -W -n " + instrumentation.context.packageName + "/" +
                 TouchTargetActivity::class.java.name + " --ez finish_fixture true")
@@ -113,8 +119,9 @@ class CaptureInstrumentationTest {
         }
         device.executeShellCommand("appops set " + context.packageName + " SYSTEM_ALERT_WINDOW " + oldOverlayMode)
         device.wakeUp()
-        device.setOrientationNatural()
-        device.unfreezeRotation()
+        orientToPortrait()
+        if (Build.VERSION.SDK_INT >= 30) device.unfreezeRotation(Display.DEFAULT_DISPLAY)
+        else device.unfreezeRotation()
         device.pressHome()
         if (closeFailure != null) throw AssertionError("Capture fixture did not close cleanly", closeFailure)
     }
@@ -123,8 +130,11 @@ class CaptureInstrumentationTest {
         authorize()
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("OPEN SCREEN")
-        device.setOrientationLeft()
-        await(10_000, "Rotation did not reach landscape") { device.displayWidth > device.displayHeight }
+        if (Build.VERSION.SDK_INT >= 30) device.setOrientationLeft(Display.DEFAULT_DISPLAY)
+        else device.setOrientationLeft()
+        await(10_000, "Rotation did not reach landscape") {
+            device.displayRotation == Surface.ROTATION_90 && device.displayWidth > device.displayHeight
+        }
         replaceText("ROTATED SCREEN CONTENT")
         // Wait until the projection resize callback has settled, then request a fresh surface.
         SystemClock.sleep(700)
@@ -287,6 +297,10 @@ class CaptureInstrumentationTest {
 
     /** Failure evidence contains only this emulator's generated fixtures and system consent UI. */
     private fun recordUiEvidence(reason: String) {
+        CaptureDebugProbe.take()?.let { frame ->
+            try { recordBitmapEvidence("actual_capture_input: " + reason + "; " + frame.geometry, frame.bitmap) }
+            finally { frame.bitmap.recycle() }
+        }
         runCatching {
             val xml = File(context.cacheDir, "capture-test-window.xml")
             val png = File(context.cacheDir, "capture-test-window.png")
@@ -333,18 +347,41 @@ class CaptureInstrumentationTest {
         instrumentation.waitForIdleSync()
     }
 
-    private fun authorize() {
-        requireNotNull(device.findObject(By.desc("Authorize test capture"))).click()
-        await(15_000, "Real system MediaProjection consent prompt was not shown") {
-            device.hasObject(By.res("com.android.systemui", "start_now")) ||
-                device.hasObject(By.pkg("com.android.systemui").res("android:id/button1")) ||
-                device.hasObject(By.pkg("com.android.systemui").text(Pattern.compile("Start now|Start|Share screen")))
+    private fun orientToPortrait() {
+        // The display-specific API uses WindowManager's explicit display rotation command.
+        // Unlike a request followed immediately by unfreeze, confirm the visible orientation.
+        if (Build.VERSION.SDK_INT >= 30) device.setOrientationNatural(Display.DEFAULT_DISPLAY)
+        else device.setOrientationNatural()
+        await(10_000, "Default display did not return to portrait") {
+            device.displayRotation == Surface.ROTATION_0 && device.displayHeight > device.displayWidth
         }
-        val consent = device.findObject(By.res("com.android.systemui", "start_now"))
+        instrumentation.waitForIdleSync()
+    }
+
+    private fun consentButton(): UiObject2? =
+        device.findObject(By.res("com.android.systemui", "start_now"))
             ?: device.findObject(By.pkg("com.android.systemui").res("android:id/button1"))
             ?: device.findObject(By.pkg("com.android.systemui").text(Pattern.compile("Start now|Start|Share screen")))
-        assertNotNull("System consent button disappeared", consent)
-        consent!!.click()
+
+    private fun authorize() {
+        requireNotNull(device.findObject(By.desc("Authorize test capture"))).click()
+        await(15_000, "Real system MediaProjection consent dialog was not shown") {
+            consentButton() != null ||
+                device.hasObject(By.res("com.android.systemui", "screen_share_permission_dialog"))
+        }
+        // API 35's real consent dialog is a ScrollView. In landscape or with larger fonts
+        // its affirmative action can start below the visible viewport.
+        var scrolls = 0
+        while (consentButton() == null && scrolls < 3) {
+            val panel = device.findObject(By.res("com.android.systemui", "screen_share_permission_dialog")) ?: break
+            if (!panel.isScrollable) break
+            val more = panel.scroll(Direction.DOWN, .8f)
+            scrolls++
+            device.waitForIdle()
+            if (!more && consentButton() == null) break
+        }
+        await(5_000, "System consent dialog appeared but its Start action was not reachable") { consentButton() != null }
+        requireNotNull(consentButton()).click()
         await(20_000, "MediaProjection did not start after real system consent") { CaptureService.isRunning }
     }
 

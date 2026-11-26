@@ -5,13 +5,13 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "device_failure_correction",
-  "last_verified_code_commit": "21964e475c2d92cded60827799edf054c82d4773",
+  "phase": "dictionary_completion_and_api35_diagnosis",
+  "last_verified_code_commit": "1301701a7d3466469cdfdceb444b3de4e7306085",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45775143669,
-  "last_verified_inventory_ci": 45775143665,
+  "last_verified_android_ci": 45777167844,
+  "last_verified_inventory_ci": 45777167733,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
     "original_apk",
@@ -38,10 +38,10 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "21964e475c2d92cded60827799edf054c82d4773",
+  "observed_branch_head": "1301701a7d3466469cdfdceb444b3de4e7306085",
   "latest_observed_android_ci": {
-    "run_id": 45775143669,
-    "head_sha": "21964e475c2d92cded60827799edf054c82d4773",
+    "run_id": 45777167844,
+    "head_sha": "1301701a7d3466469cdfdceb444b3de4e7306085",
     "conclusion": "success",
     "jvm_tests": 56,
     "failed": 0,
@@ -49,70 +49,61 @@
     "lint_errors": 0,
     "lint_warnings": 48
   },
-  "source_checkpoint_parent": "21964e475c2d92cded60827799edf054c82d4773",
+  "source_checkpoint_parent": "1301701a7d3466469cdfdceb444b3de4e7306085",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "host_revalidation_after_device_fixes",
-    "android_api29_and_api35_device_tests",
-    "updated_visual_requirements_matrix",
+    "host_build_including_release_variant_and_dictionary_tests",
+    "android_api29_and_api35_all_required_suites",
+    "resolve_api35_rotated_capture_with_actual_frame_evidence",
+    "confirm_api35_consent_scrolling_and_endpoint_dialog_save",
     "acceptance_apk_and_final_owner_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45775143685,
-    "head_sha": "21964e475c2d92cded60827799edf054c82d4773",
+    "run_id": 45777167852,
+    "head_sha": "1301701a7d3466469cdfdceb444b3de4e7306085",
     "conclusion": "failure",
     "api29": {
-      "job": 139756888846,
-      "conclusion": "failure",
-      "known_failures": [
-        "CaptureInstrumentationTest.realEnglishAndArabicOcrReturnNormalizedGeometryAndNativeColorContrast",
-        "HistoryStoreInstrumentationTest.cancellationAtWriteBoundaryKeepsCommittedHistoryAndInterruptFlag",
-        "ImageEditorInstrumentationTest.cropRotateRecreateAndNativeOcrReturnOnlyTheSelectedTextThenDeleteCameraFile"
-      ],
-      "process_crashed": true,
-      "unexecuted_required_suites": [
-        "MainUiInstrumentationTest",
-        "OfflineTranslationInstrumentationTest",
-        "WordbookImportInstrumentationTest"
-      ]
+      "job": 139763512785,
+      "conclusion": "success",
+      "started": 29,
+      "finished": 29,
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0
     },
     "api35": {
-      "job": 139756888699,
+      "job": 139763512423,
       "conclusion": "failure",
-      "reported_tests": 28,
-      "reported_failed": 9,
-      "reported_ignored": 0,
+      "started": 29,
+      "finished": 29,
+      "passed": 26,
+      "failed": 3,
+      "skipped": 0,
       "known_failures": [
-        "Native Arabic OCR returned no Arabic text",
-        "fixedArea MediaProjection consent not shown",
-        "automaticChangedFrames and outsideTouch fixture launch timeout",
-        "History interruption flag",
-        "All four ImageEditor prepare methods could not find harness"
-      ],
-      "process_crashed": false
+        "CaptureInstrumentationTest.actualConsentFullCaptureRotationAndStop",
+        "CaptureInstrumentationTest.fixedAreaIsSavedAndReusedWithoutOutsideText",
+        "MainUiInstrumentationTest.changingServiceAddressClearsCredentialsAndRevokesNetworkConsent"
+      ]
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45775143669,
+    "run_id": 45777167844,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
     "independent_sentencepiece_cases": 32,
     "onnx_notice_bytes": 333022,
     "onnx_notice_sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
-    "device_parser_tests": 6,
+    "device_parser_tests": 7,
     "jvm_tests": 56
   },
   "current_fix_batch": [
-    "Custom accessibility resource IDs",
-    "Preserve cancellation interruption across localized messages/preferences",
-    "Arabic OCR row filter candidate and explicit RTL test layout",
-    "Capture test lifecycle and consent isolation",
-    "Separate screen-result original/translation actions",
-    "Appearance custom colors and live preview",
-    "Source language vs OCR availability labels",
-    "Clear API credential when service address changes",
-    "Download bundle with source,checksum,and90-day artifact retention"
+    "English lexical dictionary with per-request consent, attribution and explicit other-language browser links",
+    "Separate original/translation sharing",
+    "Display-ID rotation controls and scrollable system projection consent in API35 test",
+    "Failure-only synthetic pre-OCR frame evidence in opt-in debug probe; release no-op",
+    "Semantic endpoint-dialog test waits and scoped selectors",
+    "Release variant assembly gate"
   ],
-  "last_verified_code_scope": "Host build,56 JVM tests,lint,signature,license,ZIP/ELF alignment only; Android device gate failed"
+  "last_verified_code_scope": "1301701 host56/56 and API29 29/29 passed; API35 26/29 with three failures. New source in this checkpoint needs its own results."
 }
