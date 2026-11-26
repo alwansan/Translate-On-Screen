@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "updated_date": "2026-11-26",
+  "timezone": "Asia/Baghdad",
+  "repository": "alwansan/Translate-On-Screen",
+  "branch": "feature/open-screen-translate",
+  "session": "002",
+  "phase": "implementation_in_progress",
+  "last_verified_code_commit": "3bca5754ed5d149b420c4af17f8243a5ef2340bd",
+  "starting_branch_head": "11bca208496d8ceb1e047f3be34d5b3b434ac054",
+  "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
+  "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
+  "last_verified_android_ci": 45763162836,
+  "last_verified_inventory_ci": 45762908030,
+  "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
+  "new_evidence": ["original_apk", "original_xapk", "23_ui_screenshots"],
+  "active_tracks": ["reference_binary_and_visual_audit", "capture_modes_and_block_overlay", "ocr_and_translation_providers", "ui_and_memory", "android_emulator_validation"],
+  "completion_claim": false,
+  "ask_owner_for_microtests": false
+}
