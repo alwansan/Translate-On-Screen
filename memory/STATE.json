@@ -6,11 +6,11 @@
   "branch": "feature/open-screen-translate",
   "session": "012",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
+  "last_verified_code_commit": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45896196263,
+  "last_verified_android_ci": 45899477091,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -29,7 +29,7 @@
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
   "session_checkpoint": "memory/sessions/012-automatic-appearance-and-edge.md",
   "environment": {
-    "status": "Local Git, Python and GitHub CLI available; Android validation through Actions",
+    "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
     "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
     "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
@@ -61,13 +61,17 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45896196247,
-    "head_sha": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
+    "run_id": 45899477061,
+    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
     "conclusion": "success",
     "apis": [
       29,
       35
-    ]
+    ],
+    "jobs": {
+      "29": 140181474029,
+      "35": 140181473911
+    }
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -81,7 +85,7 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [],
-  "last_verified_code_scope": "Host68/68 and Android32/32 on both API29 and API35, with all7 required suites and no failed/skipped/missing cases. Back cancellation postconditions pass.",
+  "last_verified_code_scope": "Host 70/70 JVM, Lint 0/46, and both emulator jobs passed. Japanese to English worked offline; API 35 selected a single app via SystemUI and read it in the unaligned panel.",
   "latest_attempt": {
     "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "host": "success",
@@ -105,7 +109,7 @@
   "acceptance_ready": false,
   "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-f0388b2.json",
+  "latest_evidence": "memory/evidence/validation-62fa00e.json",
   "delivery": {
     "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
     "artifact_id": 15101850735,
@@ -118,7 +122,7 @@
     "guide": "docs/ACCEPTANCE_AR.md"
   },
   "remaining_limits": [
-    "Offline translation en<->ar verified previously; new ja->en integration pending Android verification; other pairs under review",
+    "Offline translation verified for en<->ar and ja->en; other pairs under review",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",
     "Live paid-provider accounts and OEM physical phones not tested",
     "External camera and speech services depend on installed device providers",

@@ -2,7 +2,7 @@
 
 ## التحقق من الدفعة 011
 
-نجح بناء المصدر `62fa00e6838d81d125f759716bb0ce69f1e1b2ef` في [45899477091](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477091) مع 70/70 JVM و25/25 Python و0 أخطاء lint و46 تحذيراً. تشمل الحالات 40 مقارنة SentencePiece و12 بصمة ملف ونتيجة ja→en من Marian على JVM. تحقق جرد المرجع في [45899477134](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477134). نتيجة الجهاز تتبع [45899477061](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477061). فشل بناء الدفعة 010 في عدّاد تحقق ملفات الحزم الذي بقي على ثمانية، وصحّحته الدفعة 011 إلى اثني عشر.
+نجح بناء المصدر `62fa00e6838d81d125f759716bb0ce69f1e1b2ef` في [45899477091](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477091) مع 70/70 JVM و25/25 Python و0 أخطاء lint و46 تحذيراً. تشمل الحالات 40 مقارنة SentencePiece و12 بصمة ملف ونتيجة ja→en من Marian على JVM. تحقق جرد المرجع في [45899477134](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477134). نجح [45899477061](https://github.com/alwansan/Translate-On-Screen/actions/runs/45899477061) على API 29 و35. شغّل كلاهما استدلال ja→en دون اتصال، واختار اختبار API 35 مهمة مستقلة من منتقي النظام وقرأ نصها في لوحة القراءة. [دليل الدفعة](../memory/evidence/validation-62fa00e.json). فشل بناء الدفعة 010 في عدّاد تحقق ملفات الحزم الذي بقي على ثمانية، وصحّحته الدفعة 011 إلى اثني عشر.
 
 
 ## التحقق من الدفعة 006 ومتابعة الدفعة 007

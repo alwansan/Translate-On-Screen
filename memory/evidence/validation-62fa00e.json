@@ -1,0 +1,29 @@
+{
+  "source": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+  "host": {
+    "run_id": 45899477091,
+    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+    "conclusion": "success",
+    "jvm_passed": 70,
+    "lint_errors": 0,
+    "lint_warnings": 46
+  },
+  "device": {
+    "run_id": 45899477061,
+    "head_sha": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
+    "conclusion": "success",
+    "apis": [
+      29,
+      35
+    ],
+    "jobs": {
+      "29": 140181474029,
+      "35": 140181473911
+    }
+  },
+  "verified_scope": [
+    "Native Japanese-to-English Marian inference with network disabled on API 29 and 35",
+    "Actual SystemUI single-app task selection and panel OCR on API 35",
+    "Full-display capture and rotation on API 29 and 35"
+  ]
+}
