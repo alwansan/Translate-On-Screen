@@ -65,4 +65,5 @@
     <string name="speak">قراءة بصوت</string>
     <string name="tts_unavailable">لا يوجد صوت قراءة مثبت يدعم هذه اللغة.</string>
     <string name="licenses">تراخيص المصدر المفتوح</string>
+    <string name="screen_options">أوضاع الشاشة والمظهر</string>
 </resources>

@@ -2,6 +2,10 @@ package io.github.alwansan.opentranslate
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+import android.os.PowerManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -87,6 +91,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val reader: ImageReader,
         val region: NormalizedRegion?,
         val settings: UserSettings,
+        val options: CaptureOptions,
+        val automaticId: Long?,
     )
     private class OwnedCapture(val bitmap: Bitmap) {
         val started = AtomicBoolean(false)
@@ -122,6 +128,20 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private var frameTimeout: Runnable? = null
     private var pendingStart: Runnable? = null
     private var longPress: Runnable? = null
+    private var pendingTap: Runnable? = null
+    private var resultTimeout: Runnable? = null
+    private var autoTick: Runnable? = null
+    private var autoEnd: Runnable? = null
+    private var automatic: AutoRun? = null
+    private var autoSequence = 0L
+    private var fixedRegion: NormalizedRegion? = null
+    private var receiverRegistered = false
+    private data class AutoRun(val id: Long, val region: NormalizedRegion?, val settings: UserSettings, val options: CaptureOptions, val deadline: Long)
+    private val screenOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_SCREEN_OFF) { cleanup(); stopSelf() }
+        }
+    }
     private var bubble: TextView? = null
     private var bubbleParams: WindowManager.LayoutParams? = null
     private var resultPanel: View? = null
@@ -154,6 +174,10 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         frameThread.start()
         frames = Handler(frameThread.looper)
         displays.registerDisplayListener(this, main)
+        val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(screenOffReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        else { @Suppress("DEPRECATION") registerReceiver(screenOffReceiver, filter) }
+        receiverRegistered = true
         getSystemService(NotificationManager::class.java).createNotificationChannel(
             NotificationChannel(CHANNEL_ID, ui("Screen translation", "ترجمة الشاشة"), NotificationManager.IMPORTANCE_LOW)
         )
@@ -251,8 +275,104 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         if (!stopping) getSystemService(NotificationManager::class.java).notify(NOTIFICATION_ID, notification(message))
     }
 
+    private fun unlocked(): Boolean =
+        getSystemService(PowerManager::class.java).isInteractive && !getSystemService(KeyguardManager::class.java).isKeyguardLocked
+
+    private fun chooseAction(action: BubbleAction) {
+        if (automatic != null) { stopAutomatic(); removeResult(); showBubble(); return }
+        if (phase != Phase.IDLE) return
+        if (action == BubbleAction.MENU) { showModeMenu(); return }
+        val options = ScreenPreferences.read(this)
+        val mode = AutoCapturePolicy.resolve(action, options.mode) ?: return
+        chooseMode(mode)
+    }
+
+    private fun chooseMode(mode: CaptureMode) {
+        if (stopping || phase != Phase.IDLE) return
+        stopAutomatic()
+        if (mode.needsRegion) {
+            val old = fixedRegion
+            if (mode == CaptureMode.FIXED && old != null) requestCapture(old)
+            else showRegionSelector(mode)
+        } else if (mode.automatic) beginAutomatic(null)
+        else requestCapture()
+    }
+
+    private fun showModeMenu() {
+        if (stopping || phase != Phase.IDLE) return
+        removeResult()
+        val panel = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12),dp(8),dp(12),dp(8))
+            background = background(Color.rgb(29,32,43),16)
+        }
+        panel.addView(text(ui("Choose capture mode","اختر وضع الالتقاط"),18f))
+        CaptureMode.values().forEach { mode -> panel.addView(button(modeLabel(mode)) { chooseMode(mode) }) }
+        panel.addView(button(ui("Reset fixed area","إعادة تحديد المنطقة الثابتة")) { fixedRegion = null; chooseMode(CaptureMode.FIXED) })
+        panel.addView(button(ui("Close results","إغلاق النتائج")) { removeResult() })
+        val scroll = ScrollView(this).apply { addView(panel) }
+        try {
+            windows.addView(scroll,overlayParams(min(dp(320),screenSize().x-dp(16)),min(dp(460),screenSize().y-dp(48))).apply { x=dp(8); y=dp(32) })
+            resultPanel=scroll
+        } catch (_: RuntimeException) { showBubble() }
+    }
+
+    private fun beginAutomatic(region: NormalizedRegion?) {
+        if (stopping || !unlocked()) return
+        val options = ScreenPreferences.read(this)
+        val settings = SettingsStore.read(this)
+        val run = AutoRun(++autoSequence,region,settings,options,AutoCapturePolicy.deadline(SystemClock.elapsedRealtime(),options.stopMinutes))
+        automatic=run
+        autoEnd=Runnable { if (automatic?.id == run.id) { stopAutomatic(); cancelCapture(); removeResult(); showBubble() } }
+            .also { main.postDelayed(it,(run.deadline-SystemClock.elapsedRealtime()).coerceAtLeast(0)) }
+        requestCapture(region)
+    }
+
+    private fun stopAutomatic() {
+        autoTick?.let(main::removeCallbacks); autoTick=null
+        autoEnd?.let(main::removeCallbacks); autoEnd=null
+        automatic=null
+        bubble?.let { if (it.text == "■") it.text=ScreenPreferences.read(this).bubbleSymbol }
+        if (!stopping && isRunning) notifyState(ui("Ready. Tap the bubble.","جاهز. اضغط الفقاعة."))
+    }
+
+    private fun scheduleAutomatic(runId: Long?, result: TranslationResult, settings: UserSettings) {
+        val run=automatic ?: return
+        if (runId != run.id) return
+        if (result.original.isBlank() || (settings.networkEnabled && result.translated.isNullOrBlank())) {
+            stopAutomatic()
+            return
+        }
+        val delay=AutoCapturePolicy.nextDelay(SystemClock.elapsedRealtime(),run.deadline,run.options.intervalSeconds) ?: return
+        autoTick=Runnable {
+            autoTick=null
+            if (automatic?.id != run.id) return@Runnable
+            if (!unlocked() || SettingsStore.read(this) != run.settings || ScreenPreferences.read(this) != run.options ||
+                SystemClock.elapsedRealtime() >= run.deadline) {
+                stopAutomatic(); removeResult(); showBubble()
+            } else if (phase == Phase.IDLE) requestCapture(run.region)
+        }.also { main.postDelayed(it,delay) }
+    }
+
+    private fun cancelCapture() {
+        captureId.incrementAndGet()
+        pending.set(null)
+        frameTimeout?.let(main::removeCallbacks); frameTimeout=null
+        pendingStart?.let(main::removeCallbacks); pendingStart=null
+        synchronized(taskLock) {
+            activeTask?.cancel(true)
+            activeTask=null
+            activeImage?.let { if (!it.started.get()) it.release() }
+            activeImage=null
+            activeTaskId=-1
+        }
+        removeRegion()
+        phase=Phase.IDLE
+    }
+
     private fun requestCapture(region: NormalizedRegion? = null) {
         if (stopping || !isRunning) return
+        if (!unlocked()) { cleanup(); stopSelf(); return }
         if (phase != Phase.IDLE) {
             toast(ui("Please wait for the current translation.", "انتظر انتهاء الترجمة الحالية."))
             return
@@ -265,6 +385,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val id = captureId.incrementAndGet()
         val generation = session.get()
         val settings = SettingsStore.read(this)
+        val options = ScreenPreferences.read(this)
+        val automaticId = automatic?.id
         phase = Phase.HIDING
         pendingSpeech = null
         tts?.stop()
@@ -277,7 +399,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             if (!current(id, generation)) return@Runnable
             try {
                 phase = Phase.WAITING
-                attachFreshSurface(id, generation, region, settings)
+                attachFreshSurface(id, generation, region, settings, options, automaticId)
                 frameTimeout = Runnable {
                     if (current(id, generation) && phase == Phase.WAITING) {
                         failCapture(ui("No screen frame arrived. Try again, or restart screen sharing.",
@@ -295,12 +417,12 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             source.setOnImageAvailableListener({ available -> onFrame(available) }, frames)
         }
 
-    private fun attachFreshSurface(id: Long, generation: Long, region: NormalizedRegion?, settings: UserSettings) {
+    private fun attachFreshSurface(id: Long, generation: Long, region: NormalizedRegion?, settings: UserSettings, options: CaptureOptions, automaticId: Long?) {
         val display = virtualDisplay ?: error("Capture stopped")
         val fresh = newReader(bufferWidth, bufferHeight)
         val previous = reader
         reader = fresh
-        pending.set(FrameRequest(id, generation, fresh, region, settings))
+        pending.set(FrameRequest(id, generation, fresh, region, settings, options, automaticId))
         try {
             display.surface = fresh.surface
         } catch (error: Exception) {
@@ -361,11 +483,14 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                         if (!current(selected.id, selected.session)) return@submit
                         val translator = engine ?: TranslationEngine(applicationContext).also { engine = it }
                         val result = translator.fromBitmap(owned.bitmap, selected.settings)
+                        if (!current(selected.id, selected.session)) return@submit
                         main.post {
                             if (current(selected.id, selected.session)) {
                                 phase = Phase.IDLE
                                 showResult(result, selected.settings)
-                                notifyState(ui("Ready. Tap the bubble to translate again.", "جاهز. اضغط الفقاعة للترجمة مجدداً."))
+                                scheduleAutomatic(selected.automaticId,result,selected.settings)
+                                if (automatic != null) notifyState(ui("Automatic mode running. Tap the bubble to stop.","الوضع التلقائي يعمل. اضغط الفقاعة للإيقاف."))
+                                else notifyState(ui("Ready. Tap the bubble to translate again.", "جاهز. اضغط الفقاعة للترجمة مجدداً."))
                             }
                         }
                     } catch (_: OutOfMemoryError) {
@@ -426,6 +551,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
 
     private fun failCapture(message: String) {
         if (stopping) return
+        stopAutomatic()
         captureId.incrementAndGet()
         pending.set(null)
         frameTimeout?.let(main::removeCallbacks)
@@ -446,22 +572,34 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     private fun showBubble() {
         if (stopping || bubble != null || !Settings.canDrawOverlays(this)) return
         val screen = screenSize()
+        val options = ScreenPreferences.read(this)
+        val bubbleSize = dp(options.bubbleSize)
         if (bubbleX < 0) bubbleX = max(0, screen.x - dp(66))
         if (bubbleY < 0) bubbleY = screen.y / 2
-        val params = overlayParams(dp(54), dp(54)).apply {
-            x = bubbleX.coerceIn(0, max(0, screen.x - dp(54)))
-            y = bubbleY.coerceIn(dp(30), max(dp(30), screen.y - dp(80)))
+        val params = overlayParams(bubbleSize, bubbleSize).apply {
+            x = bubbleX.coerceIn(0, max(0, screen.x - bubbleSize))
+            y = bubbleY.coerceIn(dp(30), max(dp(30), screen.y - bubbleSize)))
         }
         val view = TextView(this).apply {
-            text = "文"
-            textSize = 25f
+            text = if (automatic != null) "■" else options.bubbleSymbol
+            textSize = (options.bubbleSize * .46f)
             gravity = Gravity.CENTER
-            setTextColor(Color.rgb(12, 41, 35))
-            background = background(Color.rgb(77, 226, 191), 27)
+            setTextColor(if (Color.luminance(options.bubbleColor) > .45) Color.BLACK else Color.WHITE)
+            background = background(options.bubbleColor, options.bubbleSize / 2)
+            alpha = options.bubbleOpacity / 100f
             elevation = dp(8).toFloat()
             contentDescription = ui("Translate screen. Hold to select an area. Drag to move.", "ترجمة الشاشة. اضغط مطوّلاً لتحديد منطقة. اسحب لتحريك الزر.")
-            setOnClickListener { requestCapture() }
-            setOnLongClickListener { showRegionSelector(); true }
+            setOnClickListener {
+                if (automatic != null || options.double == BubbleAction.NONE) chooseAction(options.single)
+                else if (pendingTap != null) {
+                    pendingTap?.let(main::removeCallbacks); pendingTap=null
+                    chooseAction(options.double)
+                } else pendingTap=Runnable {
+                    pendingTap=null
+                    if (bubble === this) chooseAction(options.single)
+                }.also { main.postDelayed(it, ViewConfiguration.getDoubleTapTimeout().toLong()) }
+            }
+            setOnLongClickListener { pendingTap?.let(main::removeCallbacks); pendingTap=null; chooseAction(options.long); true }
         }
         var startX = 0f
         var startY = 0f
@@ -496,8 +634,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                     }
                     if (moved && !held && bubble === view) {
                         val bounds = screenSize()
-                        params.x = (originalX + dx).roundToInt().coerceIn(0, max(0, bounds.x - dp(54)))
-                        params.y = (originalY + dy).roundToInt().coerceIn(0, max(0, bounds.y - dp(54)))
+                        params.x = (originalX + dx).roundToInt().coerceIn(0, max(0, bounds.x - bubbleSize))
+                        params.y = (originalY + dy).roundToInt().coerceIn(0, max(0, bounds.y - bubbleSize))
                         bubbleX = params.x
                         bubbleY = params.y
                         runCatching { windows.updateViewLayout(view, params) }
@@ -529,7 +667,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
     }
 
-    private fun showRegionSelector() {
+    private fun showRegionSelector(mode: CaptureMode = CaptureMode.REGION) {
         if (stopping || phase != Phase.IDLE) return
         val screen = screenSize()
         if (!fullDisplayRequested || abs(contentWidth - screen.x) > 2 || abs(contentHeight - screen.y) > 2) {
@@ -548,7 +686,10 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 rect.right + offset[0], rect.bottom + offset[1], screen.x, screen.y)
             removeRegion()
             phase = Phase.IDLE
-            if (selected != null) requestCapture(selected) else showBubble()
+            if (selected != null) {
+                if (mode == CaptureMode.FIXED) fixedRegion=selected
+                if (mode.automatic) beginAutomatic(selected) else requestCapture(selected)
+            } else showBubble()
         }
         root.addView(selection, FrameLayout.LayoutParams(-1, -1))
         val toolbar = LinearLayout(this).apply {
@@ -585,10 +726,11 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         if (stopping) return
         removeResult()
         val screen = screenSize()
+        val options = ScreenPreferences.read(this)
         val panel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(14), dp(16), dp(12))
-            background = background(Color.rgb(29, 32, 43), 18)
+            background = background(Color.argb((options.backgroundOpacity*255/100),Color.red(options.backgroundColor),Color.green(options.backgroundColor),Color.blue(options.backgroundColor)),18)
             elevation = dp(10).toFloat()
         }
         panel.addView(text(ui("Screen translation", "ترجمة الشاشة"), 19f).apply { setTypeface(null, Typeface.BOLD) })
@@ -598,12 +740,12 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         }
         val output = result.translated?.takeIf { it.isNotBlank() } ?: result.original
         if (output.isNotBlank()) {
-            content.addView(text(output, 18f).apply { setTextIsSelectable(true); setPadding(0, dp(10), 0, dp(10)) })
+            content.addView(text(output, options.textSize.toFloat()).apply { setTextColor(options.textColor); if (options.centerText) gravity=Gravity.CENTER; setTextIsSelectable(true); setPadding(0, dp(10), 0, dp(10)) })
         } else if (result.warning.isNullOrBlank()) {
             content.addView(text(ui("No readable text found. Try a smaller, clearer area. Protected screens may be blank.",
                 "لم يُعثر على نص مقروء. جرّب منطقة أوضح وأصغر. قد تظهر الشاشات المحمية فارغة."), 16f))
         }
-        if (!result.translated.isNullOrBlank() && result.original.isNotBlank()) {
+        if (!options.hideOriginal && !result.translated.isNullOrBlank() && result.original.isNotBlank()) {
             content.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(Color.LTGRAY) })
             content.addView(text(result.original, 14f).apply { setTextIsSelectable(true) })
         }
@@ -625,8 +767,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         addAction(ui("Speak", "نطق")) {
             speak(output, if (!result.translated.isNullOrBlank()) settings.target else settings.source)
         }.isEnabled = output.isNotBlank()
-        addAction(ui("Area", "منطقة")) { showRegionSelector() }
-        addAction(ui("Close", "إغلاق")) { removeResult(); tts?.stop(); pendingSpeech = null }
+        addAction(ui("Modes", "الأوضاع")) { stopAutomatic(); showModeMenu() }
+        addAction(ui("Close", "إغلاق")) { stopAutomatic(); removeResult(); tts?.stop(); pendingSpeech = null }
         panel.addView(actions)
         try {
             windows.addView(panel, overlayParams(panelWidth, -2).apply {
@@ -638,6 +780,9 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             toast(ui("Could not display the result. Check overlay permission.", "تعذّر عرض النتيجة. تحقق من إذن الظهور فوق التطبيقات."))
         }
         showBubble()
+        if (options.speakAutomatically && result.translated?.isNotBlank() == true) speak(result.translated,settings.target)
+        if (automatic != null) resultTimeout=Runnable { resultTimeout=null; removeResult() }
+            .also { main.postDelayed(it, options.displaySeconds*1000L) }
     }
 
     private fun speak(value: String, language: String) {
@@ -666,22 +811,20 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             toast(ui("Install a speech voice for this language in Android settings.", "ثبّت صوتاً لهذه اللغة من إعدادات Android."))
             return
         }
-        speaker.speak(request.first.take(TextToSpeech.getMaxSpeechInputLength()), TextToSpeech.QUEUE_FLUSH,
-            null, "screen-translation-${SystemClock.elapsedRealtime()}")
+        request.first.chunked(TextToSpeech.getMaxSpeechInputLength()).forEachIndexed { index, part ->
+            speaker.speak(part,if (index==0) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD,null,"screen-translation-${SystemClock.elapsedRealtime()}-$index")
+        }
     }
 
     private fun resizeProjection(width: Int, height: Int) {
         if (width == contentWidth && height == contentHeight) return
         contentWidth = width
         contentHeight = height
-        if (phase == Phase.SELECTING) {
-            removeRegion()
-            phase = Phase.IDLE
-            showBubble()
-        }
-        if (phase == Phase.HIDING || phase == Phase.WAITING) {
-            failCapture(ui("The screen size changed. Tap again to capture its new layout.", "تغيّر حجم الشاشة. اضغط مجدداً لالتقاط العرض الجديد."))
-        }
+        stopAutomatic()
+        fixedRegion=null
+        cancelCapture()
+        removeResult()
+        showBubble()
         val size = boundedBuffer(width, height)
         val display = virtualDisplay ?: return
         val fresh = newReader(size.x, size.y)
@@ -734,8 +877,8 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         val view = bubble ?: return
         val params = bubbleParams ?: return
         val screen = screenSize()
-        params.x = params.x.coerceIn(0, max(0, screen.x - dp(54)))
-        params.y = params.y.coerceIn(0, max(0, screen.y - dp(70)))
+        params.x = params.x.coerceIn(0, max(0, screen.x - params.width))
+        params.y = params.y.coerceIn(0, max(0, screen.y - params.height))
         bubbleX = params.x
         bubbleY = params.y
         runCatching { windows.updateViewLayout(view, params) }
@@ -785,6 +928,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     }
 
     private fun removeResult() {
+        resultTimeout?.let(main::removeCallbacks); resultTimeout=null
         resultPanel?.let { runCatching { windows.removeViewImmediate(it) } }
         resultPanel = null
     }
@@ -795,6 +939,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
     }
 
     private fun removeAllOverlays() {
+        pendingTap?.let(main::removeCallbacks); pendingTap=null
         longPress?.let(main::removeCallbacks)
         longPress = null
         bubble?.let { runCatching { windows.removeViewImmediate(it) } }
@@ -818,6 +963,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         stopping = true
         isRunning = false
         phase = Phase.STOPPED
+        stopAutomatic()
         session.incrementAndGet()
         captureId.incrementAndGet()
         synchronized(taskLock) {
@@ -841,6 +987,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         pendingStart = null
         removeAllOverlays()
         displays.unregisterDisplayListener(this)
+        if (receiverRegistered) { unregisterReceiver(screenOffReceiver); receiverRegistered=false }
         runCatching { virtualDisplay?.surface = null }
         runCatching { virtualDisplay?.release() }
         virtualDisplay = null

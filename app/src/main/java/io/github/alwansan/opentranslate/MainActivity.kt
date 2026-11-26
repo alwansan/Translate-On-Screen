@@ -100,6 +100,7 @@ class MainActivity : Activity() {
         }
         val manage = card(body, R.string.setup_title)
         button(manage, R.string.settings, false) { showSettings() }
+        button(manage, R.string.screen_options, false) { ScreenSettingsDialog.show(this) }
         button(manage, R.string.models, false) { showModels() }
         button(manage, R.string.history, false) { showHistory() }
         button(manage, R.string.licenses, false) { showLicenses() }

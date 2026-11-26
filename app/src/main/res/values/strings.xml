@@ -65,4 +65,5 @@
     <string name="speak">Read aloud</string>
     <string name="tts_unavailable">A matching text-to-speech voice is not installed.</string>
     <string name="licenses">Open-source notices</string>
+    <string name="screen_options">Screen modes and appearance</string>
 </resources>
