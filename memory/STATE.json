@@ -5,12 +5,12 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "capture_fixture_isolation_correction",
-  "last_verified_code_commit": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+  "phase": "capture_reuse_foreground_diagnosis",
+  "last_verified_code_commit": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45780322928,
+  "last_verified_android_ci": 45782204567,
   "last_verified_inventory_ci": 45779858713,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -38,10 +38,10 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+  "observed_branch_head": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
   "latest_observed_android_ci": {
-    "run_id": 45780322928,
-    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+    "run_id": 45782204567,
+    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
     "conclusion": "success",
     "jvm_tests": 68,
     "failed": 0,
@@ -54,7 +54,7 @@
       "debugAndroidTest"
     ]
   },
-  "source_checkpoint_parent": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+  "source_checkpoint_parent": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
     "capture_fixture_corrections_build_and_device_revalidation",
@@ -62,11 +62,11 @@
     "final_owner_acceptance_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45780322908,
-    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
+    "run_id": 45782204779,
+    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
     "conclusion": "failure",
     "api29": {
-      "job": 139773922378,
+      "job": 139780142818,
       "started": 31,
       "finished": 31,
       "passed": 30,
@@ -81,7 +81,7 @@
       ]
     },
     "api35": {
-      "job": 139773921976,
+      "job": 139780142540,
       "started": 31,
       "finished": 31,
       "passed": 29,
@@ -95,14 +95,14 @@
         },
         {
           "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
-          "name": "automaticChangedFramesPauseAndScreenLockStopsSession",
+          "name": "outsideTouchExpeditesAutoAndPauseDisablesTheTrigger",
           "status": -2
         }
       ]
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45780322928,
+    "run_id": 45782204567,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
@@ -113,19 +113,19 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [
-    "Choose actual outside-overlay touch coordinate after taller scrollable result panel",
-    "Check fixture orientation after launch and preserve fixed-region orientation assertions",
-    "Scroll real consent dialog using visible geometry",
-    "Clean external fixture/chooser before ActivityScenario close; preserve original failure evidence"
+    "Require result panel only for first outside-touch; assert it disappears after pause",
+    "Choose region drag from actual system-gesture insets and compare saved normalized geometry with those coordinates",
+    "Assert fixture lifecycle and foreground before text replacement and repeated capture without relaunching it",
+    "Bound/resize diagnostic images so complex synthetic frames are not silently dropped"
   ],
-  "last_verified_code_scope": "Host68/68,release compilation and package checks pass; device31 cases all finished:API29 30/31,API35 29/31; only Capture cases failed.",
+  "last_verified_code_scope": "68/68 host and debug/release/test compilation passed;31 device cases finished on each API,30/31 and29/31. Fresh landscape consent now passes. No OCR change justified by remaining fixture failures.",
   "latest_attempt": {
-    "head_sha": "ab97daa0d5387fdd90f98b95f07459bb13889291",
-    "host_run": 45780322928,
-    "device_run": 45780322908,
+    "head_sha": "a5ea588c56353ac5403ff1c4c78ed8d9adefbe39",
     "host": "success",
     "device": "failure",
-    "scope": "All non-capture suites pass on both systems; capture fixture coordinate/orientation/consent fixes pending"
+    "host_run": 45782204567,
+    "device_run": 45782204779,
+    "remaining": "Pause correctly hides the result panel but the second-touch helper requires it; API35 fixed-area reuse failure shows Launcher at failure time, requiring foreground/gesture evidence."
   },
   "dictionary_service_observation": {
     "run": 45779858841,

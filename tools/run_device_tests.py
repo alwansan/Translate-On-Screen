@@ -230,6 +230,9 @@ def save_evidence(output: Path, report: dict) -> None:
     saved = []
     for index, item in enumerate(report.pop("evidence", []), 1):
         entry = {"reason": item.get("ost_evidence_reason", "")[:300]}
+        if not item.get("ost_ui_xml") and not item.get("ost_screenshot_png"):
+            # Small synthetic fixture observations (gesture insets/lifecycle), with no image/text.
+            print("DEVICE_TEST_OBSERVATION=" + json.dumps(entry, ensure_ascii=True, separators=(",", ":")))
         for key, suffix, limit in (("ost_ui_xml", "xml", 100_000), ("ost_screenshot_png", "png", 350_000)):
             encoded = item.get(key, "")
             if not encoded or len(encoded) > 500_000:

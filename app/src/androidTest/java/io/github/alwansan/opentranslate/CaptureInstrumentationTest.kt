@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Build
 import android.view.Display
 import android.view.Surface
+import android.view.WindowInsets
+import android.graphics.Rect
 import android.view.accessibility.AccessibilityNodeInfo
 import android.os.Process
 import android.text.Layout
@@ -50,6 +52,7 @@ class CaptureInstrumentationTest {
     private var oldScreenPreferences: Map<String, *>? = null
     private var oldOverlayMode = "default"
     private var touchFixtureStarted = false
+    private var selectionEvidence: String? = null
 
     @Before fun prepare() {
         instrumentation.sendStatus(2, Bundle().apply {
@@ -163,18 +166,23 @@ class CaptureInstrumentationTest {
     @Test fun fixedAreaIsSavedAndReusedWithoutOutsideText() {
         configure(CaptureOptions(mode = CaptureMode.FIXED, positionedResults = false, displaySeconds = 0))
         authorize()
+        awaitFixtureForeground("selecting the fixed area")
         val selectedLandscape = device.displayWidth > device.displayHeight
         action(CaptureService.ACTION_SELECT_REGION)
         await(10_000, "Area selector did not open") { device.hasObject(By.desc("Drag to select an area to translate")) }
-        device.swipe((device.displayWidth * .07f).toInt(), (device.displayHeight * .34f).toInt(),
-            (device.displayWidth * .93f).toInt(), (device.displayHeight * .70f).toInt(), 45)
+        val gesture = safeSelectionGesture()
+        assertTrue("Could not inject the selection drag", device.swipe(gesture.left, gesture.top, gesture.right, gesture.bottom, 45))
         awaitOutput("OPEN SCREEN")
+        awaitFixtureForeground("checking the selected area")
         assertFalse("Crop included text outside the selected area", currentOutput().contains("OUTSIDE"))
         val saved = CaptureOptionsStore.readRegion(context, selectedLandscape)
         if (saved == null) recordUiEvidence("Selected area was not saved for the active orientation")
         val region = requireNotNull(saved)
-        assertTrue(region.left in .04f.. .10f && region.bottom in .67f.. .73f)
+        assertEquals(gesture.left.toFloat() / device.displayWidth, region.left, .02f)
+        assertEquals(gesture.bottom.toFloat() / device.displayHeight, region.bottom, .02f)
+        awaitFixtureForeground("changing the fixed-area source text")
         replaceText("SAVED AREA REUSED")
+        awaitFixtureForeground("recapturing the saved area")
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("SAVED AREA")
         assertFalse(currentOutput().contains("OUTSIDE"))
@@ -242,7 +250,7 @@ class CaptureInstrumentationTest {
         awaitOutput("TOUCH REACHED", 30_000) // Must beat the 60-second periodic interval.
         action(CaptureService.ACTION_PAUSE_AUTO)
         await(5_000, "Auto did not pause") { !CaptureService.isAutoRunning }
-        clickOutsideResult()
+        clickOutsideResult(expectPanel = false)
         await(5_000, "Second source click was not delivered") { device.hasObject(By.desc("Source tap count 2")) }
         assertRemains(2_500, "Outside touch restarted paused capture") { !currentOutput().contains("SECOND TOUCH") && !CaptureService.isAutoRunning }
     }
@@ -322,6 +330,53 @@ class CaptureInstrumentationTest {
         instrumentation.waitForIdleSync()
     }
 
+    private fun fixtureLifecycle(): Pair<Boolean, String> {
+        var ready = false
+        var description = "fixture=missing"
+        instrumentation.runOnMainSync {
+            fixture?.let { activity ->
+                val stage = ActivityLifecycleMonitorRegistry.getInstance().getLifecycleStageOf(activity)
+                val view = activity.window.decorView
+                val focused = view.hasWindowFocus()
+                ready = stage == Stage.RESUMED && !activity.isFinishing && !activity.isDestroyed && focused
+                description = "fixture=" + stage + ",finishing=" + activity.isFinishing +
+                    ",destroyed=" + activity.isDestroyed + ",focus=" + focused +
+                    ",view=" + view.width + "x" + view.height
+            }
+        }
+        return ready to description
+    }
+
+    private fun awaitFixtureForeground(operation: String) {
+        // Never relaunch a lost source activity: that would conceal an unintended system Back.
+        await(5_000, "Capture source fixture was not foreground while " + operation) { fixtureLifecycle().first }
+    }
+
+    @Suppress("DEPRECATION") // Android 29 exposes gesture insets through the legacy accessor.
+    private fun safeSelectionGesture(): Rect {
+        var left = 0; var top = 0; var right = 0; var bottom = 0
+        instrumentation.runOnMainSync {
+            val insets = requireNotNull(fixture).window.decorView.rootWindowInsets
+            val gestures = if (Build.VERSION.SDK_INT >= 30) insets?.getInsets(WindowInsets.Type.systemGestures())
+                else if (Build.VERSION.SDK_INT >= 29) insets?.systemGestureInsets else null
+            left = gestures?.left ?: 0; top = gestures?.top ?: 0
+            right = gestures?.right ?: 0; bottom = gestures?.bottom ?: 0
+        }
+        val width = device.displayWidth
+        val height = device.displayHeight
+        val margin = (16 * context.resources.displayMetrics.density).toInt()
+        val gesture = Rect(maxOf((width * .07f).toInt(), left + margin), (height * .34f).toInt(),
+            minOf((width * .93f).toInt(), width - right - margin), (height * .70f).toInt())
+        assertTrue("System gesture insets left no usable selection area", gesture.width() > 0 && gesture.height() > 0)
+        selectionEvidence = "gestureInsets=" + left + "," + top + "," + right + "," + bottom +
+            "; drag=" + gesture.left + "," + gesture.top + "->" + gesture.right + "," + gesture.bottom +
+            "; display=" + width + "x" + height
+        instrumentation.sendStatus(2, Bundle().apply {
+            putString("ost_evidence_reason", "region_selection_input; " + selectionEvidence + "; " + fixtureLifecycle().second)
+        })
+        return gesture
+    }
+
     /** Failure evidence contains only this emulator's generated fixtures and system consent UI. */
     private fun recordUiEvidence(reason: String) {
         CaptureDebugProbe.take()?.let { frame ->
@@ -335,7 +390,8 @@ class CaptureInstrumentationTest {
                 device.dumpWindowHierarchy(xml)
                 val captured = device.takeScreenshot(png, .5f, 70)
                 instrumentation.sendStatus(2, Bundle().apply {
-                    putString("ost_evidence_reason", reason)
+                    putString("ost_evidence_reason", reason +
+                        (selectionEvidence?.let { "; " + it } ?: "") + "; " + fixtureLifecycle().second)
                     putString("ost_ui_xml", Base64.encodeToString(xml.readBytes().take(100_000).toByteArray(), Base64.NO_WRAP))
                     if (captured && png.length() <= 350_000)
                         putString("ost_screenshot_png", Base64.encodeToString(png.readBytes(), Base64.NO_WRAP))
@@ -346,12 +402,25 @@ class CaptureInstrumentationTest {
 
     private fun recordBitmapEvidence(reason: String, bitmap: Bitmap) {
         runCatching {
-            val bytes = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-            if (bytes.size() <= 350_000) instrumentation.sendStatus(2, Bundle().apply {
-                putString("ost_evidence_reason", reason)
-                putString("ost_screenshot_png", Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP))
-            })
+            var preview = bitmap
+            try {
+                val bytes = ByteArrayOutputStream()
+                preview.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+                // Detailed wallpaper can exceed the binder/log evidence budget even at 1024px.
+                // Keep the actual input visible by reducing the preview, never silently dropping it.
+                while (bytes.size() > 350_000 && maxOf(preview.width, preview.height) > 256) {
+                    val reduced = Bitmap.createScaledBitmap(preview, maxOf(1, preview.width * 3 / 4),
+                        maxOf(1, preview.height * 3 / 4), true)
+                    if (preview !== bitmap) preview.recycle()
+                    preview = reduced
+                    bytes.reset()
+                    preview.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+                }
+                if (bytes.size() <= 350_000) instrumentation.sendStatus(2, Bundle().apply {
+                    putString("ost_evidence_reason", reason + "; preview=" + preview.width + "x" + preview.height)
+                    putString("ost_screenshot_png", Base64.encodeToString(bytes.toByteArray(), Base64.NO_WRAP))
+                })
+            } finally { if (preview !== bitmap) preview.recycle() }
         }
     }
 
@@ -394,12 +463,24 @@ class CaptureInstrumentationTest {
         instrumentation.waitForIdleSync()
     }
 
-    private fun clickOutsideResult() {
-        val panel = requireNotNull(device.findObject(By.pkg(context.packageName).clazz("android.widget.ScrollView"))).visibleBounds
-        val bubble = requireNotNull(device.findObject(By.descStartsWith("Translation bubble."))).visibleBounds
+    private fun clickOutsideResult(expectPanel: Boolean = true) {
+        var visiblePanel: Rect? = null
+        var visibleBubble: Rect? = null
+        val message = if (expectPanel) "Active translation detail panel and bubble were not ready"
+            else "Pause did not hide the detail panel and restore the bubble"
+        // isAutoRunning changes before WindowManager removal; wait for the actual UI state.
+        await(5_000, message) {
+            visiblePanel = device.findObject(By.pkg(context.packageName).clazz("android.widget.ScrollView"))?.visibleBounds
+            visibleBubble = device.findObject(By.descStartsWith("Translation bubble."))?.visibleBounds
+            (visiblePanel != null) == expectPanel && visibleBubble != null
+        }
+        val panel = visiblePanel
+        val bubble = requireNotNull(visibleBubble)
         val y = device.displayHeight / 2
-        val candidates = listOf(panel.left / 2, (panel.right + device.displayWidth) / 2)
-        val x = candidates.firstOrNull { it > 0 && it < device.displayWidth && !panel.contains(it, y) && !bubble.contains(it, y) }
+        val candidates = if (panel != null) listOf(panel.left / 2, (panel.right + device.displayWidth) / 2)
+            else listOf(device.displayWidth / 2, device.displayWidth / 4, device.displayWidth * 3 / 4)
+        val x = candidates.firstOrNull { it > 0 && it < device.displayWidth &&
+            panel?.contains(it, y) != true && !bubble.contains(it, y) }
         assertNotNull("No visible source-app margin was available outside the result and bubble", x)
         assertTrue("Could not inject the source-app touch", device.click(requireNotNull(x), y))
     }

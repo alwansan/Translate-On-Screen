@@ -100,3 +100,13 @@ The separate [public service observation45779858841](https://github.com/alwansan
 Remaining failures are tied to concrete fixture evidence. On29 the old touch coordinate hit Share inside the taller result panel, opened the chooser and prevented clean scenario closure. On35 the crop produced the expected text, then the assertion read the portrait region key while the activity was landscape; the next test could not expose Start in the system consent ScrollView. The correction selects a point outside actual overlay bounds, checks rotation after fixture launch, preserves region-orientation assertions, and cleans the external task before closing the scenario. It does not change OCR, bypass consent, retry failed test cases or turn skips into passes.
 
 Detailed case names and summaries are preserved in [validation-ab97daa.json](../memory/evidence/validation-ab97daa.json). The next source needs its own device results before acceptance.
+
+## a5ea588: consent scrolling passes; two fixture assumptions remain
+
+Source `a5ea588c56353ac5403ff1c4c78ed8d9adefbe39` passed [host45782204567](https://github.com/alwansan/Translate-On-Screen/actions/runs/45782204567):68/68 JVM, lint0/48 and debug/release/test builds. Debug APK59,776,566 bytes, SHA256 `acd43ff3008c0199f5c8d7e326b1dff8ae9fa440f1e4434d1207490e347beae7`; package checks passed. This digest belongs to this build, not the earlier equally sized ab97 package.
+
+[Device45782204779](https://github.com/alwansan/Translate-On-Screen/actions/runs/45782204779) completed31 cases per API:29 passed30/31;35 passed29/31. The rotated-capture case including **fresh real consent in landscape** passed on both, as did automatic changed-frame/pause/screen-lock behavior and all24 non-capture cases.
+
+On both systems, the first outside touch reached the source and triggered new OCR before the periodic timer. The second helper call, after pause, incorrectly required the result panel that pause had correctly hidden; second-touch/no-restart assertions did not execute. On35 fixed-area initial OCR and region persistence passed, then repeated capture lacked SAVED AREA. The failure-time screenshot shows Launcher behind the result; the pre-OCR image was not emitted. An edge/system-back gesture is a hypothesis, not a proved cause. The next test records actual gesture insets, checks foreground lifecycle without reopening the fixture, and keeps normalized-region and OCR assertions.
+
+Exact summaries: [validation-a5ea588.json](../memory/evidence/validation-a5ea588.json). No new production OCR defect is inferred from a screenshot of a different foreground screen.
