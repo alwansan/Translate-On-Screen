@@ -14,10 +14,10 @@ import kotlin.math.min
 
 /** The selected rectangle is in this view's coordinates; the owner adds its screen offset. */
 @SuppressLint("ViewConstructor") // Programmatic-only view with a mandatory selection callback, never XML-inflated.
-class RegionSelectionView(context: Context, private val selected: (RectF) -> Unit) : View(context) {
+class RegionSelectionView(context: Context, borderColor: Int = Color.rgb(77, 226, 191), private val selected: (RectF) -> Unit) : View(context) {
     private val shade = Paint().apply { color = 0x88000000.toInt() }
     private val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(77, 226, 191)
+        color = borderColor
         style = Paint.Style.STROKE
         strokeWidth = resources.displayMetrics.density * 2
     }

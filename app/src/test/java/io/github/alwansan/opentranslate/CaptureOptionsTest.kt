@@ -1,37 +1,51 @@
 package io.github.alwansan.opentranslate
+
 import org.junit.Assert.*
 import org.junit.Test
 
 class CaptureOptionsTest {
-    @Test fun fiveModesHaveExplicitRegionAndAutoSemantics() {
-        assertEquals(5,CaptureMode.values().size)
+    @Test fun regionAndAutomaticModesRemainDistinct() {
         assertTrue(CaptureMode.FIXED.needsRegion)
         assertFalse(CaptureMode.FIXED.automatic)
         assertTrue(CaptureMode.AUTO_REGION.needsRegion)
         assertTrue(CaptureMode.AUTO_REGION.automatic)
         assertFalse(CaptureMode.AUTO_FULL.needsRegion)
+        assertTrue(CaptureMode.SUBTITLE.needsRegion)
+        assertTrue(CaptureMode.SUBTITLE.automatic)
+        assertFalse(CaptureMode.MANGA.automatic)
     }
-    @Test fun noCatchupAndNoRequestAtDeadline() {
-        assertEquals(8000L,AutoCapturePolicy.nextDelay(1000,60000,8))
-        assertNull(AutoCapturePolicy.nextDelay(55000,60000,8))
-        assertNull(AutoCapturePolicy.nextDelay(60000,60000,8))
-        assertEquals(2000L,AutoCapturePolicy.nextDelay(0,10000,0))
-        assertEquals(61000L,AutoCapturePolicy.deadline(1000,0))
+
+    @Test fun disabledGesturesSurvivePreferenceNormalization() {
+        val safe = CaptureOptions(single = BubbleAction.NONE, long = BubbleAction.NONE, double = BubbleAction.NONE).safe()
+        assertEquals(BubbleAction.NONE, safe.single)
+        assertEquals(BubbleAction.NONE, safe.long)
+        assertEquals(BubbleAction.NONE, safe.double)
+        assertNull(AutoCapturePolicy.resolve(BubbleAction.NONE, CaptureMode.AUTO_FULL))
+        assertNull(AutoCapturePolicy.resolve(BubbleAction.MENU, CaptureMode.FULL))
+        assertEquals(CaptureMode.FIXED, AutoCapturePolicy.resolve(BubbleAction.DEFAULT, CaptureMode.FIXED))
+        assertEquals(CaptureMode.REGION, AutoCapturePolicy.resolve(BubbleAction.REGION, CaptureMode.FULL))
     }
-    @Test fun preferencesAreBoundedAndInvalidSymbolsRejected() {
-        val safe=CaptureOptions(intervalSeconds=0,stopMinutes=999,bubbleSize=0,bubbleOpacity=0,backgroundOpacity=999,bubbleSymbol="invalid",single=BubbleAction.NONE).safe()
-        assertEquals(2,safe.intervalSeconds)
-        assertEquals(120,safe.stopMinutes)
-        assertEquals(40,safe.bubbleSize)
-        assertEquals(25,safe.bubbleOpacity)
-        assertEquals(100,safe.backgroundOpacity)
-        assertEquals("文",safe.bubbleSymbol)
-        assertEquals(BubbleAction.DEFAULT,safe.single)
+
+    @Test fun corruptedNumericSettingsAreBoundedWithoutChangingRequestedMode() {
+        val safe = CaptureOptions(mode = CaptureMode.SUBTITLE, intervalSeconds = 0, stopMinutes = 999,
+            displaySeconds = -1, bubbleSize = 0, bubbleOpacity = 0, backgroundOpacity = 999,
+            panelWidthPercent = 900, bubbleSymbol = "  ", fontFamily = "missing-font").safe()
+        assertEquals(CaptureMode.SUBTITLE, safe.mode)
+        assertEquals(1, safe.intervalSeconds)
+        assertEquals(120, safe.stopMinutes)
+        assertEquals(0, safe.displaySeconds)
+        assertEquals(36, safe.bubbleSize)
+        assertEquals(20, safe.bubbleOpacity)
+        assertEquals(100, safe.backgroundOpacity)
+        assertEquals(100, safe.panelWidthPercent)
+        assertEquals("文", safe.bubbleSymbol)
+        assertEquals("sans-serif", safe.fontFamily)
     }
-    @Test fun defaultGestureResolvesConfiguredModeAndMenuIsNotCapture() {
-        assertEquals(CaptureMode.AUTO_FULL,AutoCapturePolicy.resolve(BubbleAction.DEFAULT,CaptureMode.AUTO_FULL))
-        assertEquals(CaptureMode.REGION,AutoCapturePolicy.resolve(BubbleAction.REGION,CaptureMode.FULL))
-        assertNull(AutoCapturePolicy.resolve(BubbleAction.MENU,CaptureMode.FULL))
-        assertNull(AutoCapturePolicy.resolve(BubbleAction.NONE,CaptureMode.FULL))
+
+    @Test fun legacyDeadlineApiNeverSchedulesBeyondEnd() {
+        assertEquals(8_000L, AutoCapturePolicy.nextDelay(1_000, 60_000, 8))
+        assertNull(AutoCapturePolicy.nextDelay(55_000, 60_000, 8))
+        assertNull(AutoCapturePolicy.nextDelay(60_000, 60_000, 8))
+        assertEquals(61_000L, AutoCapturePolicy.deadline(1_000, 0))
     }
 }

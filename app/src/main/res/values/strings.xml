@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Open Screen Translate</string>
     <string name="tagline">Read and translate text across your screen.</string>
-    <string name="preview_notice">Development preview · 0.1.0</string>
+    <string name="preview_notice">Development preview · 0.2.0</string>
     <string name="screen_title">Translate your screen</string>
     <string name="screen_help">Tap the floating button for the full screen. Hold it to select a region. You can stop screen sharing at any time.</string>
     <string name="start_screen">Start floating button</string>
@@ -26,7 +26,7 @@
     <string name="overlay_help">Enable display over other apps for Open Screen Translate, then return and tap Start. Android will separately ask for screen-sharing permission.</string>
     <string name="open_settings">Open settings</string>
     <string name="cancel">Cancel</string>
-    <string name="cancelled">Cancelled. No new operation started.</string>
+    <string name="cancelled">Cancelled.</string>
     <string name="close">Close</string>
     <string name="save">Save</string>
     <string name="settings_saved">Preferences saved.</string>
@@ -34,10 +34,10 @@
     <string name="target_language">Translate into</string>
     <string name="detect_language">Detect automatically</string>
     <string name="ocr_language">Read text in images as</string>
-    <string name="ocr_help">This preview reads Arabic and English. The selected reading models must be installed. Translation language availability depends on your server.</string>
-    <string name="server_url">LibreTranslate server URL (HTTPS)</string>
+    <string name="ocr_help">Install the selected reading models first. Translation language availability depends on your provider and downloaded language packs.</string>
+    <string name="server_url">Translation service URL (HTTPS)</string>
     <string name="api_key">API key (optional)</string>
-    <string name="network_disclosure">When enabled, recognized or entered text is sent to your LibreTranslate server. Enter a server you trust; there is no built-in paid service or default server.</string>
+    <string name="network_disclosure">When enabled, recognized or entered text is sent to your selected service. Use a service you trust; no service credentials are bundled.</string>
     <string name="enable_network">Allow text translation over the network</string>
     <string name="enable_history">Save translated text in history on this device</string>
     <string name="models_help">Download an open Tesseract reading model from GitHub, or import a compatible traineddata file already on your device. Downloads are optional and checked for integrity. Reading works locally after installation.</string>

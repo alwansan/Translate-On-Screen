@@ -1,0 +1,481 @@
+{
+  "schema_version": 1,
+  "source_observation_date": "2026-11-26",
+  "scope_ar": "متطلبات مستخرجة من صور المرجع، وليست ادعاء اكتمال تطبيقنا أو خطة التنفيذ الرئيسية.",
+  "observed_values_are_defaults": false,
+  "requirements": [
+    {
+      "id": "VIS-001",
+      "area": "home",
+      "requirement_ar": "واجهة رئيسية توضح حالة الخدمة وزوج اللغات والمحرك والوضع، مع تنقل رئيسية/ترجمة/المزيد",
+      "sources": [
+        "REF-001",
+        "REF-020",
+        "REF-021"
+      ],
+      "acceptance_ar": "تظهر الخيارات الفعلية وحالة بدء/إيقاف، ويظل موضع كل إعداد قابلاً للوصول.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-002",
+      "area": "languages",
+      "requirement_ar": "بحث منفصل عن لغة المصدر ولغة الهدف، مع تمييز الاختيار والقسم المستخدم أخيراً أو المفضل",
+      "sources": [
+        "REF-002",
+        "REF-003"
+      ],
+      "acceptance_ar": "يمكن العثور على اللغة بالاسم العربي والإنكليزي؛ لا تُعرض لغة على أنها متاحة قبل توفر OCR/المزود اللازم.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-003",
+      "area": "source_capabilities",
+      "requirement_ar": "توضيح Auto Latin وحالة اللغات التجريبية والتنزيل على مستوى المصدر",
+      "sources": [
+        "REF-002"
+      ],
+      "acceptance_ar": "توضح الواجهة نطاق الكشف التلقائي وما الذي ينزّل وحجمه، ولا تساوي دعم OCR بدعم الترجمة المحلية.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-004",
+      "area": "swap",
+      "requirement_ar": "تبديل اتجاه زوج اللغات من الرئيسية والترجمة وإعدادات الصوت",
+      "sources": [
+        "REF-001",
+        "REF-020",
+        "REF-022"
+      ],
+      "acceptance_ar": "التبديل يحدث للغات ونوع الصوت المرتبط بها مع فحص قدرة OCR عند تبديل المصدر.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-005",
+      "area": "providers",
+      "requirement_ar": "اختيار مزود ترجمة حقيقي وإظهار قدراته وحالته",
+      "sources": [
+        "REF-004"
+      ],
+      "acceptance_ar": "لا ينفذ أي خيار وهمياً؛ كل مزود مدمج يستخدم تكاملاً مصرحاً ومفتاح المستخدم عند الحاجة. ظهور سبعة أسماء في المرجع لا يلزم نسخ واجهاته الداخلية.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-006",
+      "area": "modes",
+      "requirement_ar": "اختيار واحد من الأوضاع الخمسة وحفظ وضع البدء",
+      "sources": [
+        "REF-001",
+        "REF-005"
+      ],
+      "acceptance_ar": "تكون دلالات full/region/fixed/auto-region/auto-full مميزة؛ لا يُعاد تسمية لقطة واحدة بوضع تلقائي.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-007",
+      "area": "bubble_shapes",
+      "requirement_ar": "اختيار شكل للفقاعة من رسومات أصلية أو مرخصة",
+      "sources": [
+        "REF-006",
+        "REF-007"
+      ],
+      "acceptance_ar": "يُحفظ الشكل وتعرض معاينته دون نسخ رسومات المرجع.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-008",
+      "area": "color_picker",
+      "requirement_ar": "اختيار لون الفقاعة والنص والخلفية والإطار مع إلغاء وتأكيد",
+      "sources": [
+        "REF-008",
+        "REF-012",
+        "REF-014",
+        "REF-016"
+      ],
+      "acceptance_ar": "توجد معاينة واضحة ويمكن إلغاء التغيير دون حفظه.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-009",
+      "area": "bubble_geometry",
+      "requirement_ar": "ضبط حجم الفقاعة وشفافيتها مع معاينة",
+      "sources": [
+        "REF-006"
+      ],
+      "acceptance_ar": "تبقى الفقاعة قابلة للوصول واللمس، وتحافظ على موقع صالح بعد الدوران؛ الوحدات والحدود معلنة.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-010",
+      "area": "gestures",
+      "requirement_ar": "ربط الإيماءات بالأوضاع الخمسة أو قائمة الخيارات أو لا إجراء",
+      "sources": [
+        "REF-006",
+        "REF-009",
+        "REF-010",
+        "REF-011",
+        "REF-023"
+      ],
+      "acceptance_ar": "يميز التنفيذ النقر والسحب والمزدوج والمطول، ولا يشغل ترجمتين بسبب الإيماءة نفسها.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-011",
+      "area": "gesture_latency",
+      "requirement_ar": "إظهار أثر تعيين النقر المزدوج على تأخير النقر المفرد",
+      "sources": [
+        "REF-006"
+      ],
+      "acceptance_ar": "يتأخر النقر المفرد فقط بقدر نافذة كشف المزدوج؛ الإلغاء والسحب يمنعان التفعيل العرضي.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-012",
+      "area": "bubble_idle",
+      "requirement_ar": "تلاشي الفقاعة عند الخمول والانتقال الاختياري لحافة الشاشة",
+      "sources": [
+        "REF-006"
+      ],
+      "acceptance_ar": "يعاد إظهارها عند التفاعل؛ الانتقال لا يغير المنطقة المحددة ولا يحدث أثناء السحب.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-013",
+      "area": "positioned_full_screen",
+      "requirement_ar": "عرض نتائج ملء الشاشة بجوار مواضع النصوص المكتشفة أو فوقها",
+      "sources": [
+        "REF-023",
+        "REF-012"
+      ],
+      "acceptance_ar": "يحافظ كل صندوق على الربط بمصدره عند التحجيم والقص والدوران، دون تضمين overlays التطبيق في الالتقاط. دليل المرجع هنا تعليمي.",
+      "evidence_status": "tutorial_and_preview_only"
+    },
+    {
+      "id": "VIS-014",
+      "area": "line_layout",
+      "requirement_ar": "تبديل العرض سطراً بسطر وتخطيط الفقرات",
+      "sources": [
+        "REF-012",
+        "REF-019"
+      ],
+      "acceptance_ar": "يحافظ تجميع الأسطر على ترتيب القراءة ومطابقة كل ترجمة بالمنطقة الأصلية.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-015",
+      "area": "text_style",
+      "requirement_ar": "ضبط لون النص والخط والوزن والحجم ولون الخلفية وشفافيتها",
+      "sources": [
+        "REF-012",
+        "REF-013",
+        "REF-014",
+        "REF-016"
+      ],
+      "acceptance_ar": "تطبق القيم على المعاينة والنتائج، وتدعم العربية وأحرف اللغات المختارة؛ تضمين الخطوط يخضع لترخيص مستقل.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-016",
+      "area": "background_border",
+      "requirement_ar": "حد اختياري للخلفية، ولون مستقل لحد منطقة التحديد",
+      "sources": [
+        "REF-012",
+        "REF-014",
+        "REF-019"
+      ],
+      "acceptance_ar": "الإطار واضح على الخلفيات الفاتحة والداكنة؛ لا يُحفظ ضمن الصورة المرسلة إلى OCR.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-017",
+      "area": "smart_background",
+      "requirement_ar": "مطابقة اختيارية لخلفية النص بناءً على ألوان المنطقة",
+      "sources": [
+        "REF-012",
+        "REF-019"
+      ],
+      "acceptance_ar": "يظل التباين مقروءاً وتحدّد تكلفة المعالجة؛ لا يعلن تنفيذ هذه الميزة بمجرد وجود switch.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-018",
+      "area": "case_alignment",
+      "requirement_ar": "تحويل أحرف اللغات ذات الحالة إلى uppercase ومحاذاة النص للمنتصف اختيارياً",
+      "sources": [
+        "REF-012",
+        "REF-016",
+        "REF-019"
+      ],
+      "acceptance_ar": "لا يفسد تشكيل العربية أو اتجاهها، ويبقى الحقل قابلاً للقراءة حين يطول النص.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-019",
+      "area": "vertical_source",
+      "requirement_ar": "مسار واضح للنص الرأسي في الصينية واليابانية والكورية",
+      "sources": [
+        "REF-012",
+        "REF-014"
+      ],
+      "acceptance_ar": "يغير ترتيب قراءة OCR فعلياً عند دعمه؛ يشرح عدم دعم الخط أو النموذج إذا تعذر التنفيذ.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-020",
+      "area": "region_result",
+      "requirement_ar": "نافذة نتيجة المنطقة تعرض الأصل والترجمة مع إخفاء الأصل اختيارياً",
+      "sources": [
+        "REF-014"
+      ],
+      "acceptance_ar": "يبقى النص الأصلي متاحاً عند فشل الترجمة، ولا يعرض fallback بوصفه ترجمة ناجحة.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-021",
+      "area": "result_toolbar",
+      "requirement_ar": "أدوات نتيجة للنطق والنسخ المنفصل وتبديل اللغات والمحرك والإغلاق والإعدادات",
+      "sources": [
+        "REF-014"
+      ],
+      "acceptance_ar": "لكل أداة تسمية وصول واضحة وتعمل على النص الصحيح؛ أيقونات S/T في المرجع قرينة وليست إثبات تنفيذ النسخ.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-022",
+      "area": "result_geometry",
+      "requirement_ar": "عرض قابل للضبط وتموضع النتيجة أسفل منطقة الاختيار",
+      "sources": [
+        "REF-014"
+      ],
+      "acceptance_ar": "تُحصر النافذة في حدود العرض ومناطق النظام، مع سلوك محدد عندما لا تتسع المساحة أسفل المنطقة.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-023",
+      "area": "fixed_region",
+      "requirement_ar": "حفظ منطقة ثابتة وإعادة استخدامها للحوارات والترجمات",
+      "sources": [
+        "REF-001",
+        "REF-016"
+      ],
+      "acceptance_ar": "تُحفظ الإحداثيات بصورة قابلة للتحويل عند الدوران وتوجد طريقة واضحة لإعادة التحديد.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-024",
+      "area": "shared_styles",
+      "requirement_ar": "ثلاثة ملفات نمط: ملء الشاشة، المنطقة، والثابتة؛ يتبع التلقائي نظيره المناسب",
+      "sources": [
+        "REF-015",
+        "REF-018",
+        "REF-019"
+      ],
+      "acceptance_ar": "تؤثر تعديلات النمط على الأوضاع المشتركة المعلنة دون ضياع الإعدادات الأخرى.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-025",
+      "area": "auto_region",
+      "requirement_ar": "تكرار ترجمة المنطقة الثابتة بفاصل يحدده المستخدم",
+      "sources": [
+        "REF-015"
+      ],
+      "acceptance_ar": "جلسة واحدة وعملية واحدة قيد التنفيذ؛ لا تتراكم الطلبات عند بطء OCR أو الشبكة، ويوقف Stop جميع التكرارات.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-026",
+      "area": "auto_full",
+      "requirement_ar": "تكرار ترجمة الشاشة كاملة بفاصل يحدده المستخدم",
+      "sources": [
+        "REF-018"
+      ],
+      "acceptance_ar": "يستخدم إطاراً جديداً ويحد من الإعادة عند ثبات النص، ويمنع تداخل النتائج القديمة مع الطلب الجديد.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-027",
+      "area": "result_expiration",
+      "requirement_ar": "مدة عرض مستقلة للنتيجة وإيقاف تلقائي للجلسة",
+      "sources": [
+        "REF-015",
+        "REF-018"
+      ],
+      "acceptance_ar": "يفرق التنفيذ بين انتهاء عرض النتيجة وانتهاء جلسة الالتقاط، ويطبق المهلات بعد الاستئناف والدوران.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-028",
+      "area": "interaction_trigger",
+      "requirement_ar": "ترجمة تلقائية اختيارية عند لمس الشاشة أو تمريرها",
+      "sources": [
+        "REF-018"
+      ],
+      "acceptance_ar": "يُصرح بطريقة الرصد وصلاحياتها ويُتحقق من بقاء لمس التطبيق الأصلي عاملاً؛ لا يُدّعى توفرها بلا اختبار.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-029",
+      "area": "instant_offline",
+      "requirement_ar": "ترجمة محلية فعلية للوضع الفوري إذا توفرت نماذج مفتوحة مناسبة",
+      "sources": [
+        "REF-004",
+        "REF-015"
+      ],
+      "acceptance_ar": "المحرك والنماذج والتراخيص والأزواج موثقة، والنتيجة تأتي من النموذج؛ عدم توفرها يظهر صراحة.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-030",
+      "area": "auto_speak",
+      "requirement_ar": "قراءة الترجمة تلقائياً في وضع ثابت أو تلقائي عند تفعيل الخيار",
+      "sources": [
+        "REF-016",
+        "REF-017"
+      ],
+      "acceptance_ar": "تُلغى القراءة عند Stop أو إغلاق النتيجة، ولا تتكرر بلا داع للنص نفسه.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-031",
+      "area": "text_translation",
+      "requirement_ar": "إدخال نص يدوي وترجمته مع عرض الأخطاء والنتيجة",
+      "sources": [
+        "REF-020"
+      ],
+      "acceptance_ar": "النص الأصلي لا يضيع عند فشل الشبكة أو تغيير الإعدادات.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-032",
+      "area": "clipboard",
+      "requirement_ar": "لصق محتوى الحافظة بطلب صريح ونسخ نتيجة محددة",
+      "sources": [
+        "REF-020",
+        "REF-014"
+      ],
+      "acceptance_ar": "لا تُراقب الحافظة دورياً؛ كل قراءة أو نسخ يتبع تفاعل المستخدم.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-033",
+      "area": "image_import",
+      "requirement_ar": "اختيار صورة أو استقبالها للمترجم",
+      "sources": [
+        "REF-020"
+      ],
+      "acceptance_ar": "تعالج الصور الكبيرة بحدود ذاكرة مع قص وتدوير مناسبين، وتراعي عمر أذونات URI.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-034",
+      "area": "camera",
+      "requirement_ar": "مدخل تصوير بالكاميرا للترجمة",
+      "sources": [
+        "REF-020"
+      ],
+      "acceptance_ar": "التقاط صورة فعلية ومعالجتها مع تنظيف الملف المؤقت والتعامل مع إلغاء الكاميرا.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-035",
+      "area": "speech_input",
+      "requirement_ar": "مدخل صوتي للنص قبل الترجمة",
+      "sources": [
+        "REF-020"
+      ],
+      "acceptance_ar": "توضيح خدمة التعرف ونطاق الشبكة، وإيقاف التسجيل عند الإلغاء والخروج.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-036",
+      "area": "history",
+      "requirement_ar": "مدخل لسجل الترجمات",
+      "sources": [
+        "REF-020"
+      ],
+      "acceptance_ar": "السجل اختياري ويمكن حذفه؛ اللقطة تثبت أيقونة المدخل فقط ولا شكل صفحة السجل أو حقوله.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-037",
+      "area": "app_language",
+      "requirement_ar": "لغة واجهة منفصلة عن زوج لغات الترجمة",
+      "sources": [
+        "REF-021"
+      ],
+      "acceptance_ar": "تغير اللغة النصوص والاتجاه مع الحفاظ على زوج الترجمة، وتتجنب خلط تسميات التنقل إن أمكن.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-038",
+      "area": "theme",
+      "requirement_ar": "وضع داكن وفاتح ومقروئية متسقة للنتائج والإعدادات",
+      "sources": [
+        "REF-021",
+        "REF-006"
+      ],
+      "acceptance_ar": "تطبق الألوان على الحقول والقوائم ومعاينات overlays، وتراجع الواجهة العربية بصرياً.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-039",
+      "area": "quick_access",
+      "requirement_ar": "مدخل وصول سريع لتشغيل المترجم",
+      "sources": [
+        "REF-021"
+      ],
+      "acceptance_ar": "تُحدد آلية الوصول السريع صراحة (بلاطة أو اختصار) وتطلب أذونات الالتقاط النظامية في الوقت الصحيح.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-040",
+      "area": "capture_scope",
+      "requirement_ar": "اختيار التقاط الشاشة كاملة أو تطبيق واحد حيث يدعم النظام",
+      "sources": [
+        "REF-021"
+      ],
+      "acceptance_ar": "يكون اختيار المستخدم صريحاً وتبقى خريطة الإحداثيات صحيحة؛ لا يُستنتج دعم خريطة تطبيق واحد من وجود toggle فقط.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-041",
+      "area": "tts_voice",
+      "requirement_ar": "اختيار صوت مستقل لكل لغة",
+      "sources": [
+        "REF-022"
+      ],
+      "acceptance_ar": "تُعرض الأصوات المتاحة فعلياً وحالتها، ويُبيّن غياب العربية أو حاجتها إلى تنزيل.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-042",
+      "area": "tts_pitch_rate",
+      "requirement_ar": "ضبط سرعة النطق وحدته لكل لغة",
+      "sources": [
+        "REF-022"
+      ],
+      "acceptance_ar": "تُعرض وحدات مفهومة ويطبق التغيير على الصوت الصحيح؛ الرقم10 في المرجع لا يحدد صيغة Android.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-043",
+      "area": "help",
+      "requirement_ar": "دليل أصلي يشرح البدء والنقر والسحب والأوضاع والإيماءات القابلة للتخصيص",
+      "sources": [
+        "REF-023"
+      ],
+      "acceptance_ar": "تطابق الأمثلة سلوك التطبيق الحالي، ولا يبقى مثال الضغط المطول ثابتاً حين يغيّره المستخدم.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    },
+    {
+      "id": "VIS-044",
+      "area": "support_legal",
+      "requirement_ar": "مساعدة حول إيقاف النظام للخدمة، ومشاركة التطبيق، وروابط المشروع والتراخيص",
+      "sources": [
+        "REF-021"
+      ],
+      "acceptance_ar": "ترتبط الروابط بمشروعنا وتوثيقه وسياسة بياناته، دون نسخ علامة NURIK أو ترويج التطبيق المرجعي.",
+      "evidence_status": "visible_interface_not_runtime_verified"
+    }
+  ]
+}

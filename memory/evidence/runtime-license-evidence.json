@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "verified_date": "2026-11-26",
+  "configuration": "debugRuntimeClasspath",
+  "runtime_report": "memory/evidence/runtime-dependencies.txt",
+  "runtime_coordinates": [
+    "org.jetbrains.kotlin:kotlin-stdlib:2.2.21",
+    "org.jetbrains:annotations:13.0",
+    "cz.adaptech.tesseract4android:tesseract4android:4.9.0",
+    "androidx.annotation:annotation:1.8.1",
+    "androidx.annotation:annotation-jvm:1.8.1",
+    "com.microsoft.onnxruntime:onnxruntime-android:1.23.2",
+    "androidx.exifinterface:exifinterface:1.4.2",
+    "org.jspecify:jspecify:1.0.0"
+  ],
+  "annotation_metadata_note": "annotation:1.8.1 selects its JVM artifact; the requested 1.3.0 is upgraded, not a second packaged version.",
+  "source_artifacts": [
+    {
+      "component": "androidx.exifinterface:exifinterface:1.4.2",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.2/exifinterface-1.4.2.pom",
+      "bytes": 2004,
+      "sha256": "b11c0763f3094d28664412b7d3316bb5d1a785810fb7b4fe5f356cd5cbcd1725",
+      "declared_license": "Apache-2.0"
+    },
+    {
+      "component": "androidx.exifinterface:exifinterface:1.4.2",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.2/exifinterface-1.4.2-sources.jar",
+      "bytes": 73351,
+      "sha256": "dc69c04f03e72ad38ed43774554e6612dd9ffe7299eacaab62a38df8ac2c7767",
+      "license_entry": "META-INF/androidx/exifinterface/exifinterface/LICENSE.txt",
+      "license_entry_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+      "copyright": [
+        "Copyright 2018 The Android Open Source Project",
+        "Copyright 2020 The Android Open Source Project"
+      ]
+    },
+    {
+      "component": "androidx.annotation:annotation-jvm:1.8.1",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1.pom",
+      "bytes": 1826,
+      "sha256": "d49203733aa6fae046c3a3de4e796eed347595755486a64273989844759750b4",
+      "declared_license": "Apache-2.0"
+    },
+    {
+      "component": "androidx.annotation:annotation-jvm:1.8.1",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1-sources.jar",
+      "bytes": 67324,
+      "sha256": "5add69d7bb907ade52823bf4b15730a1a32cfce6657bfbe7eb865b00107a6369",
+      "license_evidence": "Source copyright/license headers; Apache-2.0; AOSP individual years 2013 through 2024"
+    },
+    {
+      "component": "org.jspecify:jspecify:1.0.0",
+      "url": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.pom",
+      "bytes": 1511,
+      "sha256": "cdab929a3b95211f43d2090c5e2d0dfe8465960e378bc32b35841dab324433a6",
+      "declared_license": "Apache-2.0"
+    },
+    {
+      "component": "org.jspecify:jspecify:1.0.0",
+      "url": "https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0-sources.jar",
+      "bytes": 11996,
+      "sha256": "adf0898191d55937fb3192ba971826f4f294292c4a960740f3c27310e7b70296",
+      "copyright": [
+        "Copyright 2018-2020 The JSpecify Authors.",
+        "Copyright 2022 The JSpecify Authors."
+      ]
+    }
+  ],
+  "onnx": {
+    "version": "1.23.2",
+    "license": "MIT",
+    "published_pom": "https://repo.maven.apache.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.23.2/onnxruntime-android-1.23.2.pom",
+    "mit_asset": "app/src/main/assets/licenses/ONNX-RUNTIME-MIT.txt",
+    "mit_asset_bytes": 1073,
+    "third_party_asset": "app/src/main/assets/licenses/ONNX-RUNTIME-THIRD-PARTY.txt",
+    "third_party_asset_observed_bytes": 333022,
+    "third_party_source": "https://repo.maven.apache.org/maven2/com/microsoft/onnxruntime/onnxruntime/1.23.2/onnxruntime-1.23.2.jar",
+    "third_party_zip_entry": "ThirdPartyNotices.txt",
+    "third_party_recovery_note": "The complete text existed locally before executor loss but was not retained fully in conversation. Restore it from this official same-version artifact before packaging. Never substitute a summary for the required text.",
+    "notice_scope": "The upstream notice file is a multi-platform superset; inclusion does not mean all optional components are present in Android.",
+    "compiler": "Android clang 19.0.0 r530567c",
+    "llvm_revision": "97a699bf4812a18fb657c2779f5296a4ab2694d2",
+    "aar_native_members": [
+      {
+        "entry": "jni/arm64-v8a/libonnxruntime.so",
+        "bytes": 19347616,
+        "sha256": "e40f09d07dc53726b8bfbf48a7907673b8f86718a057655a62790a39874a7302",
+        "needed": [
+          "libdl.so",
+          "liblog.so",
+          "libm.so",
+          "libc.so"
+        ]
+      },
+      {
+        "entry": "jni/arm64-v8a/libonnxruntime4j_jni.so",
+        "bytes": 100648,
+        "sha256": "2cc3f16ab527959a81b572adebcfb71a25ea4b8547c9b92d705b423e9c822d39",
+        "needed": [
+          "libonnxruntime.so",
+          "libm.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      },
+      {
+        "entry": "jni/x86_64/libonnxruntime.so",
+        "bytes": 23181616,
+        "sha256": "972c17c056eaae946a415d9efdd8018b729639974df075e495f0092441478fb7",
+        "needed": [
+          "libdl.so",
+          "liblog.so",
+          "libm.so",
+          "libc.so"
+        ]
+      },
+      {
+        "entry": "jni/x86_64/libonnxruntime4j_jni.so",
+        "bytes": 90728,
+        "sha256": "b8d1b251b7d5606cf5caa7db9738353c08efc4090ac90ca2aaab449bc263a10b",
+        "needed": [
+          "libonnxruntime.so",
+          "libm.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      }
+    ]
+  },
+  "llvm_notices": {
+    "revisions": [
+      "d8003a456d14a3deb8054cdaa529ffbf02d9b262",
+      "97a699bf4812a18fb657c2779f5296a4ab2694d2"
+    ],
+    "texts_byte_identical": true,
+    "components": [
+      {
+        "component": "libcxx",
+        "bytes": 16703,
+        "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b"
+      },
+      {
+        "component": "libcxxabi",
+        "bytes": 16706,
+        "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c"
+      },
+      {
+        "component": "libunwind",
+        "bytes": 16706,
+        "sha256": "b5efebcaca80879234098e52d1725e6d9eb8fb96a19fce625d39184b705f7b6d"
+      },
+      {
+        "component": "compiler-rt",
+        "bytes": 16708,
+        "sha256": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d"
+      }
+    ]
+  },
+  "optional_model_cards": [
+    {
+      "url": "https://huggingface.co/Helsinki-NLP/opus-mt-en-ar/raw/03087980e8ce753d64b3248ed0a912444545b840/README.md",
+      "bytes": 2274,
+      "sha256": "7cc0866ce36041ab0f6e2d32241ebd55f3c372b44024f3fa36252da6b412129a",
+      "declared_license": "apache-2.0"
+    },
+    {
+      "url": "https://huggingface.co/Helsinki-NLP/opus-mt-ar-en/raw/c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1/README.md",
+      "bytes": 818,
+      "sha256": "35e4a45fc28e591430ec663b3a5dff970311d90f94fcba3d9c983d5fe999a170",
+      "declared_license": "apache-2.0"
+    },
+    {
+      "url": "https://huggingface.co/Xenova/opus-mt-en-ar/raw/034a684356c19021a187cda4d7f823298b913921/README.md",
+      "bytes": 571,
+      "sha256": "0b00622929763683170f04e9d44350e3080660622760b9a0d188355cb4849624",
+      "base_model": "Helsinki-NLP/opus-mt-en-ar"
+    },
+    {
+      "url": "https://huggingface.co/Xenova/opus-mt-ar-en/raw/09c7556866400dcc53562ba8d7035119e7d9a2c1/README.md",
+      "bytes": 571,
+      "sha256": "6f601027ac36d64d7e5423aaf45281d07d9b8f32cef2dca415778a89ef532931",
+      "base_model": "Helsinki-NLP/opus-mt-ar-en"
+    }
+  ],
+  "exclusions": [
+    "JUnit",
+    "Android test runner",
+    "UIAutomator",
+    "Python SentencePiece validation runtime"
+  ],
+  "limitation": "Artifact inspection and dependency resolution are not application build or device execution evidence."
+}

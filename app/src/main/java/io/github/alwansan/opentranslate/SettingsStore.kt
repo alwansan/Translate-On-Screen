@@ -24,6 +24,23 @@ object SettingsStore {
     internal fun networkEnabled(context: Context): Boolean =
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).getBoolean("network_enabled", false)
 
+    /** A late OCR job cannot upload after opt-out or a change to provider/language/key settings. */
+    internal fun checkNetworkConsent(context: Context, settings: UserSettings) {
+        InterruptedRequestGate.check()
+        val p = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        if (!settings.networkEnabled || !p.getBoolean("network_enabled", false)) {
+            throw TranslationProblem(TranslationFailure.NETWORK_OFF)
+        }
+        val stored = p.getString("network_fingerprint", "").orEmpty()
+        val same = if (stored.isNotEmpty()) stored == TranslationFingerprint.settings(settings) else {
+            settings.provider == "libretranslate" && settings.model.isBlank() &&
+                p.getString("endpoint", "").orEmpty() == settings.endpoint &&
+                p.getString("source", "en") == settings.source && p.getString("target", "ar") == settings.target
+        }
+        if (!same) throw TranslationProblem(TranslationFailure.SETTINGS_CHANGED)
+        InterruptedRequestGate.check()
+    }
+
     @Volatile
     var lastReadWarning: String? = null
         private set
@@ -53,6 +70,15 @@ object SettingsStore {
             apiKey = key,
             networkEnabled = keyAvailable && preferences.getBoolean("network_enabled", false),
             keepHistory = preferences.getBoolean("keep_history", false),
+            provider = preferences.getString("provider", "libretranslate") ?: "libretranslate",
+            model = preferences.getString("provider_model", "").orEmpty(),
+            ocrPageMode = preferences.getString("ocr_page_mode", OcrPageModes.SPARSE) ?: OcrPageModes.SPARSE,
+            singleAppCapture = preferences.getBoolean("single_app_capture", false),
+            ocrBlockMode = preferences.getString("ocr_block_mode", "line") ?: "line",
+            providerRegion = preferences.getString("provider_region", "").orEmpty(),
+            folderId = preferences.getString("provider_folder_id", "").orEmpty(),
+            appId = preferences.getString("provider_app_id", "").orEmpty(),
+            providerAuth = preferences.getString("provider_auth", "api_key") ?: "api_key",
         )
     }
 
@@ -60,15 +86,43 @@ object SettingsStore {
     fun save(context: Context, settings: UserSettings) {
         require(settings.apiKey.length <= 4096) { context.engineMessage("API key is too long.", "مفتاح API أطول من الحد المسموح.") }
         require(settings.endpoint.length <= 2048) { context.engineMessage("Server address is too long.", "عنوان الخادم أطول من الحد المسموح.") }
-        // Validate before changing preferences, including when the user saves a disabled server.
-        if (settings.endpoint.isNotBlank()) try {
-            EndpointPolicy.translationUrl(settings.endpoint)
+        val provider = ProviderCatalog.find(settings.provider)
+        require(provider != null) { context.engineMessage("Choose a supported translation provider.", "اختر مزود ترجمة مدعوماً.") }
+        require(settings.model.length <= 128 && settings.model.none { it.isISOControl() }) {
+            context.engineMessage("The model identifier is invalid or too long.", "معرف النموذج غير صالح أو أطول من الحد المسموح.")
+        }
+        require(settings.apiKey.none { it.isISOControl() }) {
+            context.engineMessage("The API key contains an invalid character.", "مفتاح API يحتوي حرفاً غير صالح.")
+        }
+        require(settings.ocrPageMode in OcrPageModes.all && settings.ocrBlockMode in setOf("line", "paragraph")) {
+            context.engineMessage("Choose a supported OCR layout.", "اختر نمط قراءة نص مدعوماً.")
+        }
+        fun accountChar(c: Char) = c in 'a'..'z' || c in 'A'..'Z' || c in '0'..'9'
+        require(settings.providerRegion.length <= 64 && settings.providerRegion.all { accountChar(it) || it == '-' } &&
+            settings.folderId.length <= 50 && settings.folderId.all { accountChar(it) || it == '-' || it == '_' } &&
+            settings.appId.length <= 64 && settings.appId.all { it in '0'..'9' } &&
+            settings.providerAuth in listOf("api_key", "iam_token")) {
+            context.engineMessage("Check the provider region, folder, app ID and authentication type.",
+                "تحقّق من المنطقة والمجلد ومعرف التطبيق وطريقة المصادقة لدى المزود.")
+        }
+        if (settings.endpoint.isNotBlank() && provider.requiresNetwork) try {
+            EndpointPolicy.providerUrl(settings.endpoint, settings.provider,
+                settings.model.ifBlank { if (settings.provider == "gemini" && !settings.networkEnabled) "model-placeholder" else "" })
         } catch (error: IllegalArgumentException) {
             throw IllegalArgumentException(context.endpointMessage(error))
         }
-        if (settings.networkEnabled) require(settings.endpoint.isNotBlank()) {
-            context.engineMessage("Enter an HTTPS LibreTranslate server before enabling online translation.",
-                "أدخل عنوان خادم LibreTranslate عبر HTTPS قبل تفعيل الترجمة عبر الإنترنت.")
+        if (settings.networkEnabled && provider.requiresNetwork) require(settings.endpoint.isNotBlank()) {
+            context.engineMessage("Enter an HTTPS server before enabling online translation.",
+                "أدخل عنوان خادم عبر HTTPS قبل تفعيل الترجمة عبر الإنترنت.")
+        }
+        if (settings.networkEnabled && provider.requiresKey) require(settings.apiKey.isNotBlank()) {
+            context.engineMessage("This provider requires an API key.", "هذا المزود يحتاج مفتاح API.")
+        }
+        if (settings.networkEnabled && provider.requiresModel) require(settings.model.isNotBlank()) {
+            context.engineMessage("Enter the provider's model identifier.", "أدخل معرف النموذج لدى المزود.")
+        }
+        if (settings.networkEnabled && settings.provider == "baidu") require(settings.appId.isNotBlank()) {
+            context.engineMessage("Baidu requires an App ID and its secret key.", "يحتاج Baidu معرف App ID والمفتاح السري الخاص به.")
         }
         val encrypted = if (settings.apiKey.isEmpty()) "" else try {
             encrypt(settings.apiKey)
@@ -84,6 +138,20 @@ object SettingsStore {
             .putString("api_key_encrypted", encrypted)
             .putBoolean("network_enabled", settings.networkEnabled)
             .putBoolean("keep_history", settings.keepHistory)
+            .putString("provider", settings.provider)
+            .putString("provider_model", settings.model.trim())
+            .putString("ocr_page_mode", settings.ocrPageMode)
+            .putBoolean("single_app_capture", settings.singleAppCapture)
+            .putString("ocr_block_mode", settings.ocrBlockMode)
+            .putString("provider_region", settings.providerRegion.trim())
+            .putString("provider_folder_id", settings.folderId.trim())
+            .putString("provider_app_id", settings.appId.trim())
+            .putString("provider_auth", settings.providerAuth)
+            .putString("network_fingerprint", TranslationFingerprint.settings(settings.copy(
+                source = settings.source.trim(), target = settings.target.trim(), model = settings.model.trim(),
+                endpoint = settings.endpoint.trim(), providerRegion = settings.providerRegion.trim(),
+                folderId = settings.folderId.trim(), appId = settings.appId.trim(),
+            )))
             .remove("api_key")
         val success = synchronized(historyConsentLock) { editor.commit() }
         if (!success) throw IOException(context.engineMessage("Could not save settings.", "تعذر حفظ الإعدادات."))

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">ترجمة الشاشة المفتوحة</string>
     <string name="tagline">اقرأ النص وترجمه من شاشتك.</string>
-    <string name="preview_notice">نسخة تطويرية · 0.1.0</string>
+    <string name="preview_notice">نسخة تطويرية · 0.2.0</string>
     <string name="screen_title">ترجمة الشاشة</string>
     <string name="screen_help">اضغط الزر العائم لقراءة الشاشة، واضغط مطولاً لتحديد منطقة. يمكنك إيقاف المشاركة في أي وقت.</string>
     <string name="start_screen">تشغيل الزر العائم</string>
@@ -34,10 +34,10 @@
     <string name="target_language">الترجمة إلى</string>
     <string name="detect_language">اكتشاف تلقائي</string>
     <string name="ocr_language">لغة قراءة النص من الصور</string>
-    <string name="ocr_help">تقرأ هذه النسخة العربية والإنكليزية. ثبّت نماذج القراءة المختارة أولاً. تعتمد لغات الترجمة المتاحة على خادمك.</string>
-    <string name="server_url">عنوان خادم LibreTranslate ‏(HTTPS)</string>
+    <string name="ocr_help">ثبّت نماذج القراءة المختارة أولاً. تعتمد لغات الترجمة المتاحة على المزوّد وحزم الترجمة المنزلة.</string>
+    <string name="server_url">عنوان خدمة الترجمة (HTTPS)</string>
     <string name="api_key">مفتاح الخدمة (اختياري)</string>
-    <string name="network_disclosure">عند التفعيل يُرسل النص المقروء أو المكتوب إلى خادم LibreTranslate الذي تختاره. أدخل خادماً تثق به؛ لا توجد خدمة مدفوعة مدمجة أو خادم افتراضي.</string>
+    <string name="network_disclosure">عند التفعيل يُرسل النص المقروء أو المكتوب إلى الخدمة التي تختارها. اختر خدمة تثق بها؛ لا توجد مفاتيح خدمة مدمجة.</string>
     <string name="enable_network">السماح بترجمة النص عبر الشبكة</string>
     <string name="enable_history">حفظ النصوص المترجمة في سجل هذا الجهاز</string>
     <string name="models_help">نزّل نموذج قراءة Tesseract مفتوح المصدر من GitHub، أو استورد ملف traineddata متوافقاً موجوداً على جهازك. التنزيل اختياري وتُفحص سلامة الملفات. تعمل القراءة محلياً بعد التثبيت.</string>

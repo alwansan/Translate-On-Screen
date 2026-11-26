@@ -5,12 +5,12 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "implementation_and_environment_recovery",
-  "last_verified_code_commit": "3bca5754ed5d149b420c4af17f8243a5ef2340bd",
+  "phase": "integrated_0_2_reconstruction_pending_ci",
+  "last_verified_code_commit": "1741d437f67f8491fbbb298af3508496dd67f593",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45763162836,
+  "last_verified_android_ci": 45771378480,
   "last_verified_inventory_ci": 45762908030,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -36,13 +36,23 @@
     "last_local_toolchain": "JDK17, Android SDK36/build-tools35, AOSP35 x86_64 emulator boot completed under software emulation",
     "local_emulator_test_result": "NOT_RUN: environment disconnected before device test execution",
     "available_execution_path": "GitHub connector and GitHub Actions",
-    "unsynced_work": "Substantial 0.2 development existed locally. Its exact file contents are not yet confirmed recoverable. Reconstruct source with review and new CI; do not claim the remote head contains it."
+    "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
   "observed_branch_head": "78ae21418b92406269e39ad4c387e34e2f12454b",
   "latest_observed_android_ci": {
-    "run_id": 45768672996,
-    "head_sha": "78ae21418b92406269e39ad4c387e34e2f12454b",
-    "conclusion": "failure",
-    "reason": "CaptureService.kt:581 extra closing parenthesis; corrective commit pending verification"
-  }
+    "run_id": 45771378480,
+    "head_sha": "1741d437f67f8491fbbb298af3508496dd67f593",
+    "conclusion": "success",
+    "scope": "Five-mode base after syntax fix; does not validate reconstructed0.2 source in this checkpoint"
+  },
+  "source_checkpoint_parent": "1741d437f67f8491fbbb298af3508496dd67f593",
+  "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
+  "pending_gates": [
+    "aggregate_compile",
+    "unit_tests_with_required_model_fixtures",
+    "android_lint",
+    "apk_license_signature_alignment",
+    "android_api29_and_api35_device_tests",
+    "final_release_and_owner_acceptance"
+  ]
 }

@@ -1,0 +1,37 @@
+OPTIONAL OPUS-MT LOCAL TRANSLATION MODEL NOTICES
+
+Model providers: Helsinki-NLP / OPUS-MT.
+ONNX conversions: Xenova.
+The original model cards declare Apache License, Version 2.0.
+Complete terms are provided in APACHE-2.0.txt beside this notice.
+
+ENGLISH TO ARABIC
+Downloaded converted-model revision:
+https://huggingface.co/Xenova/opus-mt-en-ar/tree/034a684356c19021a187cda4d7f823298b913921
+Conversion card identifying the Helsinki-NLP base model:
+https://huggingface.co/Xenova/opus-mt-en-ar/blob/034a684356c19021a187cda4d7f823298b913921/README.md
+Pinned source card with license: apache-2.0:
+https://huggingface.co/Helsinki-NLP/opus-mt-en-ar/blob/03087980e8ce753d64b3248ed0a912444545b840/README.md
+
+ARABIC TO ENGLISH
+Downloaded converted-model revision:
+https://huggingface.co/Xenova/opus-mt-ar-en/tree/09c7556866400dcc53562ba8d7035119e7d9a2c1
+Conversion card identifying the Helsinki-NLP base model:
+https://huggingface.co/Xenova/opus-mt-ar-en/blob/09c7556866400dcc53562ba8d7035119e7d9a2c1/README.md
+Pinned source card with license: apache-2.0:
+https://huggingface.co/Helsinki-NLP/opus-mt-ar-en/blob/c5b2a50db78d6be98ae207223f8d4f63bc7a0ff1/README.md
+
+Each language pair downloads encoder_model_quantized.onnx,
+decoder_model_merged_quantized.onnx, source.spm and vocab.json.
+The application's OfflineModelManifest.kt specifies all file sizes and SHA-256
+digests, and downloads verify them before installation. No model data is bundled
+in the APK. Installation requires the user's explicit download action.
+
+The source-card revisions above identify inspected license statements. They do
+not assert that the ONNX conversion used those exact source revisions. The
+converted-model cards identify their corresponding base-model repositories.
+
+The application independently implements the tokenizer in Kotlin. The
+SentencePiece and protobuf software runtimes are not included in the app.
+The optional models' Apache-2.0 terms, ONNX Runtime's MIT terms and the new
+application code's Apache-2.0 terms are separate license grants.

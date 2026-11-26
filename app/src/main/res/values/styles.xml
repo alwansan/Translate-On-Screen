@@ -1,12 +1,23 @@
 <resources>
     <style name="AppThemeBase" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#087F8C</item>
+        <item name="android:colorAccent">#087F83</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">#172B35</item>
-        <item name="android:statusBarColor">#F5F7F8</item>
+        <item name="android:navigationBarColor">#17343D</item>
+        <item name="android:statusBarColor">#F2F6F6</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">#F5F7F8</item>
+        <item name="android:windowBackground">#F2F6F6</item>
     </style>
     <style name="AppTheme" parent="AppThemeBase" />
+    <style name="AppThemeDarkBase" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#6CDED1</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">#10191F</item>
+        <item name="android:statusBarColor">#10191F</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">#10191F</item>
+    </style>
+    <style name="AppThemeDark" parent="AppThemeDarkBase" />
+    <string name="setting_value">%1$s: %2$d</string>
 </resources>

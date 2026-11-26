@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "observation_date": "2026-11-26",
+  "record_kind": "recovered_observations_not_original_tool_logs",
+  "provenance": "Inspection was performed locally before executor loss. This record preserves observed conclusions and explicitly identifies missing raw logs and a count conflict.",
+  "reference": {
+    "package": "com.recognize_text.translate.screen",
+    "version": "1.188",
+    "version_code": 188,
+    "min_sdk": 32,
+    "target_sdk": 36,
+    "decoded_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
+    "screenshots_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308"
+  },
+  "files": [
+    {
+      "name": "Translate+On+Screen_1.188_APKPure_apks.apk",
+      "bytes": 94332979,
+      "sha256": "87bb9419cc58f630aebc9993415c338f998e7415f0d7307891f0d45cffb67afb",
+      "library_id": "libfile_490a71224d3c8191b51f0c75e8a2b6b9",
+      "zip_entries": 1756,
+      "dex_count": 4,
+      "abis": [
+        "arm64-v8a"
+      ]
+    },
+    {
+      "name": "Translate+On+Screen_1.188_APKPure.xapk",
+      "bytes": 94242338,
+      "sha256": "7bd4949257470fe6c5af3dedaf339490c99c335e33f1134bb605ef6d0dcdc955",
+      "library_id": "libfile_a52bf8c71f7c8191a864e8a7d34083bf",
+      "splits": [
+        {
+          "name": "com.recognize_text.translate.screen.apk",
+          "bytes": 56240414,
+          "sha256": "6283506e0c7eec2bb2dc306db94db130d26057c53f7a915777cb7f2be839ee2f"
+        },
+        {
+          "name": "config.arm64_v8a.apk",
+          "bytes": 37889567,
+          "sha256": "e5f357b965abf6766d4daf08b2e9b16c5729a7f75b18aab85cf87d7f3273fbda"
+        },
+        {
+          "name": "config.xxhdpi.apk",
+          "bytes": 107930,
+          "sha256": "4ac26e4865df8b4f29705501f4ec90fc267835fa4696db54cd16239663cf2070"
+        }
+      ]
+    },
+    {
+      "name": "img.zip",
+      "bytes": 5754886,
+      "sha256": "e465664b2f67a63fc1dee1ee9264ab9dc5336619998e4348e469656de5d685df",
+      "library_id": "libfile_1a7b32277e94819180967d4bec36d738",
+      "jpg_count": 23,
+      "github_path": "https://github.com/alwansan/Translate-On-Screen/tree/b4f80b12d7efafdd992d54f51ffba65c01ec6308/img"
+    }
+  ],
+  "signature_verification": {
+    "tool": "Android SDK build-tools/35.0.0 apksigner with JDK 17",
+    "merged_apk": {
+      "cryptographically_valid": false,
+      "observed_failure": "APK Signature Scheme v3 CHUNKED_SHA512 content digest mismatch"
+    },
+    "xapk_splits": {
+      "count": 3,
+      "cryptographically_valid": true,
+      "observed_schemes": [
+        "v3"
+      ],
+      "source_stamp_verified": true,
+      "common_certificate_sha256": "68a329311ee72818694354c6f5b610c5830395fbef997392e691f74df77c52df"
+    },
+    "caution": "The certificate bytes in the invalid merged APK do not make that APK valid. A valid signature on the splits establishes integrity for those files, not independent proof of publisher identity.",
+    "raw_logs_available_in_this_recovery": false
+  },
+  "content_comparison": {
+    "merged_zip_entry_count": 1756,
+    "xapk_union_entry_count": 1756,
+    "reported_identical_entries": 1754,
+    "reported_changed_files": [
+      "AndroidManifest.xml",
+      "resources.arsc"
+    ],
+    "reported_native_libraries": 18,
+    "reported_native_and_dex_bytes_match_between_merged_and_split_union": true,
+    "decoded_reference_pin": "53a10142656f60b04299fdd8fa073b0d675210ee",
+    "decoded_manifest_and_native_library_comparison": "Reported matching merged manifest and native libraries in the pre-outage inspection",
+    "raw_per_file_hashes_available_in_this_recovery": false
+  },
+  "unresolved": [
+    {
+      "id": "REF-DEX-COUNT",
+      "earlier_remote_index": 4,
+      "later_preserved_inspection_summary": 5,
+      "resolution": "Do not select a count from memory. Re-enumerate exact .dex paths in both archives before publishing a corrected inventory."
+    }
+  ],
+  "screenshot_evidence": {
+    "archive_library_id": "libfile_1a7b32277e94819180967d4bec36d738",
+    "count": 23,
+    "inspected_all_images": true,
+    "reported_matches_to_github_blob_sha_and_size": 23,
+    "github_revision": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
+    "github_path": "img",
+    "visual_requirements_count": 44,
+    "visual_requirements_git_blob": "37dc8eb53065877c1ec1ffe3bd82b2be9b233b46",
+    "full_per_image_sha256_dimensions_and_filename_mapping_recovered": false,
+    "note": "Original 51 KB evidence index was not on the inspected remote revision. Do not mistake the 2.4 KB earlier index for complete recovery of all image hashes.",
+    "screenshot_to_installed_apk_cryptographic_binding": false,
+    "observed_branding_note": "REF-021 contains NURIK4PDA text. That observation alone does not establish that the uploaded APK is modified or identify the creator."
+  },
+  "execution_boundaries": {
+    "original_installed": false,
+    "original_executed": false,
+    "original_backend_contacted": false,
+    "original_assets_copied_to_new_app": false
+  },
+  "recovery_steps": [
+    "Resolve the three existing Library file IDs, verify their full-file SHA-256 values, and do not ask for reupload before retrieval is attempted.",
+    "Safely enumerate ZIP entries and extract only validated relative paths into an isolated reference directory; reject traversal, symlink entries and excessive expansion.",
+    "Run apksigner verify --verbose --print-certs separately on the merged APK and every XAPK split, retaining stdout, stderr and exit code.",
+    "Run aapt2 dump badging and normalized manifest inspection without executing the reference application.",
+    "Compare SHA-256 per exact archive path across the split union and merged APK; recount .dex files explicitly.",
+    "Recompute each screenshot's SHA-256, size, dimensions and Git blob ID, then restore the REF-001..REF-023 filename mapping from actual visual inspection."
+  ]
+}

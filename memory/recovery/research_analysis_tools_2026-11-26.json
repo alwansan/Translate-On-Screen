@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-26",
+  "owner": "research_analysis_tools",
+  "event": "Executor became unavailable during the license update; files were reconstructed or rewritten through GitHub blob creation under root coordination.",
+  "branch_mutations_by_this_agent": false,
+  "integration_owner": "root",
+  "files": [
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "git_blob_sha": "1068b1ec4271e127ceeaf40271165e413e18fff0",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 13402
+    },
+    {
+      "path": "app/src/main/assets/licenses/NOTICES.txt",
+      "git_blob_sha": "362e8bbe0962cd7846389eb75b2597746b2367cd",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 8000
+    },
+    {
+      "path": "app/src/main/assets/licenses/OPUS-MT-MODEL-NOTICES.txt",
+      "git_blob_sha": "5f951b0594378afc916be8d93a6e99857d8c62a2",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 2025
+    },
+    {
+      "path": "app/src/main/assets/licenses/ONNX-RUNTIME-MIT.txt",
+      "git_blob_sha": "48bc6bb4996ac924359e8e28b9ae88970e5ed3fc",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 1073
+    },
+    {
+      "path": "memory/evidence/runtime-dependencies.txt",
+      "git_blob_sha": "6931884c1c655d30bb173a10e1321b2de68a4ae1",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 999
+    },
+    {
+      "path": "memory/evidence/runtime-license-evidence.json",
+      "git_blob_sha": "300becf08369de731f64f18cc7978ce46fcd0617",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 7847
+    },
+    {
+      "path": "memory/evidence/ocr-model-catalog-recovery.json",
+      "git_blob_sha": "35a7f0f75cfc35c851c0d1fe1279a1bd7b74f4c7",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 4188
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/WordbookStore.kt",
+      "git_blob_sha": "db0d0f53c636453775ec381ea0b1f762a9a10c50",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 8187
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/CaptureImageProvider.kt",
+      "git_blob_sha": "d1246d9ac694521b98b0136c79a2a9a14db5a60a",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 7198
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/ImageCropView.kt",
+      "git_blob_sha": "351d1872a27d02ef286dc43192df8eb4cbfb3122",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 15119
+    },
+    {
+      "path": "app/src/main/java/io/github/alwansan/opentranslate/ImageEditorActivity.kt",
+      "git_blob_sha": "2bb0fddb4fb14b3c96185d85add7034064418d52",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 30376
+    },
+    {
+      "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/ImageEditorInstrumentationTest.kt",
+      "git_blob_sha": "e186c1a6fcf1f78e43db01d3a4ad73146968c98e",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 17997
+    },
+    {
+      "path": "app/src/androidTest/java/io/github/alwansan/opentranslate/WordbookImportInstrumentationTest.kt",
+      "git_blob_sha": "169f7aaeb742312fdd908079061767aa8e936c60",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 7395
+    },
+    {
+      "path": "app/src/test/java/io/github/alwansan/opentranslate/WordbookCodecTest.kt",
+      "git_blob_sha": "ce779c7c688a8afb3f79cdc2314911a64353714f",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 1149
+    },
+    {
+      "path": "app/src/debug/java/io/github/alwansan/opentranslate/ImageEditorHarnessActivity.kt",
+      "git_blob_sha": "8f294a3e76f4e1504dfcc77ad7e4e8b98ff223b7",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 1901
+    },
+    {
+      "path": "memory/evidence/reference-verification-recovery.json",
+      "git_blob_sha": "8318af4b4cdf99e9ffb7744c8de9dfb7f783fc8d",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 5810
+    },
+    {
+      "path": "docs/REFERENCE_VISUAL_AUDIT_AR.md",
+      "git_blob_sha": "a009fb7841a7900362de5c0b30b6b5aac44f7b28",
+      "content_saved": "complete UTF-8 text, not a description",
+      "characters": 12704
+    }
+  ],
+  "recovered_by_other_agent": [
+    {
+      "path": "memory/evidence/reference-visual-requirements.json",
+      "git_blob_sha": "37dc8eb53065877c1ec1ffe3bd82b2be9b233b46",
+      "status": "All 44 records recovered from a complete pre-outage read and reserialized by research_android_alternatives"
+    },
+    {
+      "path": "docs/FEATURE_MATRIX_AR.md",
+      "git_blob_sha": "f3debdbffbe902bb50f4ec96de98d13cb0e3f59d",
+      "status": "Reported by research_android_alternatives; root controls final status/validation"
+    }
+  ],
+  "fidelity": {
+    "wordbook": "Full source and tests recovered from complete visible reads plus applied patches. Not claimed byte-identical to the lost local file without its original digest.",
+    "provider": "Complete rebuilt file retaining validated URI/canonical path, random private camera files, no MODE_CREATE, temporary grants, deletion and stale cleanup contracts.",
+    "image_crop": "The fit-center geometry and drag logic were recovered from full reads; the accessible/keyboard tail was reconstructed with the same behavior and independent localized labels. Must be rebuilt and exercised.",
+    "image_editor": "Cancellation, bitmap ownership, bounded decode, EXIF, crop/rotation, lifecycle and result contracts recovered in full. Presentation helper moved into the file to remove dependency on the unrecovered NativeUi; uses the root-agreed AppPreferences.wrap/applyTheme/read contracts.",
+    "instrumentation": "Four image editor/provider tests and five wordbook persistence tests are fully saved, plus debug harness and three JVM codec tests. Existence of these tests is not a passed result.",
+    "reference_report": "A new explicit recovery edition restores known inspection observations and all 44 requirements; it does not pretend to reproduce the lost 39 KB report verbatim.",
+    "licenses": "New notice text was built from the remote prior notices and verified artifact/source-card facts. Integrate with matching runtime dependencies and recovered full ONNX third-party text."
+  },
+  "not_fully_recovered": [
+    {
+      "path": "memory/evidence/reference-artifacts.json",
+      "status": "Earlier 2483-character index exists remotely as blob 0d54ce5bb14d8a0b809b0373e602eb46c68480cb; the later approximately 51 KB index containing every screenshot hash/dimensions/name was not recovered."
+    },
+    {
+      "path": "memory/evidence/reference-package-inspection.json",
+      "status": "Original approximately 19.8 KB record was not recovered. Observed results and limitations are saved separately in reference-verification-recovery.json."
+    },
+    {
+      "path": "memory/evidence/manifest-normalized.diff.txt",
+      "status": "Original exact diff not recovered; regenerate from the original artifacts."
+    },
+    {
+      "path": "memory/evidence/*signature*.txt",
+      "status": "Four original apksigner logs not recovered; rerun on stored originals without installing them."
+    },
+    {
+      "path": "app/src/main/assets/licenses/ONNX-RUNTIME-THIRD-PARTY.txt",
+      "status": "Full 333022-byte text unavailable in retained context. Recover exact ThirdPartyNotices.txt entry from official onnxruntime-1.23.2.jar; do not ship a summary instead."
+    }
+  ],
+  "public_contracts": {
+    "image_input": "Intent.EXTRA_STREAM content Uri with FLAG_GRANT_READ_URI_PERMISSION",
+    "image_result": "RESULT_OK with String EXTRA_ORIGINAL, optional EXTRA_TRANSLATED/EXTRA_WARNING, EXTRA_SOURCE, EXTRA_TARGET; constants use io.github.alwansan.opentranslate.image.*",
+    "camera_provider": "authority(context), createUri(context), isOwnedUri(context,uri), deleteOwnedUri(context,uri), cleanupStale(context); non-exported and grantUriPermissions=true",
+    "geometry": "NormalizedRegion(left,top,right,bottom); RegionMath.validated(region) and toPixels(region,width,height)->PixelRegion(left,top,width,height)",
+    "appearance": "AppPreferences.wrap(Context), applyTheme(Activity), read(Context).theme; tests also language(Context), theme(Context), saveAppearance(Context,language,theme)",
+    "debug_manifest": "ImageEditorHarnessActivity exported=false and configChanges=orientation|screenSize. Production ImageEditorActivity must recreate on orientation changes.",
+    "wordbook": "SavedWord data class; WordbookStore.read returns List and lastReadWarning; put/remove/merge use strict read. clear remains explicit and permits removal of a damaged file."
+  },
+  "validation": {
+    "local_build_after_reconstruction": false,
+    "device_tests_executed_by_this_agent": false,
+    "source_checks": "No unexpanded reconstruction placeholders, no trailing whitespace, newline at EOF.",
+    "required_next": [
+      "Root integrates blobs into one tree/commit with branch lease",
+      "Restore full ONNX third-party notice from official artifact",
+      "Run Android build, unit tests and lint",
+      "Run actual instrumentation with explicitly provisioned models",
+      "Recreate missing reference raw logs and per-image hash index when original inputs are available"
+    ],
+    "camera_limits": [
+      "External camera handoff not exercised by these synthetic tests",
+      "Eight EXIF orientations not exhaustively device-tested",
+      "Cross-UID URI permission revocation not proven by in-process provider tests",
+      "SAF grant lifetime, process death and memory pressure require further execution evidence"
+    ]
+  }
+}

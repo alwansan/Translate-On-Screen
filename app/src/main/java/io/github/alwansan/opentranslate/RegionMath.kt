@@ -11,6 +11,23 @@ data class NormalizedRegion(val left: Float, val top: Float, val right: Float, v
 data class PixelRegion(val left: Int, val top: Int, val width: Int, val height: Int)
 
 object RegionMath {
+    fun validated(region: NormalizedRegion): NormalizedRegion? {
+        if (listOf(region.left, region.top, region.right, region.bottom).any { !it.isFinite() || it !in 0f..1f }) return null
+        return region.takeIf { it.right > it.left && it.bottom > it.top }
+    }
+    fun mapFromCrop(box: NormalizedRegion, crop: NormalizedRegion?): NormalizedRegion? {
+        val b = validated(box) ?: return null
+        val area = crop?.let { validated(it) ?: return null } ?: NormalizedRegion(0f, 0f, 1f, 1f)
+        val width = area.right - area.left
+        val height = area.bottom - area.top
+        return NormalizedRegion(area.left + b.left * width, area.top + b.top * height,
+            (area.left + b.right * width).coerceAtMost(1f), (area.top + b.bottom * height).coerceAtMost(1f))
+    }
+    fun actualCrop(region: NormalizedRegion?, width: Int, height: Int): NormalizedRegion {
+        val pixels = toPixels(region, width, height)
+        return NormalizedRegion(pixels.left.toFloat() / width, pixels.top.toFloat() / height,
+            (pixels.left + pixels.width).toFloat() / width, (pixels.top + pixels.height).toFloat() / height)
+    }
     fun fromScreen(
         left: Float, top: Float, right: Float, bottom: Float,
         screenWidth: Int, screenHeight: Int,

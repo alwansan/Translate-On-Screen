@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "source": "Read in full from local ModelStore.kt before executor outage on 2026-11-26",
+  "upstream": "tesseract-ocr/tessdata_fast",
+  "revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+  "models": [
+    {
+      "language": "eng",
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+      "bytes": 4113088,
+      "englishName": "English",
+      "arabicName": "الإنجليزية"
+    },
+    {
+      "language": "ara",
+      "sha256": "e3206d3dc87fd50c24a0fb9f01838615911d25168f4e64415244b67d2bb3e729",
+      "bytes": 1432056,
+      "englishName": "Arabic",
+      "arabicName": "العربية"
+    },
+    {
+      "language": "fra",
+      "sha256": "ced037562e8c80c13122dece28dd477d399af80911a28791a66a63ac1e3445ca",
+      "bytes": 1130365,
+      "englishName": "French",
+      "arabicName": "الفرنسية"
+    },
+    {
+      "language": "deu",
+      "sha256": "19d219bbb6672c869d20a9636c6816a81eb9a71796cb93ebe0cb1530e2cdb22d",
+      "bytes": 1525436,
+      "englishName": "German",
+      "arabicName": "الألمانية"
+    },
+    {
+      "language": "spa",
+      "sha256": "6f2e04d02774a18f01bed44b1111f2cd7f3ba7ac9dc4373cd3f898a40ea6b464",
+      "bytes": 2294433,
+      "englishName": "Spanish",
+      "arabicName": "الإسبانية"
+    },
+    {
+      "language": "ita",
+      "sha256": "b8f89e1e785118dac4d51ae042c029a64edb5c3ee42ef73027a6d412748d8827",
+      "bytes": 2701314,
+      "englishName": "Italian",
+      "arabicName": "الإيطالية"
+    },
+    {
+      "language": "por",
+      "sha256": "c4932b937207a9514b7514d518b931a99938c02a28a5a5a553f8599ed58b7deb",
+      "bytes": 1982756,
+      "englishName": "Portuguese",
+      "arabicName": "البرتغالية"
+    },
+    {
+      "language": "rus",
+      "sha256": "e16e5e036cce1d9ec2b00063cf8b54472625b9e14d893a169e2b0dedeb4df225",
+      "bytes": 3861738,
+      "englishName": "Russian",
+      "arabicName": "الروسية"
+    },
+    {
+      "language": "hin",
+      "sha256": "4c73ffc59d497c186b19d1e90f5d721d678ea6b2e277b719bee4e2af12271825",
+      "bytes": 1122751,
+      "englishName": "Hindi",
+      "arabicName": "الهندية"
+    },
+    {
+      "language": "tur",
+      "sha256": "7393381111e1152420fc4092cb44eef4237580d21b92bf30d7d221aad192c6b7",
+      "bytes": 4550554,
+      "englishName": "Turkish",
+      "arabicName": "التركية"
+    },
+    {
+      "language": "jpn",
+      "sha256": "1f5de9236d2e85f5fdf4b3c500f2d4926f8d9449f28f5394472d9e8d83b91b4d",
+      "bytes": 2471260,
+      "englishName": "Japanese",
+      "arabicName": "اليابانية"
+    },
+    {
+      "language": "jpn_vert",
+      "sha256": "bf1e2640954691797e2dc14f38533e601b59ee37958698ae0f0b81dc6f09c71b",
+      "bytes": 3037480,
+      "englishName": "Japanese (vertical)",
+      "arabicName": "اليابانية (عمودي)"
+    },
+    {
+      "language": "chi_sim",
+      "sha256": "a5fcb6f0db1e1d6d8522f39db4e848f05984669172e584e8d76b6b3141e1f730",
+      "bytes": 2469156,
+      "englishName": "Chinese (simplified)",
+      "arabicName": "الصينية المبسطة"
+    },
+    {
+      "language": "chi_sim_vert",
+      "sha256": "20590de84725bab69cde93bd6e8ed360a13cc5421a7e7364ddeb93e9af53d6da",
+      "bytes": 1927902,
+      "englishName": "Chinese (simplified, vertical)",
+      "arabicName": "الصينية المبسطة (عمودي)"
+    },
+    {
+      "language": "chi_tra",
+      "sha256": "529c5b5797d64b126065cd55f2bb4c7fd7b15790798091b1ff259941a829330b",
+      "bytes": 2366642,
+      "englishName": "Chinese (traditional)",
+      "arabicName": "الصينية التقليدية"
+    },
+    {
+      "language": "chi_tra_vert",
+      "sha256": "1df02a4b210e5c217b783819538b63e9dfe6904e2b5e53b62664f1b9f7a989d0",
+      "bytes": 1824756,
+      "englishName": "Chinese (traditional, vertical)",
+      "arabicName": "الصينية التقليدية (عمودي)"
+    },
+    {
+      "language": "kor",
+      "sha256": "6b85e11d9bbf07863b97b3523b1b112844c43e713df8b66418a081fd1060b3b2",
+      "bytes": 1677415,
+      "englishName": "Korean",
+      "arabicName": "الكورية"
+    },
+    {
+      "language": "kor_vert",
+      "sha256": "c28f19dee36927baba5215fb793a3c00fff3ef2cfbcaa100122401d8f4374869",
+      "bytes": 1113715,
+      "englishName": "Korean (vertical)",
+      "arabicName": "الكورية (عمودي)"
+    }
+  ]
+}
