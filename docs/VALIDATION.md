@@ -44,7 +44,9 @@ CI debug APKs can have different hashes/signing keys/timestamps. This hash ident
 
 Two workflows are included: Android build/tests/lint with APK/report artifacts, and deterministic reproduction of the pinned reference inventory. Both have read-only repository permissions and pinned action revisions. They do not run the reference application or use any translation API secret. The reference job compares fresh output byte-for-byte with the committed inventory.
 
-Remote-run evidence will be appended after publication. A configured workflow is not itself a successful run.
+- [Reference inventory run 45762908030](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908030): **PASS** at implementation commit `33d6f37c5fd12ef2fe5ad94486c3f3968a70e92f`.
+- [First Android run 45762908015](https://github.com/alwansan/Translate-On-Screen/actions/runs/45762908015): failed in SDK setup because the Ubuntu 26.04 runner did not provide `sdkmanager` on PATH. Application build/test/lint steps did not run in that attempt. The workflow now explicitly provisions Android command-line tools with a pinned setup action instead of assuming a preinstalled SDK.
+- The corrected Android workflow result will be recorded after its run. A configured workflow is not itself a successful run.
 
 ## Reviewed fixes
 
