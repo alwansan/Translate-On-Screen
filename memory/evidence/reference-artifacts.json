@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-26",
+  "reference": {
+    "package": "com.recognize_text.translate.screen",
+    "version": "1.188",
+    "version_code": 188,
+    "min_sdk": 32,
+    "target_sdk": 36,
+    "decoded_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
+    "screenshots_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308"
+  },
+  "files": [
+    {
+      "name": "Translate+On+Screen_1.188_APKPure_apks.apk",
+      "bytes": 94332979,
+      "sha256": "87bb9419cc58f630aebc9993415c338f998e7415f0d7307891f0d45cffb67afb",
+      "library_id": "libfile_490a71224d3c8191b51f0c75e8a2b6b9",
+      "zip_entries": 1756,
+      "dex_count": 4,
+      "abis": [
+        "arm64-v8a"
+      ]
+    },
+    {
+      "name": "Translate+On+Screen_1.188_APKPure.xapk",
+      "bytes": 94242338,
+      "sha256": "7bd4949257470fe6c5af3dedaf339490c99c335e33f1134bb605ef6d0dcdc955",
+      "library_id": "libfile_a52bf8c71f7c8191a864e8a7d34083bf",
+      "splits": [
+        {
+          "name": "com.recognize_text.translate.screen.apk",
+          "bytes": 56240414,
+          "sha256": "6283506e0c7eec2bb2dc306db94db130d26057c53f7a915777cb7f2be839ee2f"
+        },
+        {
+          "name": "config.arm64_v8a.apk",
+          "bytes": 37889567,
+          "sha256": "e5f357b965abf6766d4daf08b2e9b16c5729a7f75b18aab85cf87d7f3273fbda"
+        },
+        {
+          "name": "config.xxhdpi.apk",
+          "bytes": 107930,
+          "sha256": "4ac26e4865df8b4f29705501f4ec90fc267835fa4696db54cd16239663cf2070"
+        }
+      ]
+    },
+    {
+      "name": "img.zip",
+      "bytes": 5754886,
+      "sha256": "e465664b2f67a63fc1dee1ee9264ab9dc5336619998e4348e469656de5d685df",
+      "library_id": "libfile_1a7b32277e94819180967d4bec36d738",
+      "jpg_count": 23,
+      "github_path": "https://github.com/alwansan/Translate-On-Screen/tree/b4f80b12d7efafdd992d54f51ffba65c01ec6308/img"
+    }
+  ],
+  "signing_block": {
+    "schemes_present": [
+      "v2",
+      "v3"
+    ],
+    "first_certificate_sha256_all_four_apks": "68a329311ee72818694354c6f5b610c5830395fbef997392e691f74df77c52df",
+    "cryptographic_verification": "not executed; parsed certificate bytes only"
+  },
+  "limitations": [
+    "No installation or original backend contact. ARM64 reference cannot be assumed to run on x86_64 emulator.",
+    "Library IDs are previously recorded pointers; future sessions should resolve them, verify hashes and request reupload only if unavailable.",
+    "Reference files are not new app source or distribution assets."
+  ]
+}
