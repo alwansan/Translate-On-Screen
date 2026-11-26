@@ -39,6 +39,14 @@ class MarianRuntimeTest {
         }
     }
 
+    @Test fun nativeKoreanToEnglishPreservesMeaning() {
+        val (pack, folder) = verifiedPack("ko-en")
+        MarianRuntime(folder, pack).use { runtime ->
+            val translated = runtime.translate("이것은 책입니다.", gate)
+            assertTrue(translated, translated.contains("book", ignoreCase = true))
+        }
+    }
+
     @Test fun cancellationAfterEncoderReleasesRequestStateAndCloseIsIdempotent() {
         val (pack, folder) = verifiedPack("en-ar")
         val runtime = MarianRuntime(folder, pack)

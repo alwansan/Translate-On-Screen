@@ -23,6 +23,10 @@ SOURCES = {
         "source.spm": "375cbed8885a6d369e0493acfc69a066010a86f98f9bac02430cbeb1726934a6",
         "vocab.json": "62f7857585e3cd6150bb420830076edede27caac6304778d8d81be41164e469d",
     },
+    "ko-en": {
+        "source.spm": "c9496f7c2be9aecb84c751ae9f35a875915dde8e3892f652a5c76811ab2a0f49",
+        "vocab.json": "97197044d4803c664a37f8ca2ced9c3405b8a3df6b262a12da22d990b0d756cd",
+    },
 }
 CASES = {
     "en-ar": [
@@ -49,6 +53,10 @@ CASES = {
         "This is a book.", "The weather is sunny.", "Where is the station?", "I am learning Japanese.",
         "Version 3.14", "ＡＢＣ", "Café", "Hello, 日本語!",
     ],
+    "ko-en": [
+        "이것은 책입니다.", "오늘은 날씨가 좋습니다.", "역은 어디에 있습니까?", "안녕하세요.",
+        "ＡＢＣ １２３", "한국어와 English", "번역\n테스트", "값은 12,500원입니다.",
+    ],
 }
 
 def main():
@@ -69,8 +77,8 @@ def main():
         for text in CASES[pack]:
             pieces = processor.encode(text, out_type=str)
             fixtures.append({"pack": pack, "text": text, "ids": [vocabulary.get(piece, vocabulary["<unk>"]) for piece in pieces]})
-    if len(fixtures) != 48:
-        raise SystemExit("Expected 48 independent fixtures")
+    if len(fixtures) != 56:
+        raise SystemExit("Expected 56 independent fixtures")
     output = args.cache / "marian-tokenizer-cases.json"
     temporary = output.with_suffix(".json.part")
     temporary.write_text(json.dumps({"generator": "sentencepiece 0.2.1", "sources": SOURCES, "fixtures": fixtures}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

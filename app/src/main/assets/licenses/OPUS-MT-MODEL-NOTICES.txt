@@ -33,6 +33,12 @@ https://huggingface.co/Xenova/opus-mt-en-jap/tree/9d418190be3aa945eae5bab1bd96bc
 Pinned source card with license: apache-2.0:
 https://huggingface.co/Helsinki-NLP/opus-mt-en-jap/blob/a863894cdd2b80f3bc1c5966734aee9ffec207d1/README.md
 
+KOREAN TO ENGLISH
+Downloaded converted-model revision:
+https://huggingface.co/Xenova/opus-mt-ko-en/tree/d9fa1ac6008242100fecb4fff9b0a5917a1be81f
+Pinned source card with license: apache-2.0:
+https://huggingface.co/Helsinki-NLP/opus-mt-ko-en/blob/e42d1f41b66194e6d10512f8a27bebc1f4f5097e/README.md
+
 Each language pair downloads encoder_model_quantized.onnx,
 decoder_model_merged_quantized.onnx, source.spm and vocab.json.
 The application's OfflineModelManifest.kt specifies all file sizes and SHA-256

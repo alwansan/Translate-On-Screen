@@ -66,5 +66,17 @@ internal object OfflineModelManifest {
                 OfflineModelFile("vocab.json", 1_734_978, "62f7857585e3cd6150bb420830076edede27caac6304778d8d81be41164e469d"),
             ),
         ),
+        OfflineModelPack(
+            id = "ko-en", source = "ko", target = "en",
+            englishName = "Korean → English", arabicName = "من الكورية إلى الإنكليزية",
+            repository = "Xenova/opus-mt-ko-en", revision = "d9fa1ac6008242100fecb4fff9b0a5917a1be81f",
+            vocabularySize = 65001, padToken = 65000, languageToken = null,
+            files = listOf(
+                OfflineModelFile("onnx/encoder_model_quantized.onnx", 52_899_741, "210e1d2cb5b457cdeeffe288099cc9d1df9f13c35dc3d39fde4ba252af877380"),
+                OfflineModelFile("onnx/decoder_model_merged_quantized.onnx", 60_212_803, "e131732653a6d3cec42a8b65f8844980042b036bdaca931446bc4b3530bc3506"),
+                OfflineModelFile("source.spm", 841_805, "c9496f7c2be9aecb84c751ae9f35a875915dde8e3892f652a5c76811ab2a0f49"),
+                OfflineModelFile("vocab.json", 1_849_870, "97197044d4803c664a37f8ca2ced9c3405b8a3df6b262a12da22d990b0d756cd"),
+            ),
+        ),
     )
 }

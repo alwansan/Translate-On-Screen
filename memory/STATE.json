@@ -4,13 +4,13 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "016",
+  "session": "017",
   "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "ca2d54bedb92b2258bd96cf3ce092ab79dd95f1c",
+  "last_verified_code_commit": "45293ec572391154ddc933425016dad180b86b83",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45900383102,
+  "last_verified_android_ci": 45909524987,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/016-tokenizer-memory.md",
+  "session_checkpoint": "memory/sessions/017-korean-english.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -61,13 +61,15 @@
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45900383069,
-    "head_sha": "ca2d54bedb92b2258bd96cf3ce092ab79dd95f1c",
+    "run_id": 45909525188,
+    "attempt": 2,
+    "head_sha": "45293ec572391154ddc933425016dad180b86b83",
     "conclusion": "success",
     "apis": [
       29,
       35
-    ]
+    ],
+    "passed_each": 38
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -105,7 +107,7 @@
   "acceptance_ready": false,
   "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-62fa00e.json",
+  "latest_evidence": "memory/evidence/validation-45293ec-attempt2.json",
   "delivery": {
     "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
     "artifact_id": 15101850735,
@@ -142,12 +144,11 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "016",
+    "id": "017",
     "validation": "pending",
-    "prior_host_run": 45910963570,
-    "prior_device_run": 45910963526,
-    "subtitle_device_run": 45910436541,
-    "vertical_device_run": 45909525188
+    "prior_host_run": 45911135845,
+    "prior_device_run": 45911135970,
+    "subtitle_device_run": 45910436541
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

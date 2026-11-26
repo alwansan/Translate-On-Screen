@@ -64,4 +64,15 @@ class OfflineTranslationInstrumentationTest {
                 requireNotNull(result.translated).contains("書物である"))
         }
     }
+    @Test fun nativeKoreanToEnglishWorksWithNetworkDisabled() {
+        requireOfflineModels()
+        assertTrue("Pinned ko-en pack missing.", OfflineModelStore.has(context, "ko-en"))
+        TranslationEngine(context).use { engine ->
+            val result = engine.fromText("이것은 책입니다.", UserSettings(
+                source = "ko", target = "en", provider = "offline", networkEnabled = false, keepHistory = false))
+            assertNull("Offline translation returned a warning: " + result.warning, result.warning)
+            assertTrue("Native ko-en output missed the expected meaning: " + result.translated,
+                requireNotNull(result.translated).contains("book", ignoreCase = true))
+        }
+    }
 }
