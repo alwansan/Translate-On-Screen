@@ -5,12 +5,12 @@
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
   "session": "002",
-  "phase": "selector_back_completion",
-  "last_verified_code_commit": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+  "phase": "back_test_postcondition_correction",
+  "last_verified_code_commit": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
   "starting_branch_head": "9841177e8322d7028eeb308fdcf8b491ad6482d1",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45784175541,
+  "last_verified_android_ci": 45785926190,
   "last_verified_inventory_ci": 45784175402,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -38,52 +38,66 @@
     "available_execution_path": "GitHub connector and GitHub Actions",
     "unsynced_work": "Inaccessible earlier workspace remains unverified. Reconstructed full source is now stored in Git; if the old workspace returns, preserve it and compare without a reset."
   },
-  "observed_branch_head": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+  "observed_branch_head": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
   "latest_observed_android_ci": {
-    "run_id": 45784175541,
-    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+    "run_id": 45785926190,
+    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
     "conclusion": "success",
     "jvm_tests": 68,
     "failed": 0,
     "skipped": 0,
     "lint_errors": 0,
-    "lint_warnings": 46,
+    "lint_warnings": 49,
     "variants": [
       "debug",
       "release_unsigned",
       "debugAndroidTest"
     ]
   },
-  "source_checkpoint_parent": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+  "source_checkpoint_parent": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "host_and_api29_api35_revalidation_for_selector_back_change_expected32_device_cases",
-    "final_evidence_matrix_restore_and_acceptance_bundle",
-    "owner_final_acceptance_trial"
+    "host_and32_case_device_gate_after_test_synchronization_correction",
+    "final_docs_and_acceptance_bundle",
+    "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45784175416,
-    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
-    "conclusion": "success",
+    "run_id": 45785926305,
+    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
+    "conclusion": "failure",
     "api29": {
-      "job": 139786667188,
-      "started": 31,
-      "finished": 31,
+      "job": 139792544723,
+      "started": 32,
+      "finished": 32,
       "passed": 31,
-      "failed": 0,
-      "skipped": 0
+      "failed": 1,
+      "skipped": 0,
+      "failures": [
+        {
+          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+          "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
+          "status": -2
+        }
+      ]
     },
     "api35": {
-      "job": 139786666632,
-      "started": 31,
-      "finished": 31,
+      "job": 139792545067,
+      "started": 32,
+      "finished": 32,
       "passed": 31,
-      "failed": 0,
-      "skipped": 0
+      "failed": 1,
+      "skipped": 0,
+      "failures": [
+        {
+          "class": "io.github.alwansan.opentranslate.CaptureInstrumentationTest",
+          "name": "backCancelsOnlyTheAreaSelectorAndRestoresSourceFocus",
+          "status": -2
+        }
+      ]
     }
   },
   "confirmed_fixture_evidence": {
-    "run_id": 45784175541,
+    "run_id": 45785926190,
     "audit_tests": 8,
     "provisioner_tests": 10,
     "verified_model_fixture_files": 12,
@@ -94,19 +108,15 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [
-    "Make temporary region selector focusable without IME connection",
-    "Consume legacy Back DOWN/UP and register API33 callback with attach/detach cleanup",
-    "Unify button/back/selection completion with identity and idempotence guards",
-    "Add one Android case for Back key and available system Back gesture preserving source activity/session and stored-region state"
+    "Inject Back once, record UiAutomator content-event observation separately, then require existing strict cancellation/source/session/region postconditions",
+    "No production code change, fallback key injection, case retry, skipped or relaxed behavior assertions"
   ],
-  "last_verified_code_scope": "75cf776:68/68 JVM,31/31 Android cases on each API, no failures/skips/missing suites; all package gates pass. Subsequent Back change remains unverified.",
+  "last_verified_code_scope": "b511 host68/68 and all31 prior device cases pass on both APIs; new case stopped before its functional assertions, leaving32-case gate failed.",
   "latest_attempt": {
-    "head_sha": "75cf77653d0a57b5f65fe3ba89b20163a252cb97",
+    "head_sha": "b511262def48dbf07a5d062b9aaf4dde7fc15498",
     "host": "success",
-    "device": "success",
-    "host_run": 45784175541,
-    "device_run": 45784175416,
-    "scope": "All existing68 JVM and31 Android cases pass on both APIs; next candidate adds a focused selector Back fix and one new Android case."
+    "device": "failure",
+    "scope": "All31 prior cases pass; new Back case stops at UiDevice.pressBack boolean before cancellation postconditions. No evidence yet that cancellation itself failed."
   },
   "dictionary_service_observation": {
     "run": 45779858841,

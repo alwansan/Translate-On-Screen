@@ -219,7 +219,13 @@ class CaptureInstrumentationTest {
         }
 
         openSelector()
-        assertTrue("Could not press system Back", device.pressBack())
+        // UiAutomator waits for TYPE_WINDOW_CONTENT_CHANGED after injecting Back DOWN/UP.
+        // Record that event wait separately from the required cancellation postconditions.
+        val backContentEventObserved = device.pressBack()
+        instrumentation.sendStatus(2, Bundle().apply {
+            putString("ost_evidence_reason", "selector_back_key; contentEventObserved=" +
+                backContentEventObserved + "; " + fixtureLifecycle().second)
+        })
         assertCancelled()
 
         val gestures = systemGestureInsets()
