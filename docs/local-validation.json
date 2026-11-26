@@ -1,0 +1,127 @@
+{
+  "date": "2026-11-26",
+  "app_id": "io.github.alwansan.opentranslate",
+  "version": "0.1.0-dev",
+  "apk_sha256": "722dd731e50220b2ee32ded64e590fdc026aec1edd7ae5209a3560e452dd866c",
+  "apk_bytes": 16609730,
+  "android_build": "passed",
+  "lint": [],
+  "jvm_tests": [
+    {
+      "suite": "io.github.alwansan.opentranslate.RegionMathTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "io.github.alwansan.opentranslate.EndpointPolicyTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "io.github.alwansan.opentranslate.TrainedDataValidationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "io.github.alwansan.opentranslate.UserSettingsPrivacyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "native_libraries": [
+    {
+      "path": "lib/arm64-v8a/libjpeg.so",
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/arm64-v8a/libleptonica.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/arm64-v8a/libpngx.so",
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/arm64-v8a/libtesseract.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/x86_64/libjpeg.so",
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/x86_64/libleptonica.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/x86_64/libpngx.so",
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    },
+    {
+      "path": "lib/x86_64/libtesseract.so",
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "minimum_16k_alignment": true
+    }
+  ],
+  "runtime_tested": false,
+  "original_app_runtime_tested": false,
+  "feature_parity_verified": false,
+  "packaged_notices": [
+    "assets/licenses/APACHE-2.0.txt",
+    "assets/licenses/KOTLIN-BOOST.txt",
+    "assets/licenses/KOTLIN-COPYRIGHT.txt",
+    "assets/licenses/KOTLIN-THREETENBP.txt",
+    "assets/licenses/LEPTONICA.txt",
+    "assets/licenses/LIBJPEG-README.txt",
+    "assets/licenses/LIBPNG.txt",
+    "assets/licenses/LLVM-COMPILER-RT.txt",
+    "assets/licenses/LLVM-LIBCXX.txt",
+    "assets/licenses/LLVM-LIBCXXABI.txt",
+    "assets/licenses/LLVM-LIBUNWIND.txt",
+    "assets/licenses/NOTICES.txt"
+  ],
+  "audit_tests": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0
+  }
+}

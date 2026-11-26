@@ -1,0 +1,958 @@
+{
+  "application": {
+    "activities": [
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.android.billingclient.api.ProxyBillingActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.android.billingclient.api.ProxyBillingActivityV2",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.TTFullWebActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.TTRewardWebActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.IABLandingPageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTAdActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTAppOpenAdActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTAppOpenAdTransActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTCeilingLandingPageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTDelegateActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTFullScreenExpressVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTFullScreenVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTHistoryActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTHistoryLandingPageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTLandingPageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTPlayableLandingPageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTRewardExpressVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTRewardVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTVideoLandingPageLink2Activity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.bytedance.sdk.openadsdk.activity.single.TTWebsiteActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.facebook.ads.AudienceNetworkActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.gms.ads.AdActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.gms.ads.NotificationHandlerActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.gms.ads.OutOfContextTestingActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.gms.common.api.GoogleApiActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.play.core.common.PlayCoreDialogWrapperActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.google.android.play.core.hsdp.service.HsdpShimActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.mbridge.msdk.activity.MBCommonActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.mbridge.msdk.config.activity.MBRewardVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.mbridge.msdk.out.LoadingActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.mbridge.msdk.reward.player.MBRewardVideoActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.pairip.licensecheck.LicenseActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.activitys.AdFullActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": true,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.activitys.MainActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.activitys.NotificationHandlerActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": true,
+        "intent_filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "data": []
+          }
+        ],
+        "name": "com.recognize_text.translate.screen.domain.main.activitys.SplashActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.activitys.TransparentActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.fragments.translate_fragment.CameraTranslateActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.fragments.translate_fragment.crop_image.CropImageActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.fragments.translate_fragment.translate_word.WordTranslateActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.fragments.translate_fragment.translate_word.WordTranslateScrollActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.unity3d.ads.adplayer.FullScreenWebViewDisplay",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.vungle.ads.internal.ui.VungleActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": null,
+        "intent_filters": [],
+        "name": "com.yandex.mobile.ads.common.AdActivity",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "intent_filters": [],
+        "name": "com.yandex.mobile.ads.features.debugpanel.ui.IntegrationInspectorActivity",
+        "permission": null
+      }
+    ],
+    "activity_aliases": [],
+    "name": "com.pairip.application.Application",
+    "services": [
+      {
+        "enabled": false,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "androidx.camera.core.impl.MetadataHolderService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "androidx.room.MultiInstanceInvalidationService",
+        "permission": null
+      },
+      {
+        "enabled": "@bool/enable_system_alarm_service_default",
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "androidx.work.impl.background.systemalarm.SystemAlarmService",
+        "permission": null
+      },
+      {
+        "enabled": "@bool/enable_system_job_service_default",
+        "exported": true,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "androidx.work.impl.background.systemjob.SystemJobService",
+        "permission": "android.permission.BIND_JOB_SERVICE"
+      },
+      {
+        "enabled": "@bool/enable_system_foreground_service_default",
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "androidx.work.impl.foreground.SystemForegroundService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService",
+        "permission": "android.permission.BIND_JOB_SERVICE"
+      },
+      {
+        "enabled": true,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.android.gms.ads.AdService",
+        "permission": null
+      },
+      {
+        "enabled": true,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.android.gms.measurement.AppMeasurementJobService",
+        "permission": "android.permission.BIND_JOB_SERVICE"
+      },
+      {
+        "enabled": true,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.android.gms.measurement.AppMeasurementService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.firebase.components.ComponentDiscoveryService",
+        "permission": null
+      },
+      {
+        "enabled": false,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.firebase.sessions.SessionLifecycleService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.google.mlkit.common.internal.MlKitComponentDiscoveryService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [],
+        "name": "com.mbridge.msdk.config.activity.MBAdTaskWatchService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": false,
+        "foreground_service_types": [
+          "mediaProjection"
+        ],
+        "intent_filters": [],
+        "name": "com.recognize_text.translate.screen.domain.main.service.ScreenTranslateService",
+        "permission": null
+      },
+      {
+        "enabled": null,
+        "exported": true,
+        "foreground_service_types": [],
+        "intent_filters": [
+          {
+            "actions": [
+              "android.service.quicksettings.action.QS_TILE"
+            ],
+            "categories": [],
+            "data": []
+          }
+        ],
+        "name": "com.recognize_text.translate.screen.domain.main.service.TileQuickSettingService",
+        "permission": "android.permission.BIND_QUICK_SETTINGS_TILE"
+      },
+      {
+        "enabled": true,
+        "exported": false,
+        "foreground_service_types": [],
+        "intent_filters": [
+          {
+            "actions": [
+              "io.appmetrica.analytics.IAppMetricaService"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "data": [
+              {
+                "scheme": "appmetrica"
+              }
+            ]
+          }
+        ],
+        "name": "io.appmetrica.analytics.internal.AppMetricaService",
+        "permission": null
+      }
+    ],
+    "supports_rtl": false
+  },
+  "audit_kind": "decoded_android_static_inventory",
+  "evidence_files": {
+    "AndroidManifest.xml": {
+      "bytes": 45534,
+      "sha256": "8a702b8706f31cbbe03349c63f8f54255579c8590394de6b670f735f0ddffef2"
+    },
+    "apktool.json": {
+      "bytes": 11970,
+      "sha256": "bc392705f5b90e2f6fb1998a34ab9486ef58d7b934077ca807448318dc10c5cd"
+    },
+    "res/values/strings.xml": {
+      "bytes": 54319,
+      "sha256": "f7cd78324b6aafa3bdc67414177049b7d1f99eae529db64de1c9ff0382c19cde"
+    }
+  },
+  "inventory": {
+    "app_package_smali_count": 37,
+    "extension_counts": {
+      ".a": 4,
+      ".bin": 1,
+      ".binarypb": 35,
+      ".bincfg": 2,
+      ".conv_model": 1,
+      ".crt": 2,
+      ".d": 2,
+      ".data": 1,
+      ".dex": 1,
+      ".fb": 12,
+      ".js": 4,
+      ".json": 3,
+      ".kotlin_builtins": 8,
+      ".list": 1,
+      ".lstm_model": 1,
+      ".mp4": 10,
+      ".pb": 6,
+      ".png": 288,
+      ".prof": 1,
+      ".profm": 1,
+      ".properties": 59,
+      ".proto": 21,
+      ".smali": 34993,
+      ".so": 18,
+      ".textproto": 2,
+      ".tflite": 4,
+      ".ttf": 46,
+      ".txt": 4,
+      ".version": 158,
+      ".webp": 27,
+      ".xml": 1390,
+      ".y": 2,
+      "[no_extension]": 41
+    },
+    "file_count": 37149,
+    "native_libraries_by_abi": {
+      "arm64-v8a": [
+        "libapminsighta.so",
+        "libapminsightb.so",
+        "libbuffer_pgl.so",
+        "libdatastore_shared_counter.so",
+        "libfile_lock_pgl.so",
+        "libimage_processing_util_jni.so",
+        "libjpeg.so",
+        "libleptonica.so",
+        "libmlkit_google_ocr_pipeline.so",
+        "libnms.so",
+        "libpairipcore.so",
+        "libpglarmor.so",
+        "libpngx.so",
+        "libsurface_util_jni.so",
+        "libtesseract.so",
+        "libtranslate_jni.so",
+        "libtt_ugen_layout.so",
+        "libunitycoherencenative.so"
+      ]
+    },
+    "native_library_count": 18,
+    "smali_by_dex_tree": {
+      "smali": 9330,
+      "smali_classes2": 10544,
+      "smali_classes3": 9268,
+      "smali_classes4": 5851
+    },
+    "smali_total": 34993,
+    "strings_locale_note": "Includes the default directory and merged SDK/configuration resources; not an app language count.",
+    "strings_resource_directories": [
+      "values",
+      "values-af",
+      "values-am",
+      "values-ar",
+      "values-as",
+      "values-az",
+      "values-b+es+419",
+      "values-b+sr+Latn",
+      "values-be",
+      "values-bg",
+      "values-bn",
+      "values-bs",
+      "values-ca",
+      "values-cs",
+      "values-da",
+      "values-de",
+      "values-de-rDE",
+      "values-el",
+      "values-en",
+      "values-en-rAU",
+      "values-en-rCA",
+      "values-en-rGB",
+      "values-en-rIN",
+      "values-en-rXC",
+      "values-es",
+      "values-es-rUS",
+      "values-et",
+      "values-eu",
+      "values-fa",
+      "values-fi",
+      "values-fr",
+      "values-fr-rCA",
+      "values-gl",
+      "values-gu",
+      "values-hi",
+      "values-hr",
+      "values-hu",
+      "values-hy",
+      "values-id",
+      "values-in",
+      "values-is",
+      "values-it",
+      "values-iw",
+      "values-ja",
+      "values-ja-rJP",
+      "values-ka",
+      "values-kk",
+      "values-km",
+      "values-kn",
+      "values-ko",
+      "values-ky",
+      "values-lo",
+      "values-lt",
+      "values-lv",
+      "values-mk",
+      "values-ml",
+      "values-mn",
+      "values-mr",
+      "values-ms",
+      "values-my",
+      "values-nb",
+      "values-ne",
+      "values-nl",
+      "values-or",
+      "values-pa",
+      "values-pl",
+      "values-pt",
+      "values-pt-rBR",
+      "values-pt-rPT",
+      "values-ro",
+      "values-ru",
+      "values-si",
+      "values-sk",
+      "values-sl",
+      "values-sq",
+      "values-sr",
+      "values-sv",
+      "values-sw",
+      "values-ta",
+      "values-te",
+      "values-th",
+      "values-tl",
+      "values-tr",
+      "values-tw",
+      "values-uk",
+      "values-ur",
+      "values-uz",
+      "values-vi",
+      "values-zh",
+      "values-zh-rCN",
+      "values-zh-rHK",
+      "values-zh-rTW",
+      "values-zu"
+    ],
+    "strings_resource_directory_count": 93
+  },
+  "package": "com.recognize_text.translate.screen",
+  "permissions": [
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.ACCESS_ADSERVICES_AD_ID"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.ACCESS_ADSERVICES_ATTRIBUTION"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.ACCESS_ADSERVICES_TOPICS"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.ACCESS_NETWORK_STATE"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.CAMERA"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.FOREGROUND_SERVICE"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.INTERNET"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.POST_NOTIFICATIONS"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.RECORD_AUDIO"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.SYSTEM_ALERT_WINDOW"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "android.permission.WAKE_LOCK"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.amazon.privacypass.ATTEST"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.android.vending.BILLING"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.android.vending.CHECK_LICENSE"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.google.android.gms.permission.AD_ID"
+    },
+    {
+      "declaration": "uses-permission",
+      "flags": [],
+      "max_sdk": null,
+      "name": "com.recognize_text.translate.screen.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+    }
+  ],
+  "queries": {
+    "intents": [
+      {
+        "actions": [
+          "android.intent.action.DIAL"
+        ],
+        "categories": [],
+        "data": [
+          {
+            "redacted_attribute_names": [
+              "path"
+            ]
+          }
+        ]
+      },
+      {
+        "actions": [
+          "android.intent.action.INSERT"
+        ],
+        "categories": [],
+        "data": [
+          {
+            "mime_type": "vnd.android.cursor.dir/event"
+          }
+        ]
+      },
+      {
+        "actions": [
+          "android.intent.action.MAIN"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "android.intent.action.PROCESS_TEXT"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "android.intent.action.SEND"
+        ],
+        "categories": [],
+        "data": [
+          {
+            "mime_type": "text/plain"
+          }
+        ]
+      },
+      {
+        "actions": [
+          "android.intent.action.VIEW"
+        ],
+        "categories": [
+          "android.intent.category.BROWSABLE"
+        ],
+        "data": [
+          {
+            "scheme": "https"
+          }
+        ]
+      },
+      {
+        "actions": [
+          "android.intent.action.VIEW"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "android.intent.action.VIEW"
+        ],
+        "categories": [],
+        "data": [
+          {
+            "scheme": "sms"
+          }
+        ]
+      },
+      {
+        "actions": [
+          "android.support.customtabs.action.CustomTabsService"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "com.android.vending.billing.InAppBillingService.BIND"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "com.attribution.REFERRAL_PROVIDER"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "com.google.android.apps.play.billingtestcompanion.BillingOverrideService.BIND"
+        ],
+        "categories": [],
+        "data": []
+      },
+      {
+        "actions": [
+          "ru.vk.store.sdk.install.referrer.InstallReferrerProvider"
+        ],
+        "categories": [],
+        "data": []
+      }
+    ],
+    "packages": [
+      "com.amazon.venezia",
+      "com.android.vending",
+      "com.bbk.appstore",
+      "com.deepl.mobiletranslator",
+      "com.facebook.katana",
+      "com.google.android.apps.translate",
+      "com.google.market",
+      "com.huawei.appmarket",
+      "com.microsoft.translator",
+      "com.naver.labs.translator",
+      "com.oppo.market",
+      "com.sec.android.app.samsungapps",
+      "com.xiaomi.market",
+      "ru.yandex.translate"
+    ],
+    "providers": []
+  },
+  "schema_version": 1,
+  "sdk": {
+    "apktool": {
+      "min": 32,
+      "target": 36
+    },
+    "conflicting_fields": [],
+    "manifest": {
+      "compile": 36,
+      "min": null,
+      "target": null
+    }
+  },
+  "verification": {
+    "limitations": [
+      "Metadata, declarations, filenames and counts do not prove runtime functionality.",
+      "Merged dependency resources do not prove complete app localization.",
+      "No resource text, Smali bodies, <meta-data> values or URL hosts/paths are reproduced.",
+      "No APK execution, provider requests or signing verification was performed."
+    ],
+    "runtime_parity_verified": false,
+    "runtime_tested": false,
+    "static_only": true
+  },
+  "version": {
+    "apktool": {
+      "code": 188,
+      "name": "1.188"
+    },
+    "manifest": {
+      "code": null,
+      "name": null
+    }
+  }
+}
