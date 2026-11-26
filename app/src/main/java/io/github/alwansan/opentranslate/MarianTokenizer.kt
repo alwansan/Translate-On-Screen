@@ -18,20 +18,10 @@ internal class MarianTokenizer(source: File, vocabulary: File, vocabularySize: I
 
     init {
         require(source.length() in 1..4_000_000 && vocabulary.length() in 1..8_000_000)
-        val json = JSONObject(vocabulary.readText(Charsets.UTF_8))
-        val map = HashMap<String, Int>(vocabularySize)
         reverse = arrayOfNulls(vocabularySize)
-        val keys = json.keys()
-        while (keys.hasNext()) {
-            val text = keys.next()
-            val id = json.getInt(text)
-            require(id in reverse.indices && reverse[id] == null)
-            map[text] = id; reverse[id] = text
-        }
-        require(map.size == vocabularySize && reverse.none { it == null })
-        vocab = map
-        unknownId = map["<unk>"] ?: throw IllegalArgumentException("Missing unknown token")
-        require(map["</s>"] == 0 && map["<pad>"] == padToken)
+        vocab = readVocabulary(vocabulary, reverse)
+        unknownId = vocab["<unk>"] ?: throw IllegalArgumentException("Missing unknown token")
+        require(vocab["</s>"] == 0 && vocab["<pad>"] == padToken)
         val fields = ProtoFields.read(source.readBytes())
         val trainer = fields.firstOrNull { it.number == 2 }?.bytes?.let(ProtoFields::read).orEmpty()
         fun trainerNumber(number: Int, fallback: Long) = trainer.firstOrNull { it.number == number }?.value ?: fallback
@@ -50,6 +40,21 @@ internal class MarianTokenizer(source: File, vocabulary: File, vocabularySize: I
         normalizer = MarianNormalizer(spec)
         segmenter = UnigramSegmenter(entries, vocab, unknownId)
     }
+    private fun readVocabulary(file: File, pieces: Array<String?>): Map<String, Int> {
+        val json = JSONObject(file.readText(Charsets.UTF_8))
+        val vocabulary = HashMap<String, Int>(pieces.size)
+        val keys = json.keys()
+        while (keys.hasNext()) {
+            val text = keys.next()
+            val id = json.getInt(text)
+            require(id in pieces.indices && pieces[id] == null)
+            vocabulary[text] = id
+            pieces[id] = text
+        }
+        require(vocabulary.size == pieces.size)
+        return vocabulary
+    }
+
     fun encode(text: String): IntArray = segmenter.encodeNormalized(normalizer.normalize(text))
     fun decode(ids: List<Int>): String = buildString {
         for (id in ids) {
@@ -72,8 +77,15 @@ internal class UnigramSegmenter(
     private val unknownId: Int,
 ) {
     private class Node {
-        val children = HashMap<Char, Node>()
+        private var children: MutableMap<Char, Node>? = null
         var piece: SentencePieceEntry? = null
+
+        fun child(character: Char): Node? = children?.get(character)
+
+        fun ensureChild(character: Char): Node {
+            val branches = children ?: HashMap<Char, Node>(2).also { children = it }
+            return branches.getOrPut(character) { Node() }
+        }
     }
     private data class Step(val from: Int, val text: String, val unknown: Boolean)
     private val root = Node()
@@ -86,7 +98,7 @@ internal class UnigramSegmenter(
         for (entry in normal) {
             require(entry.piece.isNotEmpty() && entry.score.isFinite())
             var node = root
-            for (character in entry.piece) node = node.children.getOrPut(character) { Node() }
+            for (character in entry.piece) node = node.ensureChild(character)
             require(node.piece == null)
             node.piece = entry
         }
@@ -106,7 +118,7 @@ internal class UnigramSegmenter(
             var node: Node? = root
             var hasSingle = false
             while (end < text.length) {
-                node = node?.children?.get(text[end]) ?: break
+                node = node?.child(text[end]) ?: break
                 end++
                 val entry = node.piece ?: continue
                 if (end == nextCharacter) hasSingle = true
