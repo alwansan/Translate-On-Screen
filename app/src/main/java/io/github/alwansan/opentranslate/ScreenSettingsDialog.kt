@@ -35,14 +35,41 @@ object ScreenSettingsDialog {
         var refreshPreview: (() -> Unit)? = null
         fun ui(en: String, ar: String) = c.engineMessage(en, ar)
         fun dp(n: Int) = (n * c.resources.displayMetrics.density).toInt()
-        val panel = LinearLayout(c).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20),dp(8),dp(20),dp(12)) }
-        fun title(s: String) { panel.addView(TextView(c).apply { text = s; textSize = 16f; setTypeface(null, Typeface.BOLD); setPadding(0,dp(12),0,dp(4)) }) }
+        val design = NativeUi(c)
+        val panel = design.column().apply { setBackgroundColor(design.background) }
+        val header = design.column(12).apply { setBackgroundColor(design.surface) }
+        val navigation = design.row()
+        val bubblePage = design.column(16)
+        val resultPage = design.column(16)
+        val timingPage = design.column(16)
+        val pages = listOf(bubblePage, resultPage, timingPage)
+        val pageStack = FrameLayout(c)
+        pages.forEach { pageStack.addView(it, FrameLayout.LayoutParams(-1, -2)) }
+        val scroll = ScrollView(c).apply {
+            isFillViewport = true
+            addView(pageStack)
+        }
+        panel.addView(header)
+        panel.addView(navigation)
+        panel.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
+        var section = header
+        val tabs = mutableListOf<Button>()
+        fun selectPage(index: Int) {
+            pages.forEachIndexed { position, page -> page.visibility = if (position == index) View.VISIBLE else View.GONE }
+            tabs.forEachIndexed { position, button -> design.navigationAppearance(button, position == index) }
+            scroll.scrollTo(0, 0)
+        }
+        listOf(ui("Bubble","الفقاعة"), ui("Appearance","المظهر"), ui("Timing","التوقيت")).forEachIndexed { index, name ->
+            tabs.add(design.smallButton(navigation, name) { selectPage(index) })
+        }
+        selectPage(0)
+        fun title(s: String) { section.addView(TextView(c).apply { text = s; textSize = 16f; setTypeface(null, Typeface.BOLD); setPadding(0,dp(12),0,dp(4)) }) }
         fun select(name: String, labels: List<String>, index: Int): Spinner {
             title(name)
             return Spinner(c).apply {
                 adapter = ArrayAdapter(c, android.R.layout.simple_spinner_dropdown_item, labels)
                 setSelection(index.coerceIn(0, labels.lastIndex)); contentDescription = name
-                panel.addView(this, LinearLayout.LayoutParams(-1,dp(48)))
+                section.addView(this, LinearLayout.LayoutParams(-1,dp(48)))
                 onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onNothingSelected(parent: AdapterView<*>?) = Unit
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) { refreshPreview?.invoke() }
@@ -51,7 +78,7 @@ object ScreenSettingsDialog {
         }
         fun slider(name: String, min: Int, max: Int, value: Int): SeekBar {
             val caption = TextView(c).apply { textSize = 15f; setPadding(0,dp(8),0,0) }
-            panel.addView(caption)
+            section.addView(caption)
             return SeekBar(c).apply {
                 this.max = max-min; progress = value.coerceIn(min,max)-min; contentDescription = name
                 caption.text = "$name: ${progress+min}"
@@ -60,17 +87,18 @@ object ScreenSettingsDialog {
                     override fun onStartTrackingTouch(bar: SeekBar?) = Unit
                     override fun onStopTrackingTouch(bar: SeekBar?) = Unit
                 })
-                panel.addView(this, LinearLayout.LayoutParams(-1,dp(44)))
+                section.addView(this, LinearLayout.LayoutParams(-1,dp(44)))
             }
         }
         fun toggle(name: String, value: Boolean) = Switch(c).apply {
-            text=name; isChecked=value; minHeight=dp(48); panel.addView(this)
+            text=name; isChecked=value; minHeight=dp(48); section.addView(this)
             setOnCheckedChangeListener { _, _ -> refreshPreview?.invoke() }
         }
         fun color(name: String, values: List<Int>, labels: List<String>, initial: Int) =
-            ColorField(c, name, values, labels, initial) { refreshPreview?.invoke() }.also { panel.addView(it.root) }
+            ColorField(c, name, values, labels, initial) { refreshPreview?.invoke() }.also { section.addView(it.root) }
         val modes = CaptureMode.values().toList()
         val mode = select(ui("Default mode","الوضع الافتراضي"), modes.map { c.modeLabel(it) }, modes.indexOf(old.mode))
+        section = bubblePage
         val actions = BubbleAction.values().toList()
         fun actionLabel(a: BubbleAction): String = when(a) {
             BubbleAction.DEFAULT -> ui("Default mode","الوضع الافتراضي")
@@ -85,15 +113,17 @@ object ScreenSettingsDialog {
         val single = select(ui("Single tap","النقر المفرد"),singleActions.map(::actionLabel),singleActions.indexOf(old.single))
         val long = select(ui("Long press","الضغط المطول"),actions.map(::actionLabel),actions.indexOf(old.long))
         val double = select(ui("Double tap","النقر المزدوج"),actions.map(::actionLabel),actions.indexOf(old.double))
-        panel.addView(TextView(c).apply { text = ui(
+        section.addView(TextView(c).apply { text = ui(
             "Single tap waits briefly only when a double-tap action is enabled. Choose No action for double tap to make single tap immediate.",
             "ينتظر النقر المفرد قليلاً فقط عند تفعيل إجراء للنقر المزدوج. اختر «لا إجراء» للنقر المزدوج ليصبح المفرد فورياً.") })
+        section = timingPage
         title(ui("Automatic mode","الوضع التلقائي"))
         val interval = slider(ui("Interval (seconds)","الفترة بالثواني"),1,120,old.intervalSeconds)
         val display = slider(ui("Result duration (seconds)","مدة عرض النتيجة بالثواني"),0,300,old.displaySeconds)
         val stop = slider(ui("Stop after (minutes)","إيقاف بعد دقائق"),1,120,old.stopMinutes)
-        panel.addView(TextView(c).apply { text=ui("Automatic capture runs after explicit start. Use your configured gestures or the notification to pause/stop; locking the device ends sharing.","يلتقط الوضع التلقائي بعد تشغيله صراحة. استخدم الإيماءات المختارة أو الإشعار للتوقيف أو الإنهاء؛ قفل الجهاز ينهي المشاركة.") })
-        title(ui("Bubble","الفقاعة"))
+        section.addView(TextView(c).apply { text=ui("Automatic capture runs after explicit start. Use your configured gestures or the notification to pause/stop; locking the device ends sharing.","يلتقط الوضع التلقائي بعد تشغيله صراحة. استخدم الإيماءات المختارة أو الإشعار للتوقيف أو الإنهاء؛ قفل الجهاز ينهي المشاركة.") })
+        section = bubblePage
+        title(ui("Bubble style","مظهر الفقاعة"))
         val symbols = listOf("文","T","◎","✦")
         val symbol = select(ui("Symbol","شكل الرمز"),symbols,symbols.indexOf(old.bubbleSymbol))
         val colors = listOf(0xff4de2bf.toInt(),0xff1677d2.toInt(),0xff8a4ed6.toInt(),0xffffa42f.toInt(),Color.WHITE,Color.BLACK)
@@ -101,7 +131,7 @@ object ScreenSettingsDialog {
         val bubbleColor=color(ui("Bubble color","لون الفقاعة"),colors,colorNames,old.bubbleColor)
         val size=slider(ui("Bubble size","حجم الفقاعة"),36,96,old.bubbleSize)
         val opacity=slider(ui("Bubble opacity (%)","شفافية الفقاعة (%)"),20,100,old.bubbleOpacity)
-        title(ui("Result appearance","مظهر النتيجة"))
+        section = resultPage
         title(ui("Live appearance preview", "معاينة المظهر المباشرة"))
         val previewFrame = FrameLayout(c).apply {
             minimumHeight = dp(190)
@@ -129,9 +159,9 @@ object ScreenSettingsDialog {
         previewFrame.addView(previewCard, FrameLayout.LayoutParams(-1, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         val bubblePreview = TextView(c).apply { gravity = Gravity.CENTER }
         previewFrame.addView(bubblePreview, FrameLayout.LayoutParams(dp(54), dp(54), Gravity.BOTTOM or Gravity.END))
-        panel.addView(previewFrame, LinearLayout.LayoutParams(-1, -2))
+        section.addView(previewFrame, LinearLayout.LayoutParams(-1, -2))
         val previewHint = TextView(c).apply { textSize = 12f }
-        panel.addView(previewHint)
+        section.addView(previewHint)
         val sharedStyle = toggle(ui("Use the manual mode's appearance", "استخدم مظهر الوضع اليدوي"), old.useManualAppearance)
         val manualStyles = listOf(CaptureMode.FULL, CaptureMode.FIXED).associateWith { ScreenPreferences.read(c, it) }
         val textSize=slider(ui("Text size","حجم النص"),12,36,old.textSize)
@@ -174,23 +204,23 @@ object ScreenSettingsDialog {
                 refreshPreview?.invoke()
             }
         }
-        panel.addView(mangaBackground)
+        section.addView(mangaBackground)
+        section = timingPage
         val skip = toggle(ui("Skip unchanged frames", "تجاوز الصور غير المتغيرة"), old.skipUnchangedFrames)
         val threshold = slider(ui("Change sensitivity threshold", "عتبة تغير الصورة"), 1, 40, old.changeThreshold)
         val clearOverlay = toggle(ui("Clearer automatic overlay · tap the screen to dismiss", "عرض تلقائي أوضح · المس الشاشة لإغلاق النتيجة"), old.tapToDismissAutoOverlay)
         val interaction = toggle(ui("Refresh automatic capture after outside touch", "تحديث التلقائي بعد لمس خارج الفقاعة"), old.translateOnInteraction)
         val interactionDelay = slider(ui("Wait after touch (milliseconds)", "مهلة ما بعد اللمس بالمللي ثانية"),
             100, 1_500, old.interactionDelayMs)
-        panel.addView(TextView(c).apply { text = ui(
+        section.addView(TextView(c).apply { text = ui(
             "Outside touch detects gesture start only; periodic updates continue. Pausing disables this trigger. The time limit ends screen sharing.",
             "يرصد اللمس بداية الحركة فقط مع استمرار التحديث الدوري. التوقيف المؤقت يعطّل هذا المحفز. الحد الزمني ينهي مشاركة الشاشة.") })
+        section = bubblePage
         val dock = toggle(ui("Dock bubble to screen edge", "تثبيت الفقاعة عند الحافة"), old.bubbleAutoDock)
         val dim = toggle(ui("Dim idle bubble", "تعتيم الفقاعة عند الخمول"), old.bubbleAutoDim)
         val edgeHide = slider(ui("Hide part of idle docked bubble (%)", "إخفاء جزء من الفقاعة الخاملة عند الحافة (%)"),
             0, 60, old.bubbleEdgeHidePercent)
         val locked = toggle(ui("Lock bubble position", "قفل مكان الفقاعة"), old.bubbleLocked)
-        panel.addView(TextView(c).apply { text = ui("Each mode keeps its own timing. With shared appearance enabled, edit the matching manual mode to change the live style.",
-            "لكل وضع توقيت مستقل. عند مشاركة المظهر، عدّل الوضع اليدوي المقابل لتغيير المظهر الفعلي.") })
         mode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -300,22 +330,19 @@ object ScreenSettingsDialog {
         previewFrame.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
             if (right - left != oldRight - oldLeft) refreshPreview?.invoke()
         }
-        lateinit var scroll: ScrollView
-        panel.addView(Button(c).apply {
-            text = ui("Show appearance preview", "عرض معاينة المظهر")
-            isAllCaps = false
-            setOnClickListener { scroll.smoothScrollTo(0, previewFrame.top) }
-        })
-        scroll = ScrollView(c).apply { addView(panel) }
         val dialog = AlertDialog.Builder(c).setTitle(ui("Screen modes and appearance","أوضاع الشاشة والمظهر"))
-            .setView(scroll)
+            .setView(panel)
             .setPositiveButton(ui("Save","حفظ"),null).setNegativeButton(ui("Cancel","إلغاء"),null).create()
         dialog.setOnShowListener {
             refreshPreview?.invoke()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val colorFields = listOf(bubbleColor, textColor, bg, borderColor, selectionColor)
                 val invalid = colorFields.firstOrNull { !it.validate() }
-                if (invalid != null) { invalid.focus(); return@setOnClickListener }
+                if (invalid != null) {
+                    selectPage(if (invalid === bubbleColor) 0 else 1)
+                    invalid.focus()
+                    return@setOnClickListener
+                }
                 val updated=appearanceDraft().copy(single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
                     intervalSeconds=interval.progress+1,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
                     speakAutomatically=speak.isChecked, selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),
@@ -332,6 +359,7 @@ object ScreenSettingsDialog {
             }
         }
         dialog.show()
+        dialog.window?.setLayout(-1, (c.resources.displayMetrics.heightPixels * .92f).toInt())
     }
     /** RGB is explicit; the separate opacity controls own transparency. */
     private class ColorField(

@@ -116,6 +116,33 @@ class MainUiInstrumentationTest {
         }
     }
 
+    @Test fun captureSettingsOpenTheRelevantSectionWithoutDiscardingEdits() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            scenario.onActivity { press(it, "More") }
+            val editor = device.wait(Until.findObject(By.text("Screen modes and appearance")), 5_000)
+            assertNotNull(editor)
+            editor!!.click()
+            val timing = device.wait(Until.findObject(By.text("Timing")), 5_000)
+            assertNotNull(timing)
+            timing!!.click()
+            val interval = device.wait(Until.findObject(By.desc("Interval (seconds)")), 5_000)
+            assertNotNull(interval)
+            assertFalse(device.hasObject(By.desc("Symbol")))
+            val initial = device.findObject(By.textStartsWith("Interval (seconds):")).text
+            val bounds = interval!!.visibleBounds
+            device.click(bounds.left + bounds.width() * 3 / 4, bounds.centerY())
+            val edited = device.findObject(By.textStartsWith("Interval (seconds):")).text
+            assertNotEquals(initial, edited)
+            device.findObject(By.text("Appearance")).click()
+            assertTrue(device.wait(Until.hasObject(By.desc("Appearance preview")), 5_000))
+            recordUiEvidence("redesign_capture_appearance_en_light")
+            device.findObject(By.text("Timing")).click()
+            assertEquals(edited, device.wait(Until.findObject(By.textStartsWith("Interval (seconds):")), 5_000)?.text)
+            device.findObject(By.res("android", "button2")).click()
+        }
+    }
+
     @Test fun arabicDarkInterfaceKeepsTranslationLanguagesIndependent() {
         AppPreferences.saveAppearance(context, "ar", "dark")
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->

@@ -16,11 +16,11 @@ import android.widget.*
 /** Small native view helpers; labels remain Arabic/English and follow the app locale. */
 class NativeUi(val context: Context) {
     val dark = AppPreferences.isDark(context)
-    val background = Color.parseColor(if (dark) "#10131B" else "#F3F5FA")
+    val background = context.getColor(if (dark) R.color.ui_background_dark else R.color.ui_background_light)
     val surface = Color.parseColor(if (dark) "#1B202E" else "#FFFFFF")
     val ink = Color.parseColor(if (dark) "#F5F6FF" else "#182139")
     val muted = Color.parseColor(if (dark) "#B5BDD3" else "#525E77")
-    val accent = Color.parseColor(if (dark) "#B9C6FF" else "#33499A")
+    val accent = context.getColor(if (dark) R.color.ui_accent_dark else R.color.ui_accent_light)
     val onAccent = Color.parseColor(if (dark) "#172751" else "#FFFFFF")
     val border = Color.parseColor(if (dark) "#3D465D" else "#D9DFEF")
     private val selectedSurface = Color.parseColor(if (dark) "#303F69" else "#E4EAFF")

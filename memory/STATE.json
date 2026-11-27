@@ -4,7 +4,7 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "026",
+  "session": "027",
   "phase": "ui_redesign",
   "last_verified_code_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/026-ui-redesign.md",
+  "session_checkpoint": "memory/sessions/027-capture-editor-navigation.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -144,10 +144,10 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "026",
+    "id": "027",
     "validation": "pending",
-    "design_reference": "docs/UI_REDESIGN_AR.md",
-    "historical_acceptance": "7f098f2"
+    "redesign_baseline_device_run": 45944998626,
+    "redesign_baseline_host_run": 45944998660
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
