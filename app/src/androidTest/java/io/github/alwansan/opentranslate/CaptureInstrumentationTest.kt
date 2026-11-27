@@ -474,7 +474,12 @@ class CaptureInstrumentationTest {
         assertTrue(CaptureService.isRunning)
         action(CaptureService.ACTION_CAPTURE)
         await(40_000, "The next positioned translation did not appear") { device.hasObject(controls) }
-        device.click(device.displayWidth / 2, (device.displayHeight * .45f).toInt())
+        val line = android.graphics.Point()
+        instrumentation.runOnMainSync {
+            val center = requireNotNull(fixture).fixtureTextCenterOnScreen()
+            line.set(center.x, center.y)
+        }
+        device.click(line.x, line.y)
         awaitOutput("OPEN SCREEN")
         assertFalse("Line details included unrelated text", currentOutput().contains("OUTSIDE"))
     }

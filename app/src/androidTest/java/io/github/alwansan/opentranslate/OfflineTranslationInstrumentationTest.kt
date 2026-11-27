@@ -1,5 +1,8 @@
 package io.github.alwansan.opentranslate
 
+import android.os.Bundle
+import android.os.Debug
+import android.os.SystemClock
 import android.provider.Settings
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +20,40 @@ class OfflineTranslationInstrumentationTest {
             Settings.Global.getInt(context.contentResolver, "airplane_mode_on", 0))
         assertTrue("Pinned en-ar pack missing; run tools/provision_test_models.py first.", OfflineModelStore.has(context, "en-ar"))
         assertTrue("Pinned ar-en pack missing; run tools/provision_test_models.py first.", OfflineModelStore.has(context, "ar-en"))
+    }
+
+    @Test fun marianThreadProfilesMeasureLatencyAndKeepTheSameOutput() {
+        requireOfflineModels()
+        val samples = mapOf(
+            "en-ar" to listOf("Do not close this window.", "Your battery is at 20%.", "Your changes have not been saved."),
+            "ar-en" to listOf("لا تغلق هذه النافذة.", "نسبة شحن البطارية 20%.", "لم يتم حفظ تغييراتك."),
+        )
+        val gate = RequestGate { InterruptedRequestGate.check() }
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        for ((direction, phrases) in samples) {
+            val pack = OfflineModelManifest.packs.single { it.id == direction }
+            val folder = OfflineModelStore.verifiedDirectory(context, pack)
+            var baseline: List<String>? = null
+            for (threads in 1..3) {
+                val started = SystemClock.elapsedRealtime()
+                val timings = ArrayList<Long>(phrases.size)
+                MarianRuntime(folder, pack, threads).use { runtime ->
+                    val loadMs = SystemClock.elapsedRealtime() - started
+                    runtime.translate(phrases.first(), gate)
+                    val output = phrases.map { phrase ->
+                        val before = SystemClock.elapsedRealtime()
+                        runtime.translate(phrase, gate).also { timings.add(SystemClock.elapsedRealtime() - before) }
+                    }
+                    baseline?.let { assertEquals("Output changed with $threads threads for $direction", it, output) }
+                    baseline = output
+                    instrumentation.sendStatus(2, Bundle().apply {
+                        putString("ost_evidence_reason", "marian_android; pair=$direction; threads=$threads; " +
+                            "load_ms=$loadMs; sample_ms=${timings.joinToString(",")}; process_pss_kib=${Debug.getPss()}; " +
+                            "logical_cpus=${Runtime.getRuntime().availableProcessors()}")
+                    })
+                }
+            }
+        }
     }
 
     @Test fun nativeEnglishToArabicWorksWithNetworkDisabled() {

@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Point
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.media.projection.MediaProjectionConfig
 import android.media.projection.MediaProjectionManager
@@ -48,6 +50,8 @@ class CaptureFixtureActivity : Activity() {
         startActivityForResult(consent, 101)
     }
 
+    fun fixtureTextCenterOnScreen(): Point = drawing.lineCenterOnScreen()
+
     fun replaceFixtureText(value: String) { drawing.line = value; drawing.invalidate() }
 
     @Deprecated("Debug fixture intentionally exercises the system consent activity result")
@@ -68,6 +72,13 @@ class CaptureFixtureActivity : Activity() {
             textAlign = Paint.Align.CENTER
         }
         init { importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO }
+        fun lineCenterOnScreen(): Point {
+            val origin = IntArray(2).also(::getLocationOnScreen)
+            val bounds = Rect()
+            ink.textSize = minOf(72f, width / 20f)
+            ink.getTextBounds(line, 0, line.length, bounds)
+            return Point(origin[0] + width / 2, origin[1] + (height * .46f).toInt() + bounds.centerY())
+        }
         override fun onDraw(canvas: Canvas) {
             canvas.drawColor(Color.WHITE)
             ink.textSize = minOf(72f, width / 20f)
