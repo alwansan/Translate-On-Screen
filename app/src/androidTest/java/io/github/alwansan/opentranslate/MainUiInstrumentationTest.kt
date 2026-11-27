@@ -158,6 +158,15 @@ class MainUiInstrumentationTest {
             assertNotNull("Arabic translation was not visible after the job completed", translation)
             assertTrue(device.hasObject(By.textStartsWith("Translation · ")))
             recordUiEvidence("redesign_completed_translation_en_light")
+            scenario.onActivity { activity ->
+                val views = descendants(activity.window.decorView)
+                val copyOriginal = views.filterIsInstance<Button>().single { it.text.toString() == "Copy original" }
+                assertFalse(copyOriginal.isShown)
+                press(activity, "Show original")
+                assertTrue(copyOriginal.isShown)
+                press(activity, "Hide original")
+                assertFalse(copyOriginal.isShown)
+            }
         }
     }
 

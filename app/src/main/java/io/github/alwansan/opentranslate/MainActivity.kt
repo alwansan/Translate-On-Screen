@@ -24,6 +24,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -511,13 +512,24 @@ class MainActivity : Activity() {
         }
         val card = ui.card(body, t("Original", "النص الأصلي") + " · " + languageName(resultSource))
         if (translationCard == null) value.warning?.let { card.addView(ui.secondary(it)) }
-        card.addView(selectableResultText(value.original, 17f, resultSource))
+        val originalContent = ui.column()
+        if (translationCard != null) {
+            originalContent.visibility = View.GONE
+            lateinit var reveal: Button
+            reveal = ui.menuItem(card, t("Show original", "إظهار الأصل")) {
+                val expanded = originalContent.visibility != View.VISIBLE
+                originalContent.visibility = if (expanded) View.VISIBLE else View.GONE
+                reveal.text = if (expanded) t("Hide original", "إخفاء الأصل") else t("Show original", "إظهار الأصل")
+            }
+        }
+        card.addView(originalContent)
+        originalContent.addView(selectableResultText(value.original, 17f, resultSource))
         val originalActions = ui.row()
-        card.addView(originalActions)
+        originalContent.addView(originalActions)
         ui.smallButton(originalActions, t("Copy original", "نسخ الأصل")) { copy(value.original) }
         ui.smallButton(originalActions, t("Read original", "نطق الأصل")) { speak(value.original, resultSource) }
         ui.smallButton(originalActions, t("Share original", "مشاركة الأصل")) { shareText(value.original) }
-        ui.button(card, t("Use original as input", "استخدام الأصل كمدخل")) {
+        ui.button(originalContent, t("Use original as input", "استخدام الأصل كمدخل")) {
             draft = value.original.take(MAX_INPUT)
             input?.setText(draft)
             if (value.original.length > MAX_INPUT) message(t("The first 12,000 characters were placed in the input.", "وُضعت أول ١٢ ألف حرف في حقل الإدخال."))
