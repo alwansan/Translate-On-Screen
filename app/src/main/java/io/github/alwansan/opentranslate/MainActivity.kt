@@ -207,7 +207,7 @@ class MainActivity : Activity() {
         renderPage()
     }
 
-    private fun renderPage() {
+    private fun renderPage(jumpToResult: Boolean = false) {
         rememberDraft()
         input = null
         navigationButtons.forEach { (id, button) -> ui.navigationAppearance(button, id == tab) }
@@ -222,12 +222,21 @@ class MainActivity : Activity() {
             if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = true
             setPadding(0, ui.dp(2), 0, ui.dp(16))
         })
-        when (tab) {
-            "translate" -> renderTranslate(body)
-            "more" -> renderMore(body)
-            else -> renderHome(body)
+        val resultAnchor = if (tab == "translate") renderTranslate(body) else {
+            if (tab == "more") renderMore(body) else renderHome(body)
+            null
         }
-        content.addView(ScrollView(this).apply { isFillViewport = true; addView(body) })
+        val scroll = ScrollView(this).apply { isFillViewport = true; addView(body) }
+        if (jumpToResult && resultAnchor != null) {
+            scroll.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+                override fun onLayoutChange(view: View, left: Int, top: Int, right: Int, bottom: Int,
+                    oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+                    view.removeOnLayoutChangeListener(this)
+                    scroll.post { if (scroll.isAttachedToWindow) scroll.smoothScrollTo(0, resultAnchor.top) }
+                }
+            })
+        }
+        content.addView(scroll)
     }
 
     private fun renderHome(body: LinearLayout) {
@@ -429,11 +438,13 @@ class MainActivity : Activity() {
         dialog.show()
     }
 
-    private fun renderTranslate(body: LinearLayout) {
+    private fun renderTranslate(body: LinearLayout): View? {
         languageBar(body)
-        val card = ui.card(body, t("Translate text", "ترجمة النص"))
-        input = ui.field(card, getString(R.string.text_hint), draft, multiline = true).apply {
+        val card = ui.card(body)
+        input = ui.field(card, getString(R.string.text_hint), draft, multiline = true, showLabel = false).apply {
             filters = arrayOf(InputFilter.LengthFilter(MAX_INPUT))
+            background = ui.shape(ui.background, 14, true)
+            setPaddingRelative(ui.dp(14), ui.dp(12), ui.dp(14), ui.dp(12))
         }
         val actions = ui.row()
         card.addView(actions)
@@ -453,11 +464,11 @@ class MainActivity : Activity() {
             }) { acceptResult(it, settings.source, settings.target) }
         }
         val imports = ui.row()
-        card.addView(imports)
+        ui.card(body).addView(imports)
         ui.smallButton(imports, t("Image", "صورة")) { pickImage() }
         ui.smallButton(imports, t("Camera", "كاميرا")) { takePhoto() }
         ui.smallButton(imports, t("Voice", "صوت")) { recognizeSpeech() }
-        result?.let { renderResult(body, it) }
+        return result?.let { renderResult(body, it) }
     }
 
     private fun acceptResult(value: TranslationResult, source: String, target: String) {
@@ -465,23 +476,19 @@ class MainActivity : Activity() {
         resultSource = source
         resultTarget = target
         tab = "translate"
-        renderPage()
-        message(value.warning ?: t("Ready", "جاهز"))
+        currentFocus?.let { view ->
+            getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+                .hideSoftInputFromWindow(view.windowToken, 0)
+        }
+        renderPage(jumpToResult = true)
+        message("")
     }
 
-    private fun renderResult(body: LinearLayout, value: TranslationResult) {
-        val card = ui.card(body, t("Result", "النتيجة"))
-        value.warning?.let { card.addView(ui.secondary(it)) }
-        card.addView(ui.label(languageName(resultSource), 13f, true))
-        card.addView(selectableResultText(value.original, 17f, resultSource))
-        val originalActions = ui.row()
-        card.addView(originalActions)
-        ui.smallButton(originalActions, t("Copy original", "نسخ الأصل")) { copy(value.original) }
-        ui.smallButton(originalActions, t("Read original", "نطق الأصل")) { speak(value.original, resultSource) }
-        ui.smallButton(originalActions, t("Share original", "مشاركة الأصل")) { shareText(value.original) }
-        value.translated?.let { translation ->
-            card.addView(ui.label(languageName(resultTarget), 13f, true))
-            card.addView(selectableResultText(translation, 21f, resultTarget))
+    private fun renderResult(body: LinearLayout, value: TranslationResult): View {
+        val translationCard = value.translated?.let { translation ->
+            val card = ui.card(body, t("Translation", "الترجمة") + " · " + languageName(resultTarget))
+            value.warning?.let { card.addView(ui.secondary(it)) }
+            card.addView(selectableResultText(translation, 23f, resultTarget))
             val actions = ui.row()
             card.addView(actions)
             ui.smallButton(actions, t("Copy translation", "نسخ الترجمة")) { copy(translation) }
@@ -500,12 +507,23 @@ class MainActivity : Activity() {
                     setResult(RESULT_OK, Intent().putExtra(Intent.EXTRA_PROCESS_TEXT, translation))
                     finish()
                 }
+            card
         }
+        val card = ui.card(body, t("Original", "النص الأصلي") + " · " + languageName(resultSource))
+        if (translationCard == null) value.warning?.let { card.addView(ui.secondary(it)) }
+        card.addView(selectableResultText(value.original, 17f, resultSource))
+        val originalActions = ui.row()
+        card.addView(originalActions)
+        ui.smallButton(originalActions, t("Copy original", "نسخ الأصل")) { copy(value.original) }
+        ui.smallButton(originalActions, t("Read original", "نطق الأصل")) { speak(value.original, resultSource) }
+        ui.smallButton(originalActions, t("Share original", "مشاركة الأصل")) { shareText(value.original) }
         ui.button(card, t("Use original as input", "استخدام الأصل كمدخل")) {
             draft = value.original.take(MAX_INPUT)
             input?.setText(draft)
             if (value.original.length > MAX_INPUT) message(t("The first 12,000 characters were placed in the input.", "وُضعت أول ١٢ ألف حرف في حقل الإدخال."))
+            input?.requestFocus()
         }
+        return translationCard ?: card
     }
 
     private fun openDictionary(word: String = "", language: String = SettingsStore.read(this).source) {

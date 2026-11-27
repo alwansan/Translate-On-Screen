@@ -143,6 +143,24 @@ class MainUiInstrumentationTest {
         }
     }
 
+    @Test fun completedLocalTranslationScrollsToTheTranslatedText() {
+        assertTrue("Pinned en-ar pack missing.", OfflineModelStore.has(context, "en-ar"))
+        SettingsStore.save(context, UserSettings(source = "en", target = "ar", ocrLanguage = "eng",
+            provider = "offline", networkEnabled = false, keepHistory = false))
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                press(activity, "Translate")
+                descendants(activity.window.decorView).filterIsInstance<EditText>().single().setText("Hello, how are you?")
+                press(activity, activity.getString(R.string.translate_text))
+            }
+            val translation = device.wait(Until.findObject(By.textContains("كيف حالك")), 40_000)
+            assertNotNull("Arabic translation was not visible after the job completed", translation)
+            assertTrue(device.hasObject(By.textStartsWith("Translation · ")))
+            recordUiEvidence("redesign_completed_translation_en_light")
+        }
+    }
+
     @Test fun arabicDarkInterfaceKeepsTranslationLanguagesIndependent() {
         AppPreferences.saveAppearance(context, "ar", "dark")
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->

@@ -104,8 +104,9 @@ class NativeUi(val context: Context) {
         parent.addView(b, LinearLayout.LayoutParams(0, -2, 1f))
         return b
     }
-    fun field(parent: LinearLayout, title: String, value: String = "", multiline: Boolean = false, secret: Boolean = false): EditText {
-        parent.addView(label(title, 14f, true))
+    fun field(parent: LinearLayout, title: String, value: String = "", multiline: Boolean = false,
+        secret: Boolean = false, showLabel: Boolean = true): EditText {
+        if (showLabel) parent.addView(label(title, 14f, true))
         return EditText(context).apply {
             setText(value); hint = title; setTextColor(ink); setHintTextColor(muted)
             minHeight = dp(48); textSize = 16f
