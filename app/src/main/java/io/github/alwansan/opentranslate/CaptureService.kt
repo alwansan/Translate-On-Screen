@@ -19,6 +19,7 @@ import android.content.pm.ServiceInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Typeface
@@ -1266,19 +1267,46 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             clipToOutline = true
             addView(panel, FrameLayout.LayoutParams(-1, -2))
         }
+        showBubble()
+        if (stopping) return
+        val panelX = max(0, (screen.x - panelWidth) / 2)
+        val top = dp(28)
+        val bottom = max(top, screen.y - dp(28))
         val maxHeight = max(1, screen.y - dp(56))
-        viewport.measure(View.MeasureSpec.makeMeasureSpec(panelWidth, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST))
-        val panelHeight = viewport.measuredHeight.coerceIn(1, maxHeight)
+        fun measureHeight(limit: Int): Int {
+            viewport.measure(View.MeasureSpec.makeMeasureSpec(panelWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(limit, View.MeasureSpec.AT_MOST))
+            return viewport.measuredHeight.coerceIn(1, limit)
+        }
+        val fallbackY = dp(64).coerceAtMost(max(0, screen.y / 6))
+        var panelHeight = measureHeight(maxHeight)
+        var panelY = resultY(panelHeight, fallbackY)
+        bubbleParams?.let { floating ->
+            if (Rect.intersects(Rect(panelX, panelY, panelX + panelWidth, panelY + panelHeight),
+                    Rect(floating.x, floating.y, floating.x + floating.width, floating.y + floating.height))) {
+                val above = (floating.y - dp(8)).coerceIn(top, bottom)
+                val roomAbove = above - top
+                val below = (floating.y + floating.height + dp(8)).coerceIn(0, bottom)
+                val moveAbove = when {
+                    panelHeight <= roomAbove && panelHeight <= bottom - below ->
+                        panelY - (above - panelHeight) <= below - panelY
+                    panelHeight <= roomAbove -> true
+                    panelHeight <= bottom - below -> false
+                    else -> roomAbove >= bottom - below
+                }
+                val room = if (moveAbove) roomAbove else bottom - below
+                if (room >= dp(56)) {
+                    if (panelHeight > room) panelHeight = measureHeight(room)
+                    panelY = if (moveAbove) panelY.coerceIn(top, above - panelHeight) else max(panelY, below)
+                }
+            }
+        }
         try {
-            windows.addView(viewport, overlayParams(panelWidth, panelHeight).apply {
-                x = max(0, (screen.x - panelWidth) / 2); y = resultY(panelHeight, dp(64).coerceAtMost(max(0, screen.y / 6)))
-            })
+            windows.addView(viewport, overlayParams(panelWidth, panelHeight).apply { x = panelX; y = panelY })
             resultPanel = viewport
         } catch (_: RuntimeException) {
             toast(ui("Could not display the result. Check overlay permission.", "تعذّر عرض النتيجة. تحقق من إذن الظهور فوق التطبيقات."))
         }
-        showBubble()
         armResultTimeout()
     }
 

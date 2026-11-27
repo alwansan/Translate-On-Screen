@@ -147,6 +147,9 @@ class CaptureInstrumentationTest {
         assertNotNull("Result panel should expose Close in its header", close)
         assertTrue(device.hasObject(By.text("Copy original")))
         assertFalse(device.hasObject(By.text("Copy translation")))
+        val panel = requireNotNull(device.findObject(By.clazz("android.widget.ScrollView").hasDescendant(By.text("Close"))))
+        val bubble = requireNotNull(device.findObject(By.descStartsWith("Translation bubble.")))
+        assertFalse("The bubble must not cover the result panel", Rect.intersects(panel.visibleBounds, bubble.visibleBounds))
         recordUiEvidence("redesign_screen_result_panel_en_light")
         close!!.click()
         await(5_000, "Closing the result should preserve the active projection") {
