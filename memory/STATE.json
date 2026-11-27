@@ -144,13 +144,12 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "029",
-    "validation": "pending",
-    "earlier_visual_runs": [
-      45944998626,
-      45945272478,
-      45945567590
-    ]
+    "id": "030",
+    "validation": "device matrix pending",
+    "previous_source": "f98dce4",
+    "previous_device_run": 45945953794,
+    "previous_host_run": 45945953872,
+    "capture_editor_visual_artifact": 15174966174
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

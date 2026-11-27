@@ -30,6 +30,7 @@ import android.os.SystemClock
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.StaleObjectException
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import java.util.regex.Pattern
@@ -794,7 +795,18 @@ class CaptureInstrumentationTest {
         await(10_000, "Separate-UID source fixture did not appear") { device.hasObject(By.desc("Source tap count 0")) }
     }
 
-    private fun currentOutput(): String = device.findObject(By.desc("Translation detail output"))?.text.orEmpty()
+    private fun currentOutput(): String {
+        // Automatic capture can replace the accessibility node between lookup and reading its text.
+        val selector = By.desc("Translation detail output")
+        repeat(2) {
+            try {
+                return device.findObject(selector)?.text.orEmpty()
+            } catch (_: StaleObjectException) {
+                SystemClock.sleep(80)
+            }
+        }
+        return device.findObject(selector)?.text.orEmpty()
+    }
     private fun awaitOutput(fragment: String, timeout: Long = 40_000) {
         await(timeout, "OCR/translation output did not contain: " + fragment) { currentOutput().contains(fragment) }
     }
