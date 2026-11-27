@@ -176,6 +176,9 @@ class MainUiInstrumentationTest {
 
     @Test fun arabicDarkInterfaceKeepsTranslationLanguagesIndependent() {
         AppPreferences.saveAppearance(context, "ar", "dark")
+        SettingsStore.save(context, UserSettings(source = "en", target = "ar",
+            ocrLanguage = "eng", provider = "offline"))
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
                 assertEquals("ar", activity.resources.configuration.locales[0].language)
@@ -189,6 +192,21 @@ class MainUiInstrumentationTest {
                 assertEquals("من\nالإنجليزية", from.text.toString())
                 assertEquals("إلى\nالعربية", to.text.toString())
                 assertTrue(buttons.any { it.text.toString() == "تنزيل حزم اللغات" })
+                val fromPosition = IntArray(2).also(from::getLocationOnScreen)
+                val toPosition = IntArray(2).also(to::getLocationOnScreen)
+                assertTrue("Source should start on the right in RTL", fromPosition[0] > toPosition[0])
+            }
+            recordUiEvidence("positioned_home_languages_ar_dark")
+            scenario.onActivity { press(it, "من\nالإنجليزية") }
+            val reverse = device.wait(Until.findObject(By.text("من العربية إلى الإنجليزية")), 5_000)
+            assertNotNull("Offline pair picker did not open", reverse)
+            recordUiEvidence("positioned_offline_pair_ar_dark")
+            reverse!!.click()
+            assertTrue(device.wait(Until.gone(By.text("لغات الترجمة دون إنترنت")), 5_000))
+            scenario.onActivity { activity ->
+                assertEquals("ar", SettingsStore.read(activity).source)
+                assertEquals("en", SettingsStore.read(activity).target)
+                assertEquals("ara", SettingsStore.read(activity).ocrLanguage)
                 press(activity, "ترجمة")
                 assertTrue(descendants(activity.window.decorView).filterIsInstance<EditText>().isNotEmpty())
             }
