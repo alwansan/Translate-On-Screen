@@ -1133,17 +1133,21 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             val bounds = RegionMath.mapFromCrop(NormalizedRegion(block.left, block.top, block.right, block.bottom), entry.actualRegion)
                 ?: return@mapIndexedNotNull null
             val value = block.translated?.takeIf { it.isNotBlank() } ?: block.original
-            if (value.isBlank()) null else OverlayTextBlock(value, bounds, entry.palettes.getOrNull(index))
+            if (value.isBlank()) null else OverlayTextBlock(value, bounds, entry.palettes.getOrNull(index), block)
         }
         val selection = entry.requestedRegion.takeIf { options.requiresFixedRegion && options.showFixedRegionBorder && reliableDisplay() }
-        if (canPosition && blocks.isNotEmpty() && showPositioned(blocks, selection)) {
+        if (canPosition && blocks.isNotEmpty() && showPositioned(blocks, selection, entry)) {
             showResultControls(entry, selection)
             showBubble()
             armResultTimeout()
         } else showTextResult(entry.result, entry.settings, selection)
     }
 
-    private fun showPositioned(blocks: List<OverlayTextBlock>, selection: NormalizedRegion? = null): Boolean {
+    private fun showPositioned(
+        blocks: List<OverlayTextBlock>,
+        selection: NormalizedRegion? = null,
+        entry: CapturedResult? = null,
+    ): Boolean {
         val screen = screenSize()
         val style = if (options.mode == CaptureMode.SUBTITLE) options.copy(centerText = true) else options
         val view = TranslationOverlayView(this, blocks, screen.x, screen.y, style, selection)
@@ -1153,9 +1157,23 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             view.contentDescription = ui("Dismiss automatic translation", "إغلاق الترجمة التلقائية")
             view.setOnClickListener { hideResults() }
         }
+        val inspectFullScreen = entry != null && options.mode == CaptureMode.FULL
+        if (inspectFullScreen && entry != null) {
+            val gestures = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(event: MotionEvent) = true
+                override fun onSingleTapUp(event: MotionEvent): Boolean {
+                    val source = view.blockAt(event.rawX, event.rawY)?.source
+                    if (source == null) hideResults()
+                    else showTextResult(TranslationResult(source.original, source.translated, entry.result.warning),
+                        entry.settings, selection)
+                    return true
+                }
+            })
+            view.setOnTouchListener { _, event -> gestures.onTouchEvent(event); true }
+        }
         val params = overlayParams(-1, -1).apply {
             flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            if (!tapToDismiss) {
+            if (!tapToDismiss && !inspectFullScreen) {
                 flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 alpha = if (Build.VERSION.SDK_INT >= 31)
                     min(.79f, (getSystemService(InputManager::class.java).maximumObscuringOpacityForTouch - .01f).coerceAtLeast(0f))

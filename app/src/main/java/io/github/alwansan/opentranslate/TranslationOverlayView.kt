@@ -18,7 +18,7 @@ import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
-data class OverlayTextBlock(val text: String, val bounds: NormalizedRegion, val palette: OverlayPalette? = null)
+data class OverlayTextBlock(val text: String, val bounds: NormalizedRegion, val palette: OverlayPalette? = null, val source: OcrBlock? = null)
 
 /** WindowManager owns touch-through opacity; complete text remains in the accessible detail panel. */
 @SuppressLint("ViewConstructor")
@@ -30,7 +30,7 @@ class TranslationOverlayView(
     private val options: CaptureOptions,
     selection: NormalizedRegion? = null,
 ) : View(context) {
-    private data class Rendered(val bounds: RectF, val text: StaticLayout, val color: Int)
+    private data class Rendered(val bounds: RectF, val text: StaticLayout, val color: Int, val block: OverlayTextBlock)
     private val density = resources.displayMetrics.density
     private val location = IntArray(2)
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -81,9 +81,12 @@ class TranslationOverlayView(
             val color = item.palette?.backgroundColor?.let {
                 Color.argb(options.backgroundOpacity * 255 / 100, Color.red(it), Color.green(it), Color.blue(it))
             } ?: defaultColor
-            Rendered(rect, text, color)
+            Rendered(rect, text, color, item)
         }
     }
+    internal fun blockAt(screenX: Float, screenY: Float): OverlayTextBlock? =
+        rendered.lastOrNull { it.bounds.contains(screenX, screenY) }?.block
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         getLocationOnScreen(location)

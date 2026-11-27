@@ -463,8 +463,24 @@ class CaptureInstrumentationTest {
         }
     }
 
+    @Test fun fullScreenResultOpensOnlyTheTappedLineAndDismissesFromBlankSpace() {
+        configure(CaptureOptions(positionedResults = true, displaySeconds = 0))
+        authorize()
+        val controls = By.desc("Translation overlay controls")
+        action(CaptureService.ACTION_CAPTURE)
+        await(40_000, "Screen translations were not positioned") { device.hasObject(controls) }
+        device.click(device.displayWidth / 8, device.displayHeight * 3 / 4)
+        await(5_000, "A blank tap should dismiss the result") { !device.hasObject(controls) }
+        assertTrue(CaptureService.isRunning)
+        action(CaptureService.ACTION_CAPTURE)
+        await(40_000, "The next positioned translation did not appear") { device.hasObject(controls) }
+        device.click(device.displayWidth / 2, (device.displayHeight * .45f).toInt())
+        awaitOutput("OPEN SCREEN")
+        assertFalse("Line details included unrelated text", currentOutput().contains("OUTSIDE"))
+    }
+
     @Test fun positionedTranslationAllowsTouchToReachAnotherUid() {
-        configure(CaptureOptions(positionedResults = true, smartColors = true, displaySeconds = 0))
+        configure(CaptureOptions(mode = CaptureMode.MANGA, positionedResults = true, smartColors = true, displaySeconds = 0))
         authorize()
         launchTouchTarget()
         action(CaptureService.ACTION_CAPTURE)
