@@ -1177,14 +1177,46 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(12), dp(16), dp(10))
         }
-        panel.addView(text(ui("Screen translation", "ترجمة الشاشة"), 19f).apply { setTypeface(null, Typeface.BOLD); setTextColor(options.textColor) })
-        val content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        result.warning?.takeIf { it.isNotBlank() }?.let { warning ->
-            content.addView(text(warning, 14f).apply { setTextColor(if (Color.luminance(options.backgroundColor) > .4f) Color.rgb(112, 63, 0) else Color.rgb(255, 212, 119)); setPadding(0, dp(8), 0, dp(8)) })
+        fun actionRow(): LinearLayout = LinearLayout(this).apply {
+            gravity = Gravity.CENTER_VERTICAL
+            panel.addView(this, LinearLayout.LayoutParams(-1, -2))
         }
-        val output = result.translated?.takeIf { it.isNotBlank() } ?: result.original
+        val lightSurface = Color.luminance(options.backgroundColor) > .45f
+        val actionInk = if (lightSurface) 0xff24345e.toInt() else 0xffe1e8ff.toInt()
+        val actionSurface = if (lightSurface) 0xffe9edfa.toInt() else 0xff31394d.toInt()
+        fun addAction(row: LinearLayout, label: String, action: () -> Unit): Button = button(label, action).also {
+            it.textSize = 13f
+            it.minimumHeight = dp(48)
+            it.setPaddingRelative(dp(7), dp(6), dp(7), dp(6))
+            it.setTextColor(actionInk)
+            it.background = android.graphics.drawable.RippleDrawable(
+                android.content.res.ColorStateList.valueOf(if (lightSurface) 0x2233499a else 0x26ffffff),
+                background(actionSurface, 12), null)
+            row.addView(it, LinearLayout.LayoutParams(0, -2, 1f).apply {
+                topMargin = dp(4)
+                marginEnd = dp(4)
+            })
+        }
+        val heading = actionRow()
+        heading.addView(text(ui("Screen translation", "ترجمة الشاشة"), 20f).apply {
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(options.textColor)
+            if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = true
+        }, LinearLayout.LayoutParams(0, -2, 2f))
+        addAction(heading, ui("Close", "إغلاق")) { hideResults() }
+
+        val translation = result.translated?.takeIf {
+            it.isNotBlank() && !settings.source.equals(settings.target, ignoreCase = true)
+        }
+        val output = translation ?: result.original
+        result.warning?.takeIf { it.isNotBlank() }?.let { warning ->
+            panel.addView(text(warning, 14f).apply {
+                setTextColor(if (lightSurface) Color.rgb(112, 63, 0) else Color.rgb(255, 212, 119))
+                setPadding(0, dp(8), 0, dp(8))
+            })
+        }
         if (output.isNotBlank()) {
-            content.addView(text(if (options.uppercaseText) output.uppercase(Locale.getDefault()) else output, options.textSize.toFloat()).apply {
+            panel.addView(text(if (options.uppercaseText) output.uppercase(Locale.getDefault()) else output, options.textSize.toFloat()).apply {
                 setTextColor(options.textColor)
                 typeface = Typeface.create(options.resultFontFamily, if (options.fontBold) Typeface.BOLD else Typeface.NORMAL)
                 if (options.centerText) gravity = Gravity.CENTER
@@ -1193,48 +1225,36 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 contentDescription = ui("Translation detail output", "نص نتيجة الترجمة")
                 setPadding(0, dp(8), 0, dp(8))
             })
+            val reading = actionRow()
+            val copyLabel = if (translation != null) ui("Copy translation", "نسخ الترجمة") else ui("Copy original", "نسخ الأصل")
+            val shareLabel = if (translation != null) ui("Share translation", "مشاركة الترجمة") else ui("Share original", "مشاركة الأصل")
+            addAction(reading, copyLabel) { copyText(output) }
+            addAction(reading, ui("Speak", "نطق")) { speak(output, if (translation != null) settings.target else settings.source) }
+            addAction(reading, shareLabel) { shareText(output, shareLabel) }
         } else if (result.warning.isNullOrBlank()) {
-            content.addView(text(ui("No readable text found. Try a smaller, clearer area. Protected screens may be blank.",
-                "لم يُعثر على نص مقروء. جرّب منطقة أوضح وأصغر. قد تظهر الشاشات المحمية فارغة."), 16f).apply { setTextColor(options.textColor) })
+            panel.addView(text(ui("No readable text found. Try selecting a smaller area. Protected screens may be blank.",
+                "لم يُعثر على نص مقروء. جرّب منطقة أصغر. قد تظهر الشاشات المحمية فارغة."), 16f).apply { setTextColor(options.textColor) })
         }
-        if (!options.hideOriginal && !result.translated.isNullOrBlank() && result.original.isNotBlank()) {
-            content.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(options.textColor) })
-            content.addView(text(result.original, 14f).apply { setTextColor(options.textColor); setTextIsSelectable(true) })
-        }
-        panel.addView(content, LinearLayout.LayoutParams(-1, -2))
-        val panelWidth = (screen.x * options.panelWidthPercent / 100).coerceIn(min(dp(160), screen.x - dp(16)), screen.x - dp(16))
-        fun actionRow(): LinearLayout = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; panel.addView(this) }
-        fun addAction(row: LinearLayout, label: String, action: () -> Unit): Button = button(label, action).also {
-            it.textSize = 12f
-            it.minimumHeight = dp(48)
-            it.setPadding(dp(5), dp(6), dp(5), dp(6))
-            row.addView(it, LinearLayout.LayoutParams(0, -2, 1f))
-        }
-        val first = actionRow()
-        addAction(first, ui("Copy original", "نسخ الأصل")) { copyText(result.original) }.isEnabled = result.original.isNotBlank()
-        addAction(first, ui("Copy translation", "نسخ الترجمة")) {
-            result.translated?.takeIf { it.isNotBlank() }?.let(::copyText)
-        }.isEnabled = !result.translated.isNullOrBlank()
-        addAction(first, ui("Speak", "نطق")) {
-            speak(output, if (!result.translated.isNullOrBlank()) settings.target else settings.source)
-        }.isEnabled = output.isNotBlank()
-        val sharing = actionRow()
-        addAction(sharing, ui("Share original", "مشاركة الأصل")) {
-            shareText(result.original, ui("Share original text", "مشاركة النص الأصلي"))
-        }.isEnabled = result.original.isNotBlank()
-        addAction(sharing, ui("Share translation", "مشاركة الترجمة")) {
-            result.translated?.takeIf { it.isNotBlank() }?.let { value ->
-                shareText(value, ui("Share translation", "مشاركة الترجمة"))
+        if (translation != null && result.original.isNotBlank()) {
+            if (!options.hideOriginal) {
+                panel.addView(text(ui("Original", "النص الأصلي"), 12f).apply { setTextColor(options.textColor) })
+                panel.addView(text(result.original, 14f).apply { setTextColor(options.textColor); setTextIsSelectable(true) })
             }
-        }.isEnabled = !result.translated.isNullOrBlank()
-        val second = actionRow()
-        addAction(second, ui("Area", "منطقة")) {
+            val originalActions = actionRow()
+            val shareOriginal = ui("Share original", "مشاركة الأصل")
+            addAction(originalActions, ui("Copy original", "نسخ الأصل")) { copyText(result.original) }
+            addAction(originalActions, shareOriginal) { shareText(result.original, shareOriginal) }
+        }
+        val controls = actionRow()
+        if (reliableDisplay()) addAction(controls, ui("Area", "منطقة")) {
             pauseAutomatic(); cancelCurrentCapture(); showRegionSelector(saveFixed = options.requiresFixedRegion)
         }
-        if (options.automatic) autoControl = addAction(second, if (isAutoRunning) ui("Pause", "توقيف") else ui("Resume", "استئناف")) { toggleAutomatic() }
-        addAction(second, ui("Modes", "أوضاع")) { pauseAutomatic(); cancelCurrentCapture(); showModeMenu() }
-        addAction(second, ui("Languages / provider", "اللغات / المزوّد")) { openLanguageSettings() }
-        addAction(second, ui("Close", "إغلاق")) { hideResults() }
+        addAction(controls, ui("Modes", "أوضاع")) { pauseAutomatic(); cancelCurrentCapture(); showModeMenu() }
+        addAction(controls, ui("Languages / provider", "اللغات / المزوّد")) { openLanguageSettings() }
+        if (options.automatic) {
+            autoControl = addAction(actionRow(), if (isAutoRunning) ui("Pause", "توقيف") else ui("Resume", "استئناف")) { toggleAutomatic() }
+        }
+        val panelWidth = (screen.x * options.panelWidthPercent / 100).coerceIn(min(dp(160), screen.x - dp(16)), screen.x - dp(16))
         // One viewport contains the complete result and every action. Fixed action rows
         // outside a text-only scroller could exceed a landscape screen at large font scales.
         val viewport = ScrollView(this).apply {

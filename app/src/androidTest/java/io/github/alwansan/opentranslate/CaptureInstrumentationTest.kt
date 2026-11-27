@@ -142,6 +142,15 @@ class CaptureInstrumentationTest {
         authorize()
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("OPEN SCREEN")
+        val close = device.findObject(By.text("Close"))
+        assertNotNull("Result panel should expose Close in its header", close)
+        assertTrue(device.hasObject(By.text("Copy original")))
+        assertFalse(device.hasObject(By.text("Copy translation")))
+        recordUiEvidence("redesign_screen_result_panel_en_light")
+        close!!.click()
+        await(5_000, "Closing the result should preserve the active projection") {
+            CaptureService.isRunning && !device.hasObject(By.desc("Translation detail output"))
+        }
         if (Build.VERSION.SDK_INT >= 30) device.setOrientationLeft(Display.DEFAULT_DISPLAY)
         else device.setOrientationLeft()
         await(10_000, "Rotation did not reach landscape") {
