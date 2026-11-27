@@ -25,7 +25,7 @@ object ScreenPreferences {
                 CaptureMode.MANGA -> CaptureOptions(mode = mode, fontBold = true, textColor = 0xff000000.toInt(),
                     backgroundColor = 0xffffffff.toInt(), centerText = true)
                 CaptureMode.SUBTITLE -> CaptureOptions(mode = mode, intervalSeconds = 2)
-                CaptureMode.FULL, CaptureMode.REGION, CaptureMode.FIXED -> CaptureOptions(mode = mode, positionedResults = false)
+                CaptureMode.REGION, CaptureMode.FIXED -> CaptureOptions(mode = mode, positionedResults = false)
                 else -> CaptureOptions(mode = mode)
             }
             val prefix = "style_" + mode.name + "_"

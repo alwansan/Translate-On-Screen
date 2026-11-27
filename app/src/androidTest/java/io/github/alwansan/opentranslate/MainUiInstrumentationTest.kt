@@ -179,6 +179,12 @@ class MainUiInstrumentationTest {
                 assertTrue(AppPreferences.isDark(activity))
                 assertEquals("en", SettingsStore.read(activity).source)
                 assertEquals("ar", SettingsStore.read(activity).target)
+                val buttons = descendants(activity.window.decorView).filterIsInstance<Button>()
+                val from = buttons.single { it.text.toString().startsWith("من\n") }
+                val to = buttons.single { it.text.toString().startsWith("إلى\n") }
+                assertEquals("من\nالإنجليزية", from.text.toString())
+                assertEquals("إلى\nالعربية", to.text.toString())
+                assertTrue(buttons.any { it.text.toString() == "تنزيل حزم اللغات" })
                 press(activity, "ترجمة")
                 assertTrue(descendants(activity.window.decorView).filterIsInstance<EditText>().isNotEmpty())
             }

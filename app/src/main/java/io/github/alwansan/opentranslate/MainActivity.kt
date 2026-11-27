@@ -283,6 +283,7 @@ class MainActivity : Activity() {
                 }
             }
         }
+        ui.menuItem(body, t("Download language packs", "تنزيل حزم اللغات")) { showModels() }
         ui.menuItem(body, t("Translate text, images or voice", "ترجمة نص أو صورة أو صوت")) { openTab("translate") }
         ui.menuItem(body, t("Quick guide", "دليل سريع")) { showGuide() }
     }
@@ -297,37 +298,52 @@ class MainActivity : Activity() {
         val card = ui.card(body)
         val row = ui.row()
         card.addView(row)
-        if (settings.provider == "offline") {
-            ui.smallButton(row, languageName(settings.source) + " → " + languageName(settings.target)) {
-                chooseOfflinePair(settings.source, settings.target) { pack ->
-                    saveSettings(settings.copy(source = pack.source, target = pack.target,
-                        ocrLanguage = ocrForSource(pack.source, settings.ocrLanguage)))
-                }
+        val offline = settings.provider == "offline"
+        fun choosePair() {
+            chooseOfflinePair(settings.source, settings.target) { pack ->
+                saveSettings(settings.copy(source = pack.source, target = pack.target,
+                    ocrLanguage = ocrForSource(pack.source, settings.ocrLanguage)))
             }
-            if (OfflineModelStore.find(settings.target, settings.source) != null) {
-                ui.smallButton(row, t("Swap", "تبديل")) { swapLanguages() }
+        }
+        ui.smallButton(row, t("From", "من") + "\n" + languageName(settings.source)) {
+            if (offline) choosePair()
+            else chooseLanguage(true, settings.source) { code ->
+                saveSettings(settings.copy(source = code, ocrLanguage = ocrForSource(code, settings.ocrLanguage)))
             }
-        } else {
-            ui.smallButton(row, languageName(settings.source)) {
-                chooseLanguage(true, settings.source) { code ->
-                    saveSettings(settings.copy(source = code, ocrLanguage = ocrForSource(code, settings.ocrLanguage)))
-                }
-            }
+        }
+        if (!offline || OfflineModelStore.find(settings.target, settings.source) != null) {
             ui.smallButton(row, t("Swap", "تبديل")) { swapLanguages() }
-            ui.smallButton(row, languageName(settings.target)) {
-                chooseLanguage(false, settings.target) { code -> saveSettings(settings.copy(target = code)) }
-            }
+        }
+        ui.smallButton(row, t("To", "إلى") + "\n" + languageName(settings.target)) {
+            if (offline) choosePair()
+            else chooseLanguage(false, settings.target) { code -> saveSettings(settings.copy(target = code)) }
         }
     }
 
     private fun chooseOfflinePair(source: String, target: String, done: (OfflineModelPack) -> Unit) {
         val packs = OfflineModelStore.packs
-        val selected = packs.indexOfFirst { it.source == source && it.target == target }
-        AlertDialog.Builder(this).setTitle(t("Offline language pair", "زوج لغات الترجمة المحلية"))
-            .setSingleChoiceItems(packs.map { t(it.englishName, it.arabicName) }.toTypedArray(), selected) { dialog, index ->
+        val dialog = android.app.Dialog(this)
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        val holder = ui.column(12)
+        val content = ui.card(holder, t("Offline language pair", "لغات الترجمة دون إنترنت"))
+        content.layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT
+        val choices = ui.column()
+        content.addView(ScrollView(this).apply { addView(choices) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        packs.forEach { pack ->
+            ui.button(choices, t(pack.englishName, pack.arabicName),
+                primary = pack.source == source && pack.target == target) {
                 dialog.dismiss()
-                done(packs[index])
-            }.setNegativeButton(R.string.cancel, null).show()
+                done(pack)
+            }.apply { isSelected = pack.source == source && pack.target == target }
+        }
+        ui.button(content, getString(R.string.cancel)) { dialog.dismiss() }
+        dialog.setContentView(holder)
+        dialog.show()
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setLayout((resources.displayMetrics.widthPixels * .94).toInt(),
+                (resources.displayMetrics.heightPixels * .68).toInt())
+        }
     }
 
     private fun ocrForSource(code: String, fallback: String): String {
