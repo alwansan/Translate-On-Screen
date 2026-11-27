@@ -119,11 +119,22 @@ object ScreenSettingsDialog {
         section = timingPage
         title(ui("Automatic mode","الوضع التلقائي"))
         val interval = slider(ui("Interval (seconds)","الفترة بالثواني"),1,120,old.intervalSeconds)
-        val fps = slider(ui("Target frames per second (0 uses interval)", "الإطارات المستهدفة بالثانية (٠ يستخدم الفترة)"),
-            0, 30, old.targetFramesPerSecond)
+        val fps = design.field(section, ui("Target frames per second", "الإطارات المستهدفة بالثانية"),
+            old.targetFramesPerSecond.toString()).apply {
+            inputType = InputType.TYPE_CLASS_NUMBER
+            filters = arrayOf(InputFilter.LengthFilter(2))
+        }
+        val fpsPresets = design.row()
+        section.addView(fpsPresets)
+        for (preset in listOf(1, 10, 15, 20, 30)) {
+            design.smallButton(fpsPresets, preset.toString()) {
+                fps.setText(preset.toString())
+                fps.error = null
+            }.contentDescription = ui("$preset frames per second", "$preset إطاراً بالثانية")
+        }
         section.addView(TextView(c).apply { text = ui(
-            "Choose up to 30. Actual updates depend on capture and translation speed.",
-            "اختر حتى ٣٠. معدل التحديث الفعلي يعتمد على سرعة الالتقاط والترجمة.") })
+            "Enter 1–30, or 0 to use the interval in seconds. Actual updates depend on capture and translation speed.",
+            "أدخل من ١ إلى ٣٠، أو ٠ لاستخدام الفترة بالثواني. يعتمد المعدل الفعلي على سرعة الالتقاط والترجمة.") })
         val display = slider(ui("Result duration (seconds)","مدة عرض النتيجة بالثواني"),0,300,old.displaySeconds)
         val stop = slider(ui("Stop after (minutes)","إيقاف بعد دقائق"),1,120,old.stopMinutes)
         section.addView(TextView(c).apply { text=ui("Automatic capture runs after explicit start. Use your configured gestures or the notification to pause/stop; locking the device ends sharing.","يلتقط الوضع التلقائي بعد تشغيله صراحة. استخدم الإيماءات المختارة أو الإشعار للتوقيف أو الإنهاء؛ قفل الجهاز ينهي المشاركة.") })
@@ -242,7 +253,8 @@ object ScreenSettingsDialog {
                 sharedStyle.isChecked = profile.useManualAppearance
                 mangaFont.isChecked = profile.mangaFont
                 interval.progress = profile.intervalSeconds - 1
-                fps.progress = profile.targetFramesPerSecond
+                fps.setText(profile.targetFramesPerSecond.toString())
+                fps.error = null
                 display.progress = profile.displaySeconds
                 stop.progress = profile.stopMinutes - 1
                 textSize.progress = profile.textSize - 12
@@ -342,6 +354,13 @@ object ScreenSettingsDialog {
         dialog.setOnShowListener {
             refreshPreview?.invoke()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val rate = fps.text.toString().toIntOrNull()
+                if (rate == null || rate !in 0..30) {
+                    selectPage(2)
+                    fps.error = ui("Enter a number from 0 to 30", "أدخل رقماً من ٠ إلى ٣٠")
+                    fps.requestFocus()
+                    return@setOnClickListener
+                }
                 val colorFields = listOf(bubbleColor, textColor, bg, borderColor, selectionColor)
                 val invalid = colorFields.firstOrNull { !it.validate() }
                 if (invalid != null) {
@@ -350,7 +369,7 @@ object ScreenSettingsDialog {
                     return@setOnClickListener
                 }
                 val updated=appearanceDraft().copy(single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
-                    intervalSeconds=interval.progress+1,targetFramesPerSecond=fps.progress,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
+                    intervalSeconds=interval.progress+1,targetFramesPerSecond=rate,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
                     speakAutomatically=speak.isChecked, selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),
                     lineByLine=lines.isChecked, verticalText=vertical.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,

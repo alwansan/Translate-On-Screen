@@ -134,11 +134,15 @@ class MainUiInstrumentationTest {
             device.click(bounds.left + bounds.width() * 3 / 4, bounds.centerY())
             val edited = device.findObject(By.textStartsWith("Interval (seconds):")).text
             assertNotEquals(initial, edited)
+            requireNotNull(device.wait(Until.findObject(By.desc("15 frames per second")), 5_000)).click()
+            val selectedRate = By.clazz(EditText::class.java).text("15")
+            assertTrue(device.wait(Until.hasObject(selectedRate), 5_000))
             device.findObject(By.text("Appearance")).click()
             assertTrue(device.wait(Until.hasObject(By.desc("Appearance preview")), 5_000))
             recordUiEvidence("redesign_capture_appearance_en_light")
             device.findObject(By.text("Timing")).click()
             assertEquals(edited, device.wait(Until.findObject(By.textStartsWith("Interval (seconds):")), 5_000)?.text)
+            assertTrue(device.wait(Until.hasObject(selectedRate), 5_000))
             device.findObject(By.res("android", "button2")).click()
         }
     }
