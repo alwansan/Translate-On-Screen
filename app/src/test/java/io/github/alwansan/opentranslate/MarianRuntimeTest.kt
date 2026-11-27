@@ -104,15 +104,19 @@ class MarianRuntimeTest {
             "ar-en" to listOf("لا تغلق هذه النافذة.", "نسبة شحن البطارية 20%.",
                 "يبدأ الاجتماع غداً في الساعة 10:30.", "فشل التنزيل. تحقق من اتصالك.",
                 "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.", "لم يتم حفظ تغييراتك."))
+        val threadCounts = System.getenv("OST_BENCHMARK_THREADS")?.split(',')?.map(String::toInt) ?: listOf(2)
         for ((direction, phrases) in samples) {
             val (pack, folder) = verifiedPack(direction)
-            val started = System.nanoTime()
-            MarianRuntime(folder, pack).use { runtime ->
-                println("benchmark $direction load_ms=" + (System.nanoTime() - started) / 1_000_000)
-                for (phrase in phrases) {
-                    val before = System.nanoTime()
-                    val output = runtime.translate(phrase, gate)
-                    println("benchmark $direction ms=" + (System.nanoTime() - before) / 1_000_000 + " | " + phrase + " | " + output)
+            for (threads in threadCounts) {
+                val started = System.nanoTime()
+                MarianRuntime(folder, pack, threads).use { runtime ->
+                    println("benchmark $direction threads=$threads load_ms=" + (System.nanoTime() - started) / 1_000_000)
+                    runtime.translate(phrases.first(), gate)
+                    for (phrase in phrases) {
+                        val before = System.nanoTime()
+                        val output = runtime.translate(phrase, gate)
+                        println("benchmark $direction threads=$threads ms=" + (System.nanoTime() - before) / 1_000_000 + " | " + phrase + " | " + output)
+                    }
                 }
             }
         }

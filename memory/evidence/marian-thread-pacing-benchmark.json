@@ -1,0 +1,265 @@
+{
+  "environment": "AMD EPYC 9V74 Linux, CPU quota of two cores",
+  "repeat_count_per_phrase": 1,
+  "warmup_per_direction_and_profile": 1,
+  "median_ms": {
+    "1": 348.0,
+    "2": 373.5,
+    "3": 517.5
+  },
+  "identical_text_between_thread_counts": true,
+  "rows": [
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 276,
+      "source": "Do not close this window.",
+      "text": "لا تغلق هذه النافذة."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 317,
+      "source": "Your battery is at 20%.",
+      "text": "بطاريتك بنسبة 20%"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 426,
+      "source": "The meeting starts at 10:30 tomorrow.",
+      "text": "الاجتماع سيبدأ في الساعة 10:30 غداً"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 384,
+      "source": "The download failed. Check your connection.",
+      "text": "فشل التحميل. تحقق من اتصالك."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 214,
+      "source": "Hold the button to pause the video.",
+      "text": "أوقف الزر لإيقاف الفيديو"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 1,
+      "ms": 341,
+      "source": "Your changes have not been saved.",
+      "text": "لم يتم حفظ تغييراتك."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 455,
+      "source": "Do not close this window.",
+      "text": "لا تغلق هذه النافذة."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 379,
+      "source": "Your battery is at 20%.",
+      "text": "بطاريتك بنسبة 20%"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 462,
+      "source": "The meeting starts at 10:30 tomorrow.",
+      "text": "الاجتماع سيبدأ في الساعة 10:30 غداً"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 415,
+      "source": "The download failed. Check your connection.",
+      "text": "فشل التحميل. تحقق من اتصالك."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 246,
+      "source": "Hold the button to pause the video.",
+      "text": "أوقف الزر لإيقاف الفيديو"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 2,
+      "ms": 327,
+      "source": "Your changes have not been saved.",
+      "text": "لم يتم حفظ تغييراتك."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 390,
+      "source": "Do not close this window.",
+      "text": "لا تغلق هذه النافذة."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 502,
+      "source": "Your battery is at 20%.",
+      "text": "بطاريتك بنسبة 20%"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 684,
+      "source": "The meeting starts at 10:30 tomorrow.",
+      "text": "الاجتماع سيبدأ في الساعة 10:30 غداً"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 625,
+      "source": "The download failed. Check your connection.",
+      "text": "فشل التحميل. تحقق من اتصالك."
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 356,
+      "source": "Hold the button to pause the video.",
+      "text": "أوقف الزر لإيقاف الفيديو"
+    },
+    {
+      "direction": "en-ar",
+      "threads": 3,
+      "ms": 494,
+      "source": "Your changes have not been saved.",
+      "text": "لم يتم حفظ تغييراتك."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 355,
+      "source": "لا تغلق هذه النافذة.",
+      "text": "Don't close that window."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 319,
+      "source": "نسبة شحن البطارية 20%.",
+      "text": "Battery charge is 20%."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 507,
+      "source": "يبدأ الاجتماع غداً في الساعة 10:30.",
+      "text": "The meeting will begin tomorrow at 10:30."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 235,
+      "source": "فشل التنزيل. تحقق من اتصالك.",
+      "text": "Check your call."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 571,
+      "source": "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.",
+      "text": "Press the button at length to stop the video temporarily."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 1,
+      "ms": 405,
+      "source": "لم يتم حفظ تغييراتك.",
+      "text": "Your changes have not been saved."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 368,
+      "source": "لا تغلق هذه النافذة.",
+      "text": "Don't close that window."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 368,
+      "source": "نسبة شحن البطارية 20%.",
+      "text": "Battery charge is 20%."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 456,
+      "source": "يبدأ الاجتماع غداً في الساعة 10:30.",
+      "text": "The meeting will begin tomorrow at 10:30."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 255,
+      "source": "فشل التنزيل. تحقق من اتصالك.",
+      "text": "Check your call."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 547,
+      "source": "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.",
+      "text": "Press the button at length to stop the video temporarily."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 2,
+      "ms": 365,
+      "source": "لم يتم حفظ تغييراتك.",
+      "text": "Your changes have not been saved."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 533,
+      "source": "لا تغلق هذه النافذة.",
+      "text": "Don't close that window."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 466,
+      "source": "نسبة شحن البطارية 20%.",
+      "text": "Battery charge is 20%."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 628,
+      "source": "يبدأ الاجتماع غداً في الساعة 10:30.",
+      "text": "The meeting will begin tomorrow at 10:30."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 353,
+      "source": "فشل التنزيل. تحقق من اتصالك.",
+      "text": "Check your call."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 760,
+      "source": "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.",
+      "text": "Press the button at length to stop the video temporarily."
+    },
+    {
+      "direction": "ar-en",
+      "threads": 3,
+      "ms": 559,
+      "source": "لم يتم حفظ تغييراتك.",
+      "text": "Your changes have not been saved."
+    }
+  ]
+}

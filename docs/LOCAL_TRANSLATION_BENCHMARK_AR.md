@@ -14,3 +14,7 @@
 
 - M2M100 نموذج متعدد اللغات بترخيص MIT. جرى تشغيل تحويل INT8 مثبت الإصدار محلياً. [النموذج الأصلي](https://huggingface.co/facebook/m2m100_418M) · [تحويل الاختبار](https://huggingface.co/jncraton/m2m100_418M-ct2-int8/tree/7c1b2620a4e58dacecbd8bf89cfd6da7eb9eb7b0)
 - NLLB distilled 600M يحمل CC BY-NC 4.0. MADLAD-400 3B يحمل Apache-2.0، وملف الأوزان الرسمي نحو 11.8 GB. أُخذت بيانات هذين النموذجين من بطاقتيهما ولم يُشغلا. [NLLB](https://huggingface.co/facebook/nllb-200-distilled-600M) · [MADLAD](https://huggingface.co/google/madlad400-3b-mt)
+
+## قياس عدد الخيوط
+
+أعيدت الرسائل نفسها بعد طلب إحماء لكل اتجاه وإعداد. تحت حصة Linux بمقدار نواتين، سجّل Marian وسيط 348 ms بخيط واحد، و373.5 ms بخيطين، و517.5 ms بثلاثة. تطابقت النصوص الناتجة في الإعدادات الثلاثة. بقي الافتراضي عند خيطين حتى تتوفر قياسات Android، لأن زيادة الخيوط هنا لم تعنِ زيادة السرعة. يعاد تشغيل القياس بمتغير `OST_BENCHMARK_THREADS=1,2,3` واختبار `MarianRuntimeTest.reportScreenTranslationBaseline` مع حزم الاختبار المعتمدة. [النتائج الخام](../memory/evidence/marian-thread-pacing-benchmark.json)

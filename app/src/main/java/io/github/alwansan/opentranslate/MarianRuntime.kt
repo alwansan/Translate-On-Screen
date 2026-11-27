@@ -17,7 +17,11 @@ private val CLOCK_TIME = Regex("(?<!\\p{Nd})(?:[01]?[0-9]|2[0-3]): *[0-5][0-9](?
  * CPU Marian encoder + merged decoder with real key/value-cache reuse.
  * This class has no Android dependency and can be exercised with the official JVM runtime.
  */
-internal class MarianRuntime(folder: File, private val pack: OfflineModelPack) : Closeable {
+internal class MarianRuntime(
+    folder: File,
+    private val pack: OfflineModelPack,
+    intraThreads: Int = 2,
+) : Closeable {
     private val environment = OrtEnvironment.getEnvironment(OrtLoggingLevel.ORT_LOGGING_LEVEL_FATAL)
     private val tokenizer = MarianTokenizer(File(folder, "source.spm"), File(folder, "vocab.json"),
         pack.vocabularySize, pack.padToken)
@@ -27,7 +31,7 @@ internal class MarianRuntime(folder: File, private val pack: OfflineModelPack) :
     init {
         val options = OrtSession.SessionOptions()
         try {
-            options.setIntraOpNumThreads(2)
+            options.setIntraOpNumThreads(intraThreads)
             options.setInterOpNumThreads(1)
             options.setMemoryPatternOptimization(false)
             options.setCPUArenaAllocator(false)
