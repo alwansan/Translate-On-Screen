@@ -144,8 +144,8 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "031",
-    "validation": "API 35 passed; 16 KiB rotation and ART failures under investigation",
+    "id": "032",
+    "validation": "instrumentation scroll verification pending",
     "overlay_overlap_evidence_artifact": 15174463782,
     "prior_device_run": 45946146154,
     "source": "c32b5cf",
@@ -156,7 +156,8 @@
     "guide_packaging_run": 45947219419,
     "retry_device_run": 45947942928,
     "failed_16k_artifact": 15175397138,
-    "passed_api35_artifact": 15175029423
+    "passed_api35_artifact": 15175029423,
+    "failed_api29_artifact": 15175816241
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

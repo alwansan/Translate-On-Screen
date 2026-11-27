@@ -30,6 +30,7 @@ import android.os.SystemClock
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.StaleObjectException
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
@@ -143,15 +144,21 @@ class CaptureInstrumentationTest {
         authorize()
         action(CaptureService.ACTION_CAPTURE)
         awaitOutput("OPEN SCREEN")
-        val close = device.findObject(By.text("Close"))
-        assertNotNull("Result panel should expose Close in its header", close)
-        assertTrue(device.hasObject(By.text("Copy original")))
-        assertFalse(device.hasObject(By.text("Copy translation")))
-        val panel = requireNotNull(device.findObject(By.clazz("android.widget.ScrollView").hasDescendant(By.text("Close"))))
+        val closeSelector = By.text("Close")
+        val copySelector = By.text("Copy original")
+        val panel = requireNotNull(device.findObject(By.clazz("android.widget.ScrollView").hasDescendant(closeSelector)))
         val bubble = requireNotNull(device.findObject(By.descStartsWith("Translation bubble.")))
         assertFalse("The bubble must not cover the result panel", Rect.intersects(panel.visibleBounds, bubble.visibleBounds))
         recordUiEvidence("redesign_screen_result_panel_en_light")
-        close!!.click()
+        repeat(4) {
+            if (!device.hasObject(copySelector)) panel.scroll(Direction.DOWN, .8f)
+        }
+        assertTrue("Copy original should be reachable in the result panel", device.hasObject(copySelector))
+        assertFalse(device.hasObject(By.text("Copy translation")))
+        repeat(4) {
+            if (!device.hasObject(closeSelector)) panel.scroll(Direction.UP, .8f)
+        }
+        requireNotNull(device.findObject(closeSelector)) { "Close should be reachable in the result panel header" }.click()
         await(5_000, "Closing the result should preserve the active projection") {
             CaptureService.isRunning && !device.hasObject(By.desc("Translation detail output"))
         }
