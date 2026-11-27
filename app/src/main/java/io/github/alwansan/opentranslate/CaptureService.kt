@@ -427,37 +427,67 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         if (stopping) return
         removeResult()
         menuPanel?.let { runCatching { windows.removeViewImmediate(it) } }
-        val panel = LinearLayout(this).apply {
+        val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(12), dp(8), dp(12), dp(8))
             background = background(Color.rgb(29, 32, 43), 16)
         }
-        panel.addView(text(ui("Capture modes", "أوضاع الالتقاط"), 19f))
-        CaptureMode.values().forEach { mode -> panel.addView(button(modeLabel(mode)) { chooseMode(mode) }) }
-        panel.addView(button(ui("Redefine saved area", "تغيير المنطقة المحفوظة")) {
+        root.addView(text(ui("How do you want to translate?", "كيف تريد الترجمة؟"), 19f).apply {
+            setPaddingRelative(dp(8), dp(4), dp(8), dp(8))
+        })
+        val quickModes = listOf(CaptureMode.FULL, CaptureMode.REGION, CaptureMode.AUTO_FULL)
+        quickModes.forEach { mode -> panel.addView(button(modeLabel(mode)) { chooseMode(mode) }) }
+        val advanced = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            visibility = View.GONE
+        }
+        val screen = screenSize()
+        val width = min(dp(340), screen.x - dp(16))
+        val availableHeight = max(1, screen.y - dp(80))
+        val layout = overlayParams(width, min(dp(330), availableHeight)).apply {
+            x = (screen.x - width) / 2
+            y = dp(40)
+        }
+        val more = button(ui("More modes and tools", "أوضاع وأدوات إضافية")) {
+            val expanded = advanced.visibility != View.VISIBLE
+            advanced.visibility = if (expanded) View.VISIBLE else View.GONE
+            layout.height = min(dp(if (expanded) 580 else 330), availableHeight)
+            runCatching { windows.updateViewLayout(root, layout) }
+        }
+        panel.addView(more)
+        panel.addView(advanced)
+        CaptureMode.values().filterNot(quickModes::contains).forEach { mode ->
+            advanced.addView(button(modeLabel(mode)) { chooseMode(mode) })
+        }
+        advanced.addView(button(ui("Redefine saved area", "تغيير المنطقة المحفوظة")) {
             removeAllOverlays(); showRegionSelector(saveFixed = true)
         })
-        panel.addView(button(ui("Clear saved areas", "حذف المناطق المحفوظة")) {
+        advanced.addView(button(ui("Clear saved areas", "حذف المناطق المحفوظة")) {
             CaptureOptionsStore.clearRegions(this)
             removeMenu(); showBubble()
         })
-        panel.addView(button(if (options.bubbleLocked) ui("Unlock bubble movement", "إلغاء قفل الفقاعة") else ui("Lock bubble movement", "قفل تحريك الفقاعة")) {
+        advanced.addView(button(if (options.bubbleLocked) ui("Unlock bubble movement", "إلغاء قفل الفقاعة") else ui("Lock bubble movement", "قفل تحريك الفقاعة")) {
             options = options.copy(bubbleLocked = !options.bubbleLocked)
             val profile = ScreenPreferences.read(this, options.mode)
             ScreenPreferences.save(this, profile.copy(bubbleLocked = options.bubbleLocked))
             removeAllOverlays(); showBubble()
         })
-        panel.addView(button(ui("Settings", "الإعدادات")) {
+        advanced.addView(button(ui("Settings", "الإعدادات")) {
             removeMenu()
             openLanguageSettings()
         })
-        panel.addView(button(ui("Close", "إغلاق")) { removeMenu(); showBubble() })
-        panel.addView(button(ui("Stop screen sharing", "إنهاء مشاركة الشاشة")) { cleanup(); stopSelf() })
         val scroll = ScrollView(this).apply { addView(panel) }
-        val screen = screenSize()
+        root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
+        val footer = LinearLayout(this)
+        footer.addView(button(ui("Close", "إغلاق")) { removeMenu(); showBubble() },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        footer.addView(button(ui("Stop sharing", "إيقاف المشاركة")) { cleanup(); stopSelf() },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        root.addView(footer)
         try {
-            windows.addView(scroll, overlayParams(min(dp(340), screen.x - dp(16)), min(dp(580), screen.y - dp(80))).apply { x = dp(8); y = dp(40) })
-            menuPanel = scroll
+            windows.addView(root, layout)
+            menuPanel = root
             showBubble()
         } catch (_: RuntimeException) { showBubble() }
     }
