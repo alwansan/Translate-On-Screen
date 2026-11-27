@@ -20,6 +20,34 @@ interface OcrEngine : Closeable {
 internal class OcrProblem(val english: String, val arabic: String) : Exception(english)
 
 internal object OcrGeometry {
+    fun groupAdjacentParagraphs(blocks: List<OcrBlock>): List<OcrBlock> {
+        if (blocks.size < 2) return blocks
+        val grouped = ArrayList<OcrBlock>(blocks.size)
+        var previous = blocks.first()
+        var group = previous
+        for (index in 1 until blocks.size) {
+            val next = blocks[index]
+            val lineHeight = minOf(previous.bottom - previous.top, next.bottom - next.top)
+            val gap = next.top - previous.bottom
+            val overlap = minOf(previous.right, next.right) - maxOf(previous.left, next.left)
+            val narrowWidth = minOf(previous.right - previous.left, next.right - next.left)
+            val aligned = minOf(kotlin.math.abs(previous.left - next.left),
+                kotlin.math.abs(previous.right - next.right)) <= lineHeight * .65f
+            if (gap in 0f..(lineHeight * .4f) && overlap >= narrowWidth * .8f && aligned &&
+                group.original.length + next.original.length < 160) {
+                group = group.copy(original = group.original + "\n" + next.original,
+                    left = minOf(group.left, next.left), right = maxOf(group.right, next.right),
+                    bottom = next.bottom, confidence = minOf(group.confidence, next.confidence))
+            } else {
+                grouped.add(group)
+                group = next
+            }
+            previous = next
+        }
+        grouped.add(group)
+        return grouped
+    }
+
     /** Tesseract JNI returns x1,y1,x2,y2 (not width/height). */
     fun block(text: String, box: IntArray, width: Int, height: Int, confidence: Float): OcrBlock? {
         val original = text.trim()

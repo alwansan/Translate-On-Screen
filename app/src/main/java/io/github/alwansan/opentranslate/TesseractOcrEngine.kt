@@ -71,7 +71,9 @@ internal class TesseractOcrEngine(context: Context) : OcrEngine {
                 }
             } finally { iterator?.delete() }
             InterruptedRequestGate.check()
-            return OcrResult(text, blocks)
+            val outputBlocks = if (settings.ocrBlockMode == "paragraph" && settings.ocrPageMode != OcrPageModes.VERTICAL)
+                OcrGeometry.groupAdjacentParagraphs(blocks) else blocks
+            return OcrResult(text, outputBlocks)
         } catch (error: TranslationProblem) { throw error }
         catch (error: OcrProblem) { throw error }
         catch (_: LinkageError) {
