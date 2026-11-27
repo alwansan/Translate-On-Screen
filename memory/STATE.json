@@ -147,7 +147,12 @@
     "id": "040",
     "validation": "pending device validation",
     "previous_verified_source": "5c95589",
-    "focus": "everyday menus and translation quality"
+    "focus": "everyday menus and translation quality",
+    "source": "206636a",
+    "host_run": 46010740390,
+    "device_run": 46010740496,
+    "ocr_device_run": 46010562724,
+    "first_menu_device_run": 46009183764
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
