@@ -50,11 +50,13 @@ data class CaptureOptions(
     val useManualAppearance: Boolean = false,
     val bubbleEdgeHidePercent: Int = 0,
     val showFixedRegionBorder: Boolean = false,
+    val targetFramesPerSecond: Int = 0,
 ) {
     val resultFontFamily: String get() = if (mode == CaptureMode.MANGA && mangaFont) "casual" else fontFamily
     val automatic: Boolean get() = mode.automatic
     val requiresFixedRegion: Boolean get() = mode in setOf(CaptureMode.FIXED, CaptureMode.AUTO_REGION, CaptureMode.SUBTITLE)
-    val autoIntervalMs: Long get() = intervalSeconds * 1_000L
+    val autoIntervalMs: Long get() = if (targetFramesPerSecond > 0)
+        (1_000L + targetFramesPerSecond - 1) / targetFramesPerSecond else intervalSeconds * 1_000L
     internal val manualAppearanceMode: CaptureMode?
         get() = when (mode) {
             CaptureMode.AUTO_FULL -> CaptureMode.FULL
@@ -87,6 +89,7 @@ data class CaptureOptions(
 
     fun safe() = copy(
         intervalSeconds = intervalSeconds.coerceIn(1, 120),
+        targetFramesPerSecond = targetFramesPerSecond.coerceIn(0, 30),
         displaySeconds = displaySeconds.coerceIn(0, 300),
         stopMinutes = stopMinutes.coerceIn(1, 120),
         bubbleSize = bubbleSize.coerceIn(36, 96),

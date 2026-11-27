@@ -1,9 +1,9 @@
 package io.github.alwansan.opentranslate
 
 /** Monotonic serial policy: no backlog, at most one native/provider operation at a time. */
-class AutoCaptureSchedule(intervalMs: Long, durationMs: Long) {
+class AutoCaptureSchedule(intervalMs: Long, durationMs: Long, private val framePacing: Boolean = false) {
     enum class Decision { READY, WAIT, BUSY, EXPIRED, STOPPED }
-    val intervalMs = intervalMs.coerceIn(1_000, 120_000)
+    val intervalMs = intervalMs.coerceIn(if (framePacing) 34 else 1_000, 120_000)
     private val durationMs = durationMs.coerceIn(60_000, 7_200_000)
     var running = false
         private set
@@ -11,6 +11,7 @@ class AutoCaptureSchedule(intervalMs: Long, durationMs: Long) {
     private var deadline = 0L
     private var next = 0L
     private var lastCompletion = 0L
+    private var lastStarted = 0L
     fun start(now: Long) { running = true; busy = false; deadline = now + durationMs; next = now; lastCompletion = now - 1_000 }
     fun stop() { running = false; busy = false }
     fun begin(now: Long): Decision {
@@ -18,10 +19,11 @@ class AutoCaptureSchedule(intervalMs: Long, durationMs: Long) {
         if (now >= deadline) { stop(); return Decision.EXPIRED }
         if (busy) return Decision.BUSY
         if (now < next) return Decision.WAIT
+        lastStarted = now
         busy = true
         return Decision.READY
     }
-    fun complete(now: Long) { busy = false; if (running) { lastCompletion = now; next = now + intervalMs } }
+    fun complete(now: Long) { busy = false; if (running) { lastCompletion = now; next = if (framePacing) maxOf(now, lastStarted + intervalMs) else now + intervalMs } }
     fun expedite(now: Long): Boolean {
         if (!running || busy || now >= deadline) return false
         next = minOf(next, maxOf(now, lastCompletion + 1_000))

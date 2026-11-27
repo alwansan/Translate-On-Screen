@@ -511,7 +511,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         lastSpokenText = null
         autoErrors = 0
         autoSettings = SettingsStore.read(this)
-        val scheduler = AutoCaptureSchedule(options.autoIntervalMs, options.stopMinutes * 60_000L)
+        val scheduler = AutoCaptureSchedule(options.autoIntervalMs, options.stopMinutes * 60_000L, options.targetFramesPerSecond > 0)
         scheduler.start(SystemClock.elapsedRealtime())
         autoSchedule = scheduler
         isAutoRunning = true

@@ -37,7 +37,7 @@ object ScreenPreferences {
                 single = choice(p.getString("single", null), d.single),
                 long = choice(p.getString("long", null), d.long),
                 double = choice(p.getString("double", null), d.double),
-                intervalSeconds = int("interval", d.intervalSeconds), displaySeconds = int("display", d.displaySeconds),
+                intervalSeconds = int("interval", d.intervalSeconds), targetFramesPerSecond = int("target_fps", 0), displaySeconds = int("display", d.displaySeconds),
                 stopMinutes = int("stop", d.stopMinutes), bubbleSize = p.getInt("bubble_size", d.bubbleSize),
                 bubbleOpacity = p.getInt("bubble_opacity", d.bubbleOpacity), bubbleColor = p.getInt("bubble_color", d.bubbleColor),
                 bubbleSymbol = p.getString("symbol", d.bubbleSymbol) ?: d.bubbleSymbol,
@@ -68,7 +68,7 @@ object ScreenPreferences {
             .putInt("selection_color", v.selectionBorderColor)
             .putInt("edge_hide_percent", v.bubbleEdgeHidePercent)
             .putBoolean("dock", v.bubbleAutoDock).putBoolean("dim", v.bubbleAutoDim).putBoolean("locked", v.bubbleLocked)
-            .putInt(prefix + "interval", v.intervalSeconds).putInt(prefix + "display", v.displaySeconds).putInt(prefix + "stop", v.stopMinutes)
+            .putInt(prefix + "target_fps", v.targetFramesPerSecond).putInt(prefix + "interval", v.intervalSeconds).putInt(prefix + "display", v.displaySeconds).putInt(prefix + "stop", v.stopMinutes)
             .putInt(prefix + "text_size", v.textSize).putInt(prefix + "text_color", v.textColor)
             .putInt(prefix + "background_color", v.backgroundColor).putInt(prefix + "background_opacity", v.backgroundOpacity)
             .putBoolean(prefix + "center", v.centerText).putBoolean(prefix + "hide_original", v.hideOriginal)

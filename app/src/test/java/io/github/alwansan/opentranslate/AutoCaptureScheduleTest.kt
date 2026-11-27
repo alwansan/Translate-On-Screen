@@ -4,6 +4,20 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class AutoCaptureScheduleTest {
+    @Test fun framePacingLimitsStartRateWithoutQueueingSlowWork() {
+        val options = CaptureOptions(targetFramesPerSecond = 30)
+        assertEquals(34L, options.autoIntervalMs)
+        val schedule = AutoCaptureSchedule(options.autoIntervalMs, 60_000, framePacing = true)
+        schedule.start(0)
+        assertEquals(AutoCaptureSchedule.Decision.READY, schedule.begin(0))
+        assertEquals(AutoCaptureSchedule.Decision.BUSY, schedule.begin(34))
+        schedule.complete(200)
+        assertEquals(AutoCaptureSchedule.Decision.READY, schedule.begin(200))
+        schedule.complete(210)
+        assertEquals(AutoCaptureSchedule.Decision.WAIT, schedule.begin(233))
+        assertEquals(AutoCaptureSchedule.Decision.READY, schedule.begin(234))
+    }
+
     @Test fun slowWorkDoesNotOverlapOrCreateCatchUpRequests() {
         val schedule = AutoCaptureSchedule(8_000, 60_000)
         schedule.start(1_000)

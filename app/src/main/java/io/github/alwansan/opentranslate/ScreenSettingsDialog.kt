@@ -119,6 +119,11 @@ object ScreenSettingsDialog {
         section = timingPage
         title(ui("Automatic mode","الوضع التلقائي"))
         val interval = slider(ui("Interval (seconds)","الفترة بالثواني"),1,120,old.intervalSeconds)
+        val fps = slider(ui("Target frames per second (0 uses interval)", "الإطارات المستهدفة بالثانية (٠ يستخدم الفترة)"),
+            0, 30, old.targetFramesPerSecond)
+        section.addView(TextView(c).apply { text = ui(
+            "Choose up to 30. Actual updates depend on capture and translation speed.",
+            "اختر حتى ٣٠. معدل التحديث الفعلي يعتمد على سرعة الالتقاط والترجمة.") })
         val display = slider(ui("Result duration (seconds)","مدة عرض النتيجة بالثواني"),0,300,old.displaySeconds)
         val stop = slider(ui("Stop after (minutes)","إيقاف بعد دقائق"),1,120,old.stopMinutes)
         section.addView(TextView(c).apply { text=ui("Automatic capture runs after explicit start. Use your configured gestures or the notification to pause/stop; locking the device ends sharing.","يلتقط الوضع التلقائي بعد تشغيله صراحة. استخدم الإيماءات المختارة أو الإشعار للتوقيف أو الإنهاء؛ قفل الجهاز ينهي المشاركة.") })
@@ -237,6 +242,7 @@ object ScreenSettingsDialog {
                 sharedStyle.isChecked = profile.useManualAppearance
                 mangaFont.isChecked = profile.mangaFont
                 interval.progress = profile.intervalSeconds - 1
+                fps.progress = profile.targetFramesPerSecond
                 display.progress = profile.displaySeconds
                 stop.progress = profile.stopMinutes - 1
                 textSize.progress = profile.textSize - 12
@@ -344,7 +350,7 @@ object ScreenSettingsDialog {
                     return@setOnClickListener
                 }
                 val updated=appearanceDraft().copy(single=singleActions[single.selectedItemPosition],long=actions[long.selectedItemPosition],double=actions[double.selectedItemPosition],
-                    intervalSeconds=interval.progress+1,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
+                    intervalSeconds=interval.progress+1,targetFramesPerSecond=fps.progress,displaySeconds=display.progress,stopMinutes=stop.progress+1,bubbleSize=size.progress+36,bubbleOpacity=opacity.progress+20,bubbleSymbol=symbols[symbol.selectedItemPosition],bubbleColor=requireNotNull(bubbleColor.valueOrNull()),
                     speakAutomatically=speak.isChecked, selectionBorderColor=requireNotNull(selectionColor.valueOrNull()),
                     lineByLine=lines.isChecked, verticalText=vertical.isChecked,
                     skipUnchangedFrames=skip.isChecked,changeThreshold=threshold.progress+1,translateOnInteraction=interaction.isChecked,
