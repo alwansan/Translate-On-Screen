@@ -412,7 +412,7 @@ class CaptureInstrumentationTest {
         authorize()
         val controls = By.desc("Translation overlay controls")
         await(40_000, "Subtitle overlay did not appear") { device.hasObject(controls) }
-        val text = if (offline) By.text("Text") else By.textStartsWith("Text")
+        val text = By.text(if (offline) "Read" else "Details")
         await(10_000, "Subtitle details control was unavailable") {
             device.findObject(controls)?.findObject(text) != null
         }

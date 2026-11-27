@@ -184,7 +184,7 @@ object ScreenSettingsDialog {
         val fixedBorder = toggle(ui("Show saved area border with results", "إظهار إطار المنطقة المحفوظة مع النتائج"),
             old.showFixedRegionBorder)
         val lines = toggle(ui("Translate lines separately (off: paragraphs)", "ترجمة الأسطر منفصلة (التعطيل: فقرات)"), old.lineByLine)
-        val positioned = toggle(ui("Place translation over text", "عرض الترجمة مكان النص"), old.positionedResults)
+        val positioned = toggle(ui("Show translation over the original text", "عرض الترجمة فوق النص الأصلي"), old.positionedResults)
         val vertical = toggle(ui("Vertical-source OCR for this mode", "قراءة النص العمودي لهذا الوضع"), old.verticalText)
         val outline = toggle(ui("Text outline", "حدود حول النص"), old.outlineText)
         val upper = toggle(ui("Uppercase output", "أحرف لاتينية كبيرة"), old.uppercaseText)

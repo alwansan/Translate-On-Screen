@@ -1180,7 +1180,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
             it.textSize = 12f
             bar.addView(it, LinearLayout.LayoutParams(0, dp(48), 1f))
         }
-        add(ui("Text", "النص") + if (!result.warning.isNullOrBlank()) " · !" else "") {
+        add(if (result.warning.isNullOrBlank()) ui("Read", "قراءة") else ui("Details", "التفاصيل")) {
             pauseAutomatic(); cancelCurrentCapture()
             resultExpiresAt = Long.MAX_VALUE
             showTextResult(result, entry.settings, selection)
