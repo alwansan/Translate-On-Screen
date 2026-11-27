@@ -719,7 +719,9 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                 if (current(next.id, next.session)) {
                     frameTimeout?.let(main::removeCallbacks); frameTimeout = null
                     phase = Phase.PROCESSING
-                    showBubble()
+                    val previous = matchingAutomaticResult(next)
+                    if (previous != null && SystemClock.elapsedRealtime() < resultExpiresAt) displayCaptured(previous)
+                    else showBubble()
                     notifyState(ui("Recognizing and translating…", "جارٍ قراءة النص وترجمته…"))
                 }
             }
@@ -761,8 +763,7 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                             main.post {
                                 if (current(selected.id, selected.session)) {
                                     phase = Phase.IDLE
-                                    if (SystemClock.elapsedRealtime() < resultExpiresAt) lastResult?.let(::displayCaptured)
-                                    else showBubble()
+                                    showBubble()
                                     notifyState(readyMessage())
                                     completeAutomatic()
                                 }
@@ -781,10 +782,22 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
                             if (current(selected.id, selected.session)) {
                                 phase = Phase.IDLE
                                 if (!deviceReady()) { cleanup(); stopSelf(); return@post }
+                                val previous = matchingAutomaticResult(selected)
+                                val unchanged = previous?.let {
+                                    it.result.original == result.original && it.result.translated == result.translated &&
+                                        it.result.warning == result.warning && it.actualRegion == entry.actualRegion &&
+                                        it.result.blocks.size == result.blocks.size &&
+                                        it.result.blocks.indices.all { index ->
+                                            val old = it.result.blocks[index]
+                                            val new = result.blocks[index]
+                                            old.copy(confidence = new.confidence) == new
+                                        }
+                                } == true
                                 lastResult = entry
                                 resultExpiresAt = if (selected.automatic && selected.options.displaySeconds > 0)
                                     SystemClock.elapsedRealtime() + selected.options.displaySeconds * 1_000L else Long.MAX_VALUE
-                                displayCaptured(entry)
+                                if (unchanged && resultPanel != null) armResultTimeout()
+                                else displayCaptured(entry)
                                 val output = result.translated?.takeIf { it.isNotBlank() } ?: result.original
                                 if (selected.options.speakAutomatically && output.isNotBlank() && output != lastSpokenText) {
                                     lastSpokenText = output
@@ -858,6 +871,11 @@ class CaptureService : Service(), DisplayManager.DisplayListener {
         return Bitmap.createBitmap(crop.width, crop.height, Bitmap.Config.ARGB_8888).also {
             it.copyPixelsFromBuffer(packed)
         }
+    }
+
+    private fun matchingAutomaticResult(request: FrameRequest): CapturedResult? = lastResult?.takeIf {
+        request.automatic && it.settings == request.settings && it.requestedRegion == request.region &&
+            it.width == request.contentWidth && it.height == request.contentHeight && it.result.original.isNotBlank()
     }
 
     private fun failFromWorker(request: FrameRequest, message: String) {
