@@ -523,6 +523,32 @@ class CaptureInstrumentationTest {
         } finally { colors.recycle() }
     }
 
+    @Test fun darkTwoColumnScreenKeepsLabelsAndNumbersReadable() {
+        val labels = listOf("DOWNLOAD READY", "BATTERY 20%", "OPENS AT 10:30",
+            "SAVE CHANGES", "NETWORK OFF", "UPDATE AVAILABLE")
+        val bitmap = Bitmap.createBitmap(1080, 730, Bitmap.Config.ARGB_8888)
+        try {
+            val canvas = Canvas(bitmap).apply { drawColor(Color.rgb(18, 25, 35)) }
+            val ink = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.rgb(238, 242, 250)
+                textSize = 36f
+                typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            }
+            labels.forEachIndexed { index, label ->
+                canvas.drawText(label, if (index < 3) 42f else 570f, 190f + index % 3 * 135f, ink)
+            }
+            TranslationEngine(context).use { engine ->
+                val result = engine.fromBitmap(bitmap, UserSettings(source = "en", target = "en",
+                    ocrLanguage = "eng", keepHistory = false))
+                val recognized = result.original.replace(Regex("\\s+"), " ")
+                val missed = labels.filterNot(recognized::contains)
+                if (missed.isNotEmpty()) recordBitmapEvidence("dark_two_column_ocr_fixture", bitmap)
+                assertTrue("Missing screen labels: " + missed.joinToString(), missed.isEmpty())
+                assertGeometry(result)
+            }
+        } finally { bitmap.recycle() }
+    }
+
     @Test fun japaneseVerticalLayoutUsesVerticalModelAndPreservesReadingOrder() {
         assertTrue("Pinned Japanese vertical fixture model missing.", ModelStore.has(context, "jpn_vert"))
         val sample = "日本語の本です"

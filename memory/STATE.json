@@ -144,7 +144,7 @@
   },
   "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "038",
+    "id": "039",
     "validation": "pending device validation",
     "previous_verified_source": "5c95589",
     "focus": "everyday menus and translation quality"
