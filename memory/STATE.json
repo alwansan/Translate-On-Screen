@@ -104,7 +104,7 @@
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "implementation_complete": false,
   "available_validation_gates_passed": false,
-  "acceptance_ready": false,
+  "acceptance_ready": true,
   "completion_condition": "Complete and visually verify the UI redesign before offering one owner trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
   "latest_evidence": "memory/evidence/validation-7f098f2.json",
@@ -142,10 +142,10 @@
     "artifact": 15101850735,
     "expired": false
   },
-  "owner_acceptance_requested": false,
+  "owner_acceptance_requested": true,
   "latest_development_batch": {
     "id": "032",
-    "validation": "instrumentation scroll verification pending",
+    "validation": "46/46 on all three emulators, ready for one owner trial",
     "overlay_overlap_evidence_artifact": 15174463782,
     "prior_device_run": 45946146154,
     "source": "c32b5cf",
@@ -160,16 +160,7 @@
     "failed_api29_artifact": 15175816241,
     "instrumentation_source": "5c95589",
     "instrumentation_device_run": 45948118713,
-    "instrumentation_host_run": 45948118735,
-    "verified_but_not_accepted_package": {
-      "source": "5c955896dc6633f7e77a29dc54c906295754fc70",
-      "host_run": 45948118735,
-      "artifact": 15175637406,
-      "zip_sha256": "daf0b8cfcd7abfe3258772dc253a49dd602f4267a0f1d32810d921953bfd833d",
-      "apk_sha256": "8af23c4d9ec78d29fbe4b63009c8db9d216666fb656e590585bdc3bcbae026fe",
-      "apk_bytes": 59812022,
-      "same_non_metadata_apk_entries_as_3a41668": 45
-    }
+    "instrumentation_host_run": 45948118735
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

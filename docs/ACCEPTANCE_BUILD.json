@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "status": "historical_build_ui_redesign_requested",
+  "status": "ready_for_owner_acceptance",
   "updated_date": "2026-11-27",
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "source_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
-  "source_tree": "bbcab43a941fbed208b63d47e47dea75ba9aa59a",
+  "source_commit": "5c955896dc6633f7e77a29dc54c906295754fc70",
+  "source_tree": "1bbc3f84d9f28389b6448ec03f2cb9769ffa9846",
   "version_name": "0.2.0-dev",
   "version_code": 2,
   "application_id": "io.github.alwansan.opentranslate",
   "apk": {
     "filename": "open-screen-translate-0.2.0-dev.apk",
-    "bytes": 59793510,
-    "sha256": "96c7a8ba3287e17c6f91d217efcee8734c92e0deff4175980631ed0fea410ebc",
+    "bytes": 59812022,
+    "sha256": "8af23c4d9ec78d29fbe4b63009c8db9d216666fb656e590585bdc3bcbae026fe",
     "signing": "Android debug; not a production release key",
     "min_sdk": 26,
     "target_sdk": 36,
@@ -23,12 +23,12 @@
     ]
   },
   "artifact": {
-    "id": 15173540057,
-    "name": "open-screen-translate-debug-7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313666/artifacts/15173540057",
-    "zip_bytes": 24002493,
-    "zip_digest": "sha256:b564e2e5f93ad5a3035a12d3b085dcc9b924903738cdad1dace560df1432b06d",
-    "expires_at": "2027-02-25T04:40:28Z",
+    "id": 15175637406,
+    "name": "open-screen-translate-debug-5c955896dc6633f7e77a29dc54c906295754fc70",
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45948118735/artifacts/15175637406",
+    "zip_bytes": 24015200,
+    "zip_digest": "sha256:daf0b8cfcd7abfe3258772dc253a49dd602f4267a0f1d32810d921953bfd833d",
+    "expires_at": "2027-02-25T05:49:54Z",
     "contents": [
       "open-screen-translate-0.2.0-dev.apk",
       "APK-INFO.json",
@@ -38,9 +38,9 @@
     "download_note": "GitHub login may be required. Extract the APK from the ZIP. The ZIP digest is different from the APK SHA256."
   },
   "host": {
-    "run_id": 45941313666,
-    "job_id": 140316035089,
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313666",
+    "run_id": 45948118735,
+    "job_id": 140337414075,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45948118735",
     "conclusion": "success",
     "jvm_tests": {
       "passed": 75,
@@ -54,7 +54,7 @@
     },
     "lint": {
       "errors": 0,
-      "warnings": 44
+      "warnings": 47
     },
     "variants": [
       "debug",
@@ -65,24 +65,26 @@
     "static_package_checks": "PASS"
   },
   "devices": {
-    "run_id": 45941313754,
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313754",
+    "run_id": 45948118713,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45948118713",
     "conclusion": "success",
     "api29": {
-      "job_id": 140316034903,
+      "job_id": 140337414236,
       "page_size_bytes": 4096,
-      "passed": 43,
+      "passed": 46,
       "failed": 0,
       "skipped": 0,
-      "runner_errors": 0
+      "runner_errors": 0,
+      "evidence_artifact": 15175543501
     },
     "api35": {
-      "job_id": 140316034695,
+      "job_id": 140337414263,
       "page_size_bytes": 4096,
-      "passed": 43,
+      "passed": 46,
       "failed": 0,
       "skipped": 0,
-      "runner_errors": 0
+      "runner_errors": 0,
+      "evidence_artifact": 15175314364
     },
     "required_suites": 7,
     "network_state_during_tests": {
@@ -92,17 +94,18 @@
     },
     "scope": "Separate debug builds from the same source commit were exercised on x86_64 emulators. This is not a claim that the downloadable host-built APK bytes were installed by the device jobs.",
     "api35_16k": {
-      "job_id": 140316034949,
+      "job_id": 140337413938,
       "page_size_bytes": 16384,
-      "passed": 43,
+      "passed": 46,
       "failed": 0,
       "skipped": 0,
-      "runner_errors": 0
+      "runner_errors": 0,
+      "evidence_artifact": 15175677145
     }
   },
-  "evidence": "memory/evidence/validation-7f098f2.json",
+  "evidence": "memory/evidence/validation-5c95589.json",
   "acceptance_guide": "docs/ACCEPTANCE_AR.md",
-  "owner_acceptance": "ui_rejected_redesign_in_progress",
+  "owner_acceptance": "requested_pending_result",
   "limitations": [
     "Offline translation en<->ar, en<->ja, ko->en, and zh<->en with Simplified Chinese output.",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",

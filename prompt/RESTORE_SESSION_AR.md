@@ -2,7 +2,11 @@
 
 استأنف `alwansan/Translate-On-Screen` على `feature/open-screen-translate`. افحص الرأس واقرأ `AGENTS.md` و`memory/README.md` و`memory/PROJECT_MEMORY_AR.md` و`memory/STATE.json`، ثم الخطة وسجل التحقق ومصفوفة سلوك hm.
 
-## نقطة الاستئناف
+## نقطة الاستئناف الحالية
+
+اكتملت إعادة تصميم الرئيسية والتنقل ومحرر الشاشة والترجمة ولوحة النتيجة. مصدر القبول `5c95589` اجتاز البناء `45948118735` و46/46 على كل محاكي في `45948118713`. راجع `docs/ACCEPTANCE_BUILD.json` و`memory/evidence/validation-5c95589.json`. حزمة GitHub `15175637406` وتوقيعها debug. سجل إطار التدوير المتقطع قبل المصدر المعتمد محفوظ في `memory/sessions/031-floating-panel-clearance.md`؛ اجتازت الجولتان التاليتان على 16 KiB اختبار التدوير. ينتظر المشروع تجربة قبول واحدة من المالك. أبقِ `completion_claim=false` إلى أن تصل نتيجته.
+
+## سجل إعادة التصميم
 
 رفض المالك واجهة نسخة القبول الأولى وطلب إعادة تصميم مستمرة مع دراسة Nuvio ومراجع مفتوحة المصدر وhm. الهدف الحالي تطوير UI/UX وتأجيل التسليم حتى التحقق. ابدأ بـ`docs/UI_REDESIGN_AR.md` و`memory/sessions/026-ui-redesign.md`، وتابع صور الدفعة 026 في 45944998626. أعادت الدفعة 027 تقسيم محرر الأوضاع إلى الفقاعة والمظهر والتوقيت مع المعاينة. راجع `memory/sessions/027-capture-editor-navigation.md` وصور الجولة الحالية. أضافت 028 محرر النص الجديد وعرض الترجمة قبل الأصل، وانتقالاً تلقائياً إليها واختباراً محلياً. راجع `memory/sessions/028-translation-editor-and-result.md`. حسّنت 029 لوحة نتيجة الشاشة وإجراءات النص؛ راجع `memory/sessions/029-overlay-result-panel.md` وصور CI قبل التسليم.
 
