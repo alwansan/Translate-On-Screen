@@ -320,29 +320,39 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun chooseOfflinePair(source: String, target: String, done: (OfflineModelPack) -> Unit) {
-        val packs = OfflineModelStore.packs
+    private fun choiceDialog(title: String, fill: (LinearLayout, () -> Unit) -> Unit) {
         val dialog = android.app.Dialog(this)
         dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
         val holder = ui.column(12)
-        val content = ui.card(holder, t("Offline language pair", "لغات الترجمة دون إنترنت"))
+        val content = ui.card(holder, title)
         content.layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT
-        val choices = ui.column()
-        content.addView(ScrollView(this).apply { addView(choices) }, LinearLayout.LayoutParams(-1, 0, 1f))
-        packs.forEach { pack ->
-            ui.button(choices, t(pack.englishName, pack.arabicName),
-                primary = pack.source == source && pack.target == target) {
-                dialog.dismiss()
-                done(pack)
-            }.apply { isSelected = pack.source == source && pack.target == target }
-        }
+        fill(content, dialog::dismiss)
         ui.button(content, getString(R.string.cancel)) { dialog.dismiss() }
         dialog.setContentView(holder)
         dialog.show()
         dialog.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
             setLayout((resources.displayMetrics.widthPixels * .94).toInt(),
-                (resources.displayMetrics.heightPixels * .68).toInt())
+                (resources.displayMetrics.heightPixels * .74).toInt())
+        }
+    }
+
+    private fun choiceList(content: LinearLayout): LinearLayout {
+        val choices = ui.column()
+        content.addView(ScrollView(this).apply { addView(choices) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        return choices
+    }
+
+    private fun chooseOfflinePair(source: String, target: String, done: (OfflineModelPack) -> Unit) {
+        choiceDialog(t("Offline language pair", "لغات الترجمة دون إنترنت")) { content, dismiss ->
+            val choices = choiceList(content)
+            OfflineModelStore.packs.forEach { pack ->
+                val selected = pack.source == source && pack.target == target
+                ui.button(choices, t(pack.englishName, pack.arabicName), primary = selected) {
+                    dismiss()
+                    done(pack)
+                }.isSelected = selected
+            }
         }
     }
 
@@ -396,63 +406,64 @@ class MainActivity : Activity() {
     }
 
     private fun chooseMode() {
-        val modes = CaptureMode.values()
         val selected = ScreenPreferences.read(this).mode
-        AlertDialog.Builder(this).setTitle(t("Capture mode", "وضع الالتقاط"))
-            .setSingleChoiceItems(modes.map { modeLabel(it) }.toTypedArray(), modes.indexOf(selected)) { dialog, which ->
-                val options = ScreenPreferences.read(this, modes[which])
-                if (ScreenPreferences.save(this, options)) { notifySettingsChanged(); dialog.dismiss(); renderPage() }
-                else message(t("Could not save capture mode.", "تعذر حفظ وضع الالتقاط."))
-            }.setNegativeButton(R.string.cancel, null).show()
+        choiceDialog(t("Capture mode", "وضع الالتقاط")) { content, dismiss ->
+            val choices = choiceList(content)
+            CaptureMode.values().forEach { mode ->
+                ui.button(choices, modeLabel(mode), primary = mode == selected) {
+                    val options = ScreenPreferences.read(this, mode)
+                    if (ScreenPreferences.save(this, options)) { notifySettingsChanged(); dismiss(); renderPage() }
+                    else message(t("Could not save capture mode.", "تعذر حفظ وضع الالتقاط."))
+                }.isSelected = mode == selected
+            }
+        }
     }
 
     private fun chooseLanguage(source: Boolean, current: String, done: (String) -> Unit) {
-        val body = ui.column(16)
-        val search = ui.field(body, t("Search in Arabic, English or language code", "ابحث بالعربية أو الإنكليزية أو رمز اللغة"))
-        body.addView(ui.secondary(t(
-            "Translation availability depends on your provider. Reading models are chosen separately. Hold a language to add or remove a favorite.",
-            "توفر الترجمة يعتمد على المزوّد. نماذج قراءة الصور مستقلة. اضغط مطولاً لإضافة لغة إلى المفضلة أو إزالتها.")))
-        if (source) body.addView(ui.secondary(t("Active reading models: ", "نماذج القراءة الحالية: ") +
-            SettingsStore.read(this).ocrLanguage))
-        val list = ListView(this)
-        body.addView(list, LinearLayout.LayoutParams(-1, ui.dp(330)))
-        val dialog = AlertDialog.Builder(this).setTitle(if (source) R.string.source_language else R.string.target_language)
-            .setView(body).setNegativeButton(R.string.cancel, null).create()
-        val all = Locale.getISOLanguages().distinct()
-        val candidates = (if (source) listOf("auto") else emptyList()) + all
-        var visible = candidates
-        fun refresh() {
-            val query = search.text.toString().trim().lowercase(Locale.ROOT)
-            val favorites = AppPreferences.favorites(this)
-            val recents = AppPreferences.recentLanguages(this)
-            visible = candidates.filter { code ->
-                val locale = Locale.forLanguageTag(code)
-                query.isBlank() || code.contains(query) ||
-                    languageName(code).lowercase(Locale.ROOT).contains(query) ||
-                    locale.getDisplayLanguage(Locale.ENGLISH).lowercase(Locale.ROOT).contains(query) ||
-                    locale.getDisplayLanguage(Locale.forLanguageTag("ar")).contains(query)
-            }.sortedWith(compareBy<String>({ it != current }, { it !in favorites }, { it !in recents }, { languageName(it) }))
-            list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, visible.map { code ->
-                val availability = if (!source) "" else "\n" + when {
-                    code == "auto" -> t("Text detection · reading models stay selected", "اكتشاف لغة النص · تبقى نماذج القراءة المختارة")
-                    ocrForSource(code, "").isEmpty() -> t("Text translation · no built-in reading model", "ترجمة نص · لا يوجد نموذج قراءة مدمج")
-                    else -> t("Image-reading model: ", "نموذج قراءة الصور: ") + ocrForSource(code, "")
-                }
-                (if (code == current) "✓ " else "") + (if (code in favorites) "★ " else "") +
-                    languageName(code) + " · " + code + availability
-            })
+        choiceDialog(getString(if (source) R.string.source_language else R.string.target_language)) { body, dismiss ->
+            val search = ui.field(body, t("Search in Arabic, English or language code", "ابحث بالعربية أو الإنكليزية أو رمز اللغة"))
+            body.addView(ui.secondary(t(
+                "Translation availability depends on your provider. Reading models are chosen separately. Hold a language to add or remove a favorite.",
+                "توفر الترجمة يعتمد على المزوّد. نماذج قراءة الصور مستقلة. اضغط مطولاً لإضافة لغة إلى المفضلة أو إزالتها.")))
+            if (source) body.addView(ui.secondary(t("Active reading models: ", "نماذج القراءة الحالية: ") +
+                SettingsStore.read(this).ocrLanguage))
+            val list = ListView(this)
+            body.addView(list, LinearLayout.LayoutParams(-1, 0, 1f))
+            val all = Locale.getISOLanguages().distinct()
+            val candidates = (if (source) listOf("auto") else emptyList()) + all
+            var visible = candidates
+            fun refresh() {
+                val query = search.text.toString().trim().lowercase(Locale.ROOT)
+                val favorites = AppPreferences.favorites(this)
+                val recents = AppPreferences.recentLanguages(this)
+                visible = candidates.filter { code ->
+                    val locale = Locale.forLanguageTag(code)
+                    query.isBlank() || code.contains(query) ||
+                        languageName(code).lowercase(Locale.ROOT).contains(query) ||
+                        locale.getDisplayLanguage(Locale.ENGLISH).lowercase(Locale.ROOT).contains(query) ||
+                        locale.getDisplayLanguage(Locale.forLanguageTag("ar")).contains(query)
+                }.sortedWith(compareBy<String>({ it != current }, { it !in favorites }, { it !in recents }, { languageName(it) }))
+                list.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, visible.map { code ->
+                    val availability = if (!source) "" else "\n" + when {
+                        code == "auto" -> t("Text detection · reading models stay selected", "اكتشاف لغة النص · تبقى نماذج القراءة المختارة")
+                        ocrForSource(code, "").isEmpty() -> t("Text translation · no built-in reading model", "ترجمة نص · لا يوجد نموذج قراءة مدمج")
+                        else -> t("Image-reading model: ", "نموذج قراءة الصور: ") + ocrForSource(code, "")
+                    }
+                    (if (code == current) "✓ " else "") + (if (code in favorites) "★ " else "") +
+                        languageName(code) + " · " + code + availability
+                })
+            }
+            search.addTextChangedListener(watcher { refresh() })
+            list.setOnItemClickListener { _, _, position, _ ->
+                val code = visible[position]
+                AppPreferences.rememberLanguage(this, code)
+                dismiss(); done(code)
+            }
+            list.setOnItemLongClickListener { _, _, position, _ ->
+                AppPreferences.toggleFavorite(this, visible[position]); refresh(); true
+            }
+            refresh()
         }
-        search.addTextChangedListener(watcher { refresh() })
-        list.setOnItemClickListener { _, _, position, _ ->
-            val code = visible[position]
-            AppPreferences.rememberLanguage(this, code)
-            done(code); dialog.dismiss()
-        }
-        list.setOnItemLongClickListener { _, _, position, _ ->
-            AppPreferences.toggleFavorite(this, visible[position]); refresh(); true
-        }
-        refresh()
-        dialog.show()
     }
 
     private fun renderTranslate(body: LinearLayout): View? {
