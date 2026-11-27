@@ -30,7 +30,7 @@ class TranslationOverlayView(
     private val options: CaptureOptions,
     selection: NormalizedRegion? = null,
 ) : View(context) {
-    private data class Rendered(val bounds: RectF, val text: StaticLayout, val color: Int, val block: OverlayTextBlock)
+    private data class Rendered(val bounds: RectF, val text: StaticLayout, val color: Int, val block: OverlayTextBlock, val padding: Float)
     private val density = resources.displayMetrics.density
     private val location = IntArray(2)
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -51,15 +51,11 @@ class TranslationOverlayView(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        val padding = 3 * density
         rendered = blocks.take(200).mapNotNull { item ->
             val bounds = RegionMath.validated(item.bounds) ?: return@mapNotNull null
             val rect = RectF(bounds.left * displayWidth, bounds.top * displayHeight, bounds.right * displayWidth, bounds.bottom * displayHeight)
-            val minimumHeight = sp(12f) + 2 * padding
-            if (rect.height() < minimumHeight) {
-                rect.top = (rect.centerY() - minimumHeight / 2).coerceIn(0f, max(0f, displayHeight - minimumHeight))
-                rect.bottom = min(displayHeight.toFloat(), rect.top + minimumHeight)
-            }
+            // Expanding short OCR boxes can cover a neighboring line on dense screens.
+            val padding = min(3 * density, min(rect.width(), rect.height()) / 8f)
             val availableWidth = max(1, (rect.width() - 2 * padding).toInt())
             val availableHeight = max(1f, rect.height() - 2 * padding)
             val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -81,7 +77,7 @@ class TranslationOverlayView(
             val color = item.palette?.backgroundColor?.let {
                 Color.argb(options.backgroundOpacity * 255 / 100, Color.red(it), Color.green(it), Color.blue(it))
             } ?: defaultColor
-            Rendered(rect, text, color, item)
+            Rendered(rect, text, color, item, padding)
         }
     }
     internal fun blockAt(screenX: Float, screenY: Float): OverlayTextBlock? =
@@ -92,8 +88,8 @@ class TranslationOverlayView(
         getLocationOnScreen(location)
         val save = canvas.save()
         canvas.translate(-location[0].toFloat(), -location[1].toFloat())
-        val padding = 3 * density
         for (item in rendered) {
+            val padding = item.padding
             backgroundPaint.color = item.color
             if (!options.outlineText) canvas.drawRoundRect(item.bounds, 5 * density, 5 * density, backgroundPaint)
             if (options.backgroundBorder) {
