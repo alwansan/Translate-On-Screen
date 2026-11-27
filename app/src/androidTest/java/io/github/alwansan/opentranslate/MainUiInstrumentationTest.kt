@@ -201,10 +201,15 @@ class MainUiInstrumentationTest {
                 assertTrue("Settings dialog did not appear", device.wait(Until.hasObject(saveSelector), 5000))
                 val fields = UiScrollable(UiSelector().packageName(context.packageName).scrollable(true))
                 assertFalse(device.hasObject(By.text(initialUrl)))
-                fields.scrollIntoView(UiSelector().text("Service connection"))
-                requireNotNull(device.findObject(By.text("Service connection"))).click()
-                fields.scrollIntoView(UiSelector().text(initialUrl))
-                val endpoint = device.findObject(By.pkg(context.packageName).clazz(EditText::class.java).text(initialUrl))
+                val connection = By.text("Service connection")
+                if (!device.hasObject(connection)) fields.scrollIntoView(UiSelector().text("Service connection"))
+                requireNotNull(device.wait(Until.findObject(connection), 5000)).click()
+                val endpointSelector = By.pkg(context.packageName).clazz(EditText::class.java).text(initialUrl)
+                val visibleEndpoint = device.wait(Until.findObject(endpointSelector), 1500)
+                val endpoint = visibleEndpoint ?: run {
+                    fields.scrollIntoView(UiSelector().text(initialUrl))
+                    device.findObject(endpointSelector)
+                }
                 assertNotNull("Service endpoint field was not found", endpoint)
                 endpoint!!.text = replacementUrl
                 assertTrue("The new URL must first reach the editable field",
