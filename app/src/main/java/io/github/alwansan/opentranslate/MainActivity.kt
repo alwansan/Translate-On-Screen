@@ -260,28 +260,28 @@ class MainActivity : Activity() {
         ui.menuItem(capture, t("Capture mode: ", "وضع الالتقاط: ") + modeLabel(captureMode)) { chooseMode() }
         languageBar(body)
         val settings = SettingsStore.read(this)
-        val provider = ProviderCatalog.find(settings.provider) ?: ProviderCatalog.providers.first()
-        val details = ui.card(body, t("Your translation setup", "إعداد الترجمة"))
-        details.addView(ui.label(t(provider.englishName, provider.arabicName), 17f, true))
-        details.addView(ui.secondary(
-            if (!provider.requiresNetwork) t("Translation stays on this device after you install a language pack.",
-                "تبقى الترجمة على هذا الجهاز بعد تثبيت حزمة اللغة.")
-            else if (settings.networkEnabled) t("Text is sent to your chosen service. Images stay on the device.",
-                "يُرسل النص إلى الخدمة التي اخترتها، وتبقى الصور على الجهاز.")
-            else t("Online translation is off. You can read text locally or set up a translation provider.",
-                "الترجمة عبر الإنترنت معطلة. يمكنك قراءة النص محلياً أو إعداد مزوّد ترجمة.")
-        ))
-        ui.button(details, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
-        ui.button(details, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
-        details.addView(ui.secondary(t("Screen and image reading: ", "قراءة الشاشة والصور: ") + settings.ocrLanguage))
-        readingNotice(settings.source, settings.ocrLanguage)?.let { details.addView(ui.secondary(it)) }
-        val missing = missingScreenReadingModels(settings)
-        if (missing.isNotEmpty()) {
-            details.addView(ui.secondary(t("Reading models needed: ", "نماذج القراءة المطلوبة: ") + missing.joinToString(", ")))
-            ui.button(details, t("Install reading languages", "تثبيت لغات القراءة")) { showModels() }
+        val localPack = OfflineModelStore.find(settings.source, settings.target)
+        val missingReading = missingScreenReadingModels(settings).isNotEmpty()
+        val translationReady = if (settings.provider == "offline") {
+            localPack != null && OfflineModelStore.has(this, localPack.id)
+        } else settings.networkEnabled
+        if (missingReading || !translationReady) {
+            val setup = ui.card(body, t("Get ready to translate", "جهّز الترجمة"))
+            if (missingReading) {
+                setup.addView(ui.secondary(t("Download the reading language to recognize text on your screen.",
+                    "نزّل لغة القراءة حتى يتعرّف التطبيق على النص في شاشتك.")))
+                ui.button(setup, t("Download reading language", "تنزيل لغة القراءة")) { showModels() }
+            }
+            if (!translationReady) {
+                setup.addView(ui.secondary(t("Set up translation for your chosen languages.",
+                    "جهّز الترجمة للغات التي اخترتها.")))
+                if (localPack != null) {
+                    ui.button(setup, t("Set up offline translation", "إعداد الترجمة دون إنترنت"), true) { setupOffline() }
+                } else {
+                    ui.button(setup, t("Translation settings", "إعدادات الترجمة")) { showSettings() }
+                }
+            }
         }
-        if (OfflineModelStore.find(settings.source, settings.target) != null)
-            ui.button(details, t("Set up offline translation", "إعداد الترجمة دون إنترنت")) { setupOffline() }
         ui.menuItem(body, t("Translate text, images or voice", "ترجمة نص أو صورة أو صوت")) { openTab("translate") }
         ui.menuItem(body, t("Quick guide", "دليل سريع")) { showGuide() }
     }
@@ -570,7 +570,7 @@ class MainActivity : Activity() {
         ui.menuItem(library, t("Translation history", "سجل الترجمات")) { showHistory() }
         ui.menuItem(library, t("Personal wordbook", "القاموس الشخصي")) { showWordbook() }
         ui.menuItem(library, t("Dictionary lookup", "البحث في القاموس المعجمي")) { openDictionary() }
-        val preferences = ui.card(body, t("Preferences", "التفضيلات"))
+        val preferences = ui.card(body, t("Settings", "الإعدادات"))
         ui.menuItem(preferences, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
         ui.menuItem(preferences, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
         ui.menuItem(preferences, t("Offline translation and reading models", "الترجمة المحلية ونماذج القراءة")) { showModels() }
