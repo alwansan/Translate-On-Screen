@@ -11,6 +11,7 @@ import java.nio.LongBuffer
 
 private const val JAPANESE_CHARACTERS = "[ぁ-ゟァ-ヿ㐀-䶿一-鿿]"
 private val JAPANESE_TOKEN_GAP = Regex("(?<=$JAPANESE_CHARACTERS) +(?=$JAPANESE_CHARACTERS)")
+private val CLOCK_TIME = Regex("(?<!\\p{Nd})(?:[01]?[0-9]|2[0-3]): *[0-5][0-9](?!\\p{Nd})")
 
 /**
  * CPU Marian encoder + merged decoder with real key/value-cache reuse.
@@ -119,7 +120,11 @@ internal class MarianRuntime(folder: File, private val pack: OfflineModelPack) :
                 if (best == 0) {
                     check()
                     val decoded = tokenizer.decode(generated)
-                    val translated = if (pack.target == "ja") JAPANESE_TOKEN_GAP.replace(decoded, "") else decoded
+                    val translated = when (pack.target) {
+                        "ja" -> JAPANESE_TOKEN_GAP.replace(decoded, "")
+                        "ar" -> preserveClockSpacing(text, decoded)
+                        else -> decoded
+                    }
                     return translated.takeIf { it.isNotBlank() } ?: throw TranslationProblem(TranslationFailure.BAD_RESPONSE)
                 }
                 generated.add(best)
@@ -134,6 +139,15 @@ internal class MarianRuntime(folder: File, private val pack: OfflineModelPack) :
             closeQuietly(mask); closeQuietly(input)
         }
     }
+    private fun preserveClockSpacing(source: String, translated: String): String {
+        val times = CLOCK_TIME.findAll(source).map { it.value }.toSet()
+        if (times.isEmpty()) return translated
+        return CLOCK_TIME.replace(translated) { match ->
+            val compact = match.value.replace(" ", "")
+            if (compact in times) compact else match.value
+        }
+    }
+
     private fun tensor(result: OrtSession.Result, name: String): OnnxTensor =
         result.get(name).orElseThrow { IllegalStateException("Missing model output") } as? OnnxTensor
             ?: throw IllegalStateException("Unexpected model output type")

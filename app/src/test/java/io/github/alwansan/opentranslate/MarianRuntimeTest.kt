@@ -14,7 +14,7 @@ class MarianRuntimeTest {
         MarianRuntime(folder, pack).use { runtime ->
             assertEquals("مرحباً، كيف حالك؟", runtime.translate("Hello, how are you?", gate))
             assertEquals("أطفئ الأنوار", runtime.translate("Turn off the lights.", gate))
-            assertEquals("الاجتماع سيبدأ في الساعة 10: 30 غداً", runtime.translate("The meeting starts at 10:30 tomorrow.", gate))
+            assertEquals("الاجتماع سيبدأ في الساعة 10:30 غداً", runtime.translate("The meeting starts at 10:30 tomorrow.", gate))
         }
     }
     @Test fun nativeArabicToEnglishMatchesSixPhraseRegressionHalf() {
@@ -25,6 +25,16 @@ class MarianRuntimeTest {
             assertEquals("This is an app for screen translation.", runtime.translate("هذا تطبيق لترجمة الشاشة.", gate))
         }
     }
+    @Test fun nativeEnglishToArabicPreservesKeyInformationInScreenMessages() {
+        val (pack, folder) = verifiedPack("en-ar")
+        MarianRuntime(folder, pack).use { runtime ->
+            val warning = runtime.translate("Do not close this window.", gate)
+            assertTrue(warning, warning.contains("لا") && warning.contains("نافذ"))
+            val battery = runtime.translate("Your battery is at 20%.", gate)
+            assertTrue(battery, battery.contains("بطار") && battery.contains("20"))
+        }
+    }
+
     @Test fun nativeJapaneseToEnglishPreservesMeaning() {
         val (pack, folder) = verifiedPack("ja-en")
         MarianRuntime(folder, pack).use { runtime ->
