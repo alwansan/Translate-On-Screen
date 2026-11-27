@@ -140,6 +140,30 @@ class CaptureInstrumentationTest {
         if (closeFailure != null) throw AssertionError("Capture fixture did not close cleanly", closeFailure)
     }
 
+    @Test fun floatingMenuKeepsCommonModesAndSessionControlsVisible() {
+        configure(CaptureOptions(single = BubbleAction.MENU, double = BubbleAction.NONE))
+        authorize()
+        val bubble = By.descStartsWith("Translation bubble.")
+        await(10_000, "Floating bubble did not appear") { device.hasObject(bubble) }
+        requireNotNull(device.findObject(bubble)).click()
+        val more = By.text("More modes and tools")
+        await(5_000, "Capture menu did not appear") { device.hasObject(more) }
+        for (mode in listOf(CaptureMode.FULL, CaptureMode.REGION, CaptureMode.AUTO_FULL)) {
+            assertTrue(device.hasObject(By.text(context.modeLabel(mode))))
+        }
+        assertFalse(device.hasObject(By.text("Manga")))
+        assertTrue(device.hasObject(By.text("Stop sharing")))
+        recordUiEvidence("everyday_floating_modes_collapsed")
+        requireNotNull(device.findObject(more)).click()
+        await(5_000, "Additional capture modes did not appear") { device.hasObject(By.text("Manga")) }
+        assertTrue(device.hasObject(By.text("Stop sharing")))
+        recordUiEvidence("everyday_floating_modes_expanded")
+        requireNotNull(device.findObject(By.text("Close"))).click()
+        await(5_000, "Closing the menu should keep the session active") {
+            CaptureService.isRunning && !device.hasObject(more)
+        }
+    }
+
     @Test fun actualConsentFullCaptureRotationAndStop() {
         authorize()
         action(CaptureService.ACTION_CAPTURE)
