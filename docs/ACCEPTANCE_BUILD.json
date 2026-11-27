@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "status": "historical_build_delivery_deferred",
+  "status": "ready_for_owner_acceptance",
   "updated_date": "2026-11-27",
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "source_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-  "source_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
+  "source_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
+  "source_tree": "bbcab43a941fbed208b63d47e47dea75ba9aa59a",
   "version_name": "0.2.0-dev",
   "version_code": 2,
   "application_id": "io.github.alwansan.opentranslate",
   "apk": {
     "filename": "open-screen-translate-0.2.0-dev.apk",
-    "bytes": 59776566,
-    "sha256": "366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1",
+    "bytes": 59793510,
+    "sha256": "96c7a8ba3287e17c6f91d217efcee8734c92e0deff4175980631ed0fea410ebc",
     "signing": "Android debug; not a production release key",
     "min_sdk": 26,
     "target_sdk": 36,
@@ -23,12 +23,12 @@
     ]
   },
   "artifact": {
-    "id": 15101850735,
-    "name": "open-screen-translate-debug-f0388b2ac928482e73c82de8115ec10ce9aade4d",
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
-    "zip_bytes": 23985688,
-    "zip_digest": "sha256:88d1b2435e2b697a054fa021cccf9abcfa5c8aa009aacef14efdb8a9131ae6ae",
-    "expires_at": "2027-02-24T08:57:08Z",
+    "id": 15173540057,
+    "name": "open-screen-translate-debug-7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313666/artifacts/15173540057",
+    "zip_bytes": 24002493,
+    "zip_digest": "sha256:b564e2e5f93ad5a3035a12d3b085dcc9b924903738cdad1dace560df1432b06d",
+    "expires_at": "2027-02-25T04:40:28Z",
     "contents": [
       "open-screen-translate-0.2.0-dev.apk",
       "APK-INFO.json",
@@ -38,23 +38,23 @@
     "download_note": "GitHub login may be required. Extract the APK from the ZIP. The ZIP digest is different from the APK SHA256."
   },
   "host": {
-    "run_id": 45787527099,
-    "job_id": 139797984523,
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099",
+    "run_id": 45941313666,
+    "job_id": 140316035089,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313666",
     "conclusion": "success",
     "jvm_tests": {
-      "passed": 68,
+      "passed": 75,
       "failed": 0,
       "skipped": 0
     },
     "python_tests": {
       "audit": 8,
       "model_provisioner": 10,
-      "device_parser": 7
+      "device_parser": 8
     },
     "lint": {
       "errors": 0,
-      "warnings": 49
+      "warnings": 44
     },
     "variants": [
       "debug",
@@ -65,20 +65,24 @@
     "static_package_checks": "PASS"
   },
   "devices": {
-    "run_id": 45787527216,
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527216",
+    "run_id": 45941313754,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313754",
     "conclusion": "success",
     "api29": {
-      "job_id": 139797985085,
-      "passed": 32,
+      "job_id": 140316034903,
+      "page_size_bytes": 4096,
+      "passed": 43,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "runner_errors": 0
     },
     "api35": {
-      "job_id": 139797984581,
-      "passed": 32,
+      "job_id": 140316034695,
+      "page_size_bytes": 4096,
+      "passed": 43,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "runner_errors": 0
     },
     "required_suites": 7,
     "network_state_during_tests": {
@@ -86,18 +90,26 @@
       "wifi_on": "0",
       "mobile_data": "0"
     },
-    "scope": "Separate debug builds from the same source commit were exercised on x86_64 emulators. This is not a claim that the downloadable host-built APK bytes were installed by the device jobs."
+    "scope": "Separate debug builds from the same source commit were exercised on x86_64 emulators. This is not a claim that the downloadable host-built APK bytes were installed by the device jobs.",
+    "api35_16k": {
+      "job_id": 140316034949,
+      "page_size_bytes": 16384,
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0,
+      "runner_errors": 0
+    }
   },
-  "evidence": "memory/evidence/validation-f0388b2.json",
+  "evidence": "memory/evidence/validation-7f098f2.json",
   "acceptance_guide": "docs/ACCEPTANCE_AR.md",
-  "owner_acceptance": "deferred_until_hm_behavior_completion",
+  "owner_acceptance": "awaiting_one_consolidated_owner_trial",
   "limitations": [
-    "Offline translation en<->ar only",
+    "Offline translation en<->ar, en<->ja, ko->en, and zh<->en with Simplified Chinese output.",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",
     "Live paid-provider accounts and OEM physical phones not tested",
     "External camera and speech services depend on installed device providers",
     "CJK quality has not been independently benchmarked",
-    "16 KiB native alignment is a static check, not execution on a 16 KiB-page device",
+    "16 KiB execution passed on x86_64 emulator. Physical ARM64 execution and OEM-specific behavior are part of device acceptance.",
     "Release variant compiled unsigned; no production signing or store publication",
     "Artifact retention ends at the listed expiration; committed evidence and source remain available"
   ]

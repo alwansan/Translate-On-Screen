@@ -4,13 +4,13 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "024",
-  "phase": "hm_behavior_parity_development",
-  "last_verified_code_commit": "810bd901f21886f20ae4072d5146567e49efb6ae",
+  "session": "025",
+  "phase": "awaiting_owner_acceptance",
+  "last_verified_code_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
   "screenshot_reference_commit": "b4f80b12d7efafdd992d54f51ffba65c01ec6308",
-  "last_verified_android_ci": 45912539896,
+  "last_verified_android_ci": 45941313666,
   "last_verified_inventory_ci": 45899477134,
   "owner_device_report": "0.1.0-dev bubble/overlay/OCR worked in a simple trial; no crash reported; not exhaustive",
   "new_evidence": [
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/024-deadline-and-16k-evidence.md",
+  "session_checkpoint": "memory/sessions/025-owner-acceptance-build.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -46,30 +46,28 @@
   },
   "observed_branch_head": "62fa00e6838d81d125f759716bb0ce69f1e1b2ef",
   "latest_observed_android_ci": {
-    "run_id": 45909524987,
-    "head_sha": "45293ec572391154ddc933425016dad180b86b83",
+    "run_id": 45941313666,
+    "head_sha": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
     "conclusion": "success",
-    "jvm_passed": 72,
+    "jvm_passed": 75,
     "lint_errors": 0,
-    "lint_warnings": 46
+    "lint_warnings": 44
   },
   "source_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
-    "hm_behavior_audit",
-    "current_source_android_ci",
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
-    "run_id": 45912539906,
-    "head_sha": "810bd901f21886f20ae4072d5146567e49efb6ae",
+    "run_id": 45941313754,
+    "head_sha": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
     "conclusion": "success",
-    "apis": [
-      29,
-      35
-    ],
     "passed_each": 43,
-    "16k_api": 35
+    "profiles": [
+      "api29",
+      "api35",
+      "api35_16k"
+    ]
   },
   "confirmed_fixture_evidence": {
     "run_id": 45787527099,
@@ -83,7 +81,7 @@
     "jvm_tests": 68
   },
   "current_fix_batch": [],
-  "last_verified_code_scope": "75 JVM; 43/43 on API 29 and API 35 with 4096-byte pages and API 35 with 16384-byte pages; x86_64 emulators.",
+  "last_verified_code_scope": "75 JVM and 26 Python tests; 43/43 on each of API 29, API 35, and API 35 with 16384-byte pages; no failed, skipped or missing cases.",
   "latest_attempt": {
     "head_sha": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
     "host": "success",
@@ -100,32 +98,32 @@
     "license": "CC BY-SA 3.0",
     "scope": "one public English lookup from runner, not Android transport or availability guarantee"
   },
-  "last_verified_code_tree": "8b76203ccf8b97e73ee748fd3c5f24de54b117b3",
+  "last_verified_code_tree": "bbcab43a941fbed208b63d47e47dea75ba9aa59a",
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-  "implementation_complete": false,
-  "available_validation_gates_passed": false,
-  "acceptance_ready": false,
-  "completion_condition": "Finish the hm behavior scope and available Android validation before offering a single final owner acceptance trial.",
+  "implementation_complete": true,
+  "available_validation_gates_passed": true,
+  "acceptance_ready": true,
+  "completion_condition": "Record the outcome and scope of one consolidated owner trial; resolve any reported defects before closing acceptance.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
-  "latest_evidence": "memory/evidence/validation-810bd90.json",
+  "latest_evidence": "memory/evidence/validation-7f098f2.json",
   "delivery": {
-    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45787527099/artifacts/15101850735",
-    "artifact_id": 15101850735,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/45941313666/artifacts/15173540057",
+    "artifact_id": 15173540057,
     "apk": "open-screen-translate-0.2.0-dev.apk",
-    "sha256": "366218d2f3d930288631aece4253fa68600d8dba6b994c70dd370b36260e11f1",
-    "bytes": 59776566,
-    "source_commit": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
+    "sha256": "96c7a8ba3287e17c6f91d217efcee8734c92e0deff4175980631ed0fea410ebc",
+    "bytes": 59793510,
+    "source_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
     "signing": "debug",
-    "expires_at": "2027-02-24T08:57:08Z",
+    "expires_at": "2027-02-25T04:40:28Z",
     "guide": "docs/ACCEPTANCE_AR.md"
   },
   "remaining_limits": [
-    "Offline translation verified for en<->ar, en<->ja, ko->en, zh->en, and en->zh (Simplified) on standard API 29/35",
+    "Offline translation en<->ar, en<->ja, ko->en, and zh<->en with Simplified Chinese output.",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",
     "Live paid-provider accounts and OEM physical phones not tested",
     "External camera and speech services depend on installed device providers",
     "CJK quality has not been independently benchmarked",
-    "16 KiB native alignment is a static check, not execution on a 16 KiB-page device",
+    "16 KiB execution passed on x86_64 emulator. Physical ARM64 execution and OEM-specific behavior are part of device acceptance.",
     "Release variant compiled unsigned; no production signing or store publication",
     "Artifact retention ends at the listed expiration; committed evidence and source remain available"
   ],
@@ -142,12 +140,13 @@
     "artifact": 15101850735,
     "expired": false
   },
-  "owner_acceptance_requested": false,
+  "owner_acceptance_requested": true,
   "latest_development_batch": {
-    "id": "024",
-    "validation": "pending",
-    "prior_device_run": 45913191576,
-    "verified_device_run": 45912539906
+    "id": "025",
+    "validation": "success",
+    "source": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
+    "host_run": 45941313666,
+    "device_run": 45941313754
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
