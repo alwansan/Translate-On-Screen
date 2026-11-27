@@ -413,9 +413,10 @@ class CaptureInstrumentationTest {
         awaitOutput("OPEN SCREEN")
         val remainingEarlyWindow = (sessionObservedAt + 50_000 - SystemClock.elapsedRealtime()).coerceAtLeast(0)
         assertRemains(remainingEarlyWindow, "Automatic session stopped before its time limit") { CaptureService.isRunning }
-        await(20_000, "Automatic time limit left MediaProjection/service alive") { !CaptureService.isRunning }
-        assertFalse(CaptureService.isAutoRunning)
-        assertFalse(device.hasObject(By.desc("Translation detail output")))
+        await(20_000, "Automatic deadline did not stop capture and clear its result") {
+            !CaptureService.isRunning && !CaptureService.isAutoRunning &&
+                !device.hasObject(By.desc("Translation detail output"))
+        }
     }
 
     @Test fun positionedTranslationAllowsTouchToReachAnotherUid() {

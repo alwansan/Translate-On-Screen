@@ -1,0 +1,38 @@
+{
+  "source": "810bd901f21886f20ae4072d5146567e49efb6ae",
+  "host": {
+    "run": 45912539896,
+    "jvm_passed": 75,
+    "lint_errors": 0,
+    "lint_warnings": 46
+  },
+  "device": {
+    "run": 45912539906,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "api": 29,
+        "id": 140224069705,
+        "page_size_bytes": 4096,
+        "passed": 43
+      },
+      {
+        "api": 35,
+        "id": 140224069303,
+        "page_size_bytes": 4096,
+        "passed": 43
+      },
+      {
+        "api": 35,
+        "id": 140224069646,
+        "page_size_bytes": 16384,
+        "passed": 43
+      }
+    ],
+    "radios": {
+      "airplane_mode_on": 1,
+      "wifi_on": 0,
+      "mobile_data": 0
+    }
+  }
+}
