@@ -1,0 +1,98 @@
+{
+  "source_commit": "50d0abb69d611031997f103045b9577119a2ab41",
+  "source_tree": "aade856eafe80eef49e7adf7f62340b8d489045f",
+  "host": {
+    "run_id": 46011877798,
+    "job_id": 140549201059,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/46011877798",
+    "conclusion": "success",
+    "jvm_tests": {
+      "passed": 76,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python_tests": {
+      "audit": 8,
+      "model_provisioner": 10,
+      "device_parser": 8
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 47
+    },
+    "variants": [
+      "debug",
+      "debugAndroidTest",
+      "release_unsigned"
+    ],
+    "signature_check": "PASS",
+    "static_package_checks": "PASS"
+  },
+  "devices": {
+    "run_id": 46011769632,
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/46011769632",
+    "conclusion": "success",
+    "api29": {
+      "job_id": 140548814503,
+      "page_size_bytes": 4096,
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "runner_errors": 0,
+      "evidence_artifact": 15204895904
+    },
+    "api35": {
+      "job_id": 140548814567,
+      "page_size_bytes": 4096,
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "runner_errors": 0,
+      "evidence_artifact": 15202914920
+    },
+    "required_suites": 7,
+    "network_state_during_tests": {
+      "airplane_mode_on": "1",
+      "wifi_on": "0",
+      "mobile_data": "0"
+    },
+    "scope": "Independent device builds on x86_64 emulators. The packaging commit changes only the acceptance guide and recovery documentation relative to the emulator source.",
+    "api35_16k": {
+      "job_id": 140548813941,
+      "page_size_bytes": 16384,
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "runner_errors": 0,
+      "evidence_artifact": 15205160421
+    },
+    "source_commit": "1cd8d61c8b712ae6189a27e79f216a768e9d84f7"
+  },
+  "apk": {
+    "filename": "open-screen-translate-0.2.0-dev.apk",
+    "bytes": 59812022,
+    "sha256": "d6526a5dd0abce8834ae3acd05bf52d40abec67bb987f957821c716e447ad6fd",
+    "signing": "Android debug; not a production release key",
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "abis": [
+      "arm64-v8a",
+      "x86_64"
+    ]
+  },
+  "artifact": {
+    "id": 15203549623,
+    "name": "open-screen-translate-debug-50d0abb69d611031997f103045b9577119a2ab41",
+    "url": "https://github.com/alwansan/Translate-On-Screen/actions/runs/46011877798/artifacts/15203549623",
+    "zip_bytes": 24018060,
+    "zip_digest": "sha256:2445373b9974634791604c79a626bfb7b2d15690c52a87d12b007e0177f1af3c",
+    "expires_at": "2027-02-25T13:59:41Z",
+    "contents": [
+      "open-screen-translate-0.2.0-dev.apk",
+      "APK-INFO.json",
+      "SHA256SUMS.txt",
+      "ACCEPTANCE-AR.md"
+    ],
+    "download_note": "GitHub login may be required. Extract the APK from the ZIP. The ZIP digest is different from the APK SHA256."
+  }
+}

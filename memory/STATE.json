@@ -104,7 +104,7 @@
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "implementation_complete": false,
   "available_validation_gates_passed": false,
-  "acceptance_ready": false,
+  "acceptance_ready": true,
   "completion_condition": "Complete and visually verify the UI redesign before offering one owner trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
   "latest_evidence": "memory/evidence/validation-7f098f2.json",
@@ -142,10 +142,10 @@
     "artifact": 15101850735,
     "expired": false
   },
-  "owner_acceptance_requested": false,
+  "owner_acceptance_requested": true,
   "latest_development_batch": {
     "id": "041",
-    "validation": "pending device validation",
+    "validation": "48/48 on all three emulators, ready for one owner trial",
     "previous_verified_source": "5c95589",
     "focus": "everyday menus and translation quality",
     "source": "1cd8d61",
@@ -153,16 +153,7 @@
     "device_run": 46011769632,
     "ocr_device_run": 46010562724,
     "first_menu_device_run": 46009183764,
-    "menu_evidence_run": 46010740496,
-    "verified_package_pending_device_results": {
-      "source": "50d0abb69d611031997f103045b9577119a2ab41",
-      "host_run": 46011877798,
-      "artifact": 15203549623,
-      "jvm_passed": 76,
-      "lint_errors": 0,
-      "lint_warnings": 47,
-      "apk_sha256": "d6526a5dd0abce8834ae3acd05bf52d40abec67bb987f957821c716e447ad6fd"
-    }
+    "menu_evidence_run": 46010740496
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",
