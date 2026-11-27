@@ -640,9 +640,18 @@ class MainActivity : Activity() {
             if (providers[provider.selectedItemPosition].id == "offline") selectOfflinePair()
             else chooseLanguage(false, target, ::updateTarget)
         }
-        ocrButton = ui.button(body, t("Image reading: ", "قراءة الصور: ") + ocr) { }
+        fun expandableGroup(label: String): Pair<Button, LinearLayout> {
+            val group = ui.column().apply { visibility = View.GONE }
+            val toggle = ui.menuItem(body, label) {
+                group.visibility = if (group.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            }
+            body.addView(group)
+            return toggle to group
+        }
+        val (_, readingGroup) = expandableGroup(t("Screen and image reading", "قراءة الشاشة والصور"))
+        ocrButton = ui.button(readingGroup, t("Image reading: ", "قراءة الصور: ") + ocr) { }
         ocrNotice = ui.secondary(readingNotice(source, ocr).orEmpty())
-        body.addView(ocrNotice)
+        readingGroup.addView(ocrNotice)
         ocrButton.setOnClickListener {
             val models = ModelStore.models
             val selected = models.map { it.language in ocr.split('+') }.toBooleanArray()
@@ -661,13 +670,12 @@ class MainActivity : Activity() {
                 }.setNegativeButton(R.string.cancel, null).show()
         }
         val pageModes = listOf("sparse", "block", "vertical")
-        val page = ui.select(body, t("Text layout in images", "تخطيط النص في الصور"),
+        val page = ui.select(readingGroup, t("Text layout in images", "تخطيط النص في الصور"),
             listOf(t("Scattered text", "نص متفرق"), t("Text block", "كتلة نص"), t("Vertical CJK", "نص شرق آسيوي عمودي")),
             pageModes.indexOf(old.ocrPageMode))
-        body.addView(ui.secondary(t("Changing the source selects its reading model where available. Install missing models in the model manager. Vertical reading selects the corresponding vertical CJK model.",
+        readingGroup.addView(ui.secondary(t("Changing the source selects its reading model where available. Install missing models in the model manager. Vertical reading selects the corresponding vertical CJK model.",
             "يختار تبديل اللغة الأصلية نموذج قراءتها عند توفره. ثبّت النماذج المفقودة من مدير النماذج. تختار القراءة العمودية نموذج شرق آسيا العمودي المقابل.")))
-        val networkGroup = ui.column()
-        body.addView(networkGroup)
+        val (connectionButton, networkGroup) = expandableGroup(t("Service connection", "الاتصال بخدمة الترجمة"))
         val endpoint = ui.field(networkGroup, t("Service URL (HTTPS)", "عنوان الخدمة (HTTPS)"), old.endpoint)
         val key = ui.field(networkGroup, t("API key or service token", "مفتاح API أو رمز الخدمة"), old.apiKey, secret = true)
         val modelGroup = ui.column()
@@ -697,7 +705,8 @@ class MainActivity : Activity() {
         var authPosition = auth.selectedItemPosition
         fun refreshProvider() {
             val p = providers[provider.selectedItemPosition]
-            networkGroup.visibility = if (p.requiresNetwork) View.VISIBLE else View.GONE
+            connectionButton.visibility = if (p.requiresNetwork) View.VISIBLE else View.GONE
+            if (!p.requiresNetwork) networkGroup.visibility = View.GONE
             modelGroup.visibility = if (p.requiresModel) View.VISIBLE else View.GONE
             regionGroup.visibility = if (p.id == "azure") View.VISIBLE else View.GONE
             yandexGroup.visibility = if (p.id == "yandex") View.VISIBLE else View.GONE

@@ -199,8 +199,11 @@ class MainUiInstrumentationTest {
             try {
                 val saveSelector = By.pkg(context.packageName).res("android:id/button1")
                 assertTrue("Settings dialog did not appear", device.wait(Until.hasObject(saveSelector), 5000))
-                UiScrollable(UiSelector().packageName(context.packageName).scrollable(true))
-                    .scrollIntoView(UiSelector().text(initialUrl))
+                val fields = UiScrollable(UiSelector().packageName(context.packageName).scrollable(true))
+                assertFalse(device.hasObject(By.text(initialUrl)))
+                fields.scrollIntoView(UiSelector().text("Service connection"))
+                requireNotNull(device.findObject(By.text("Service connection"))).click()
+                fields.scrollIntoView(UiSelector().text(initialUrl))
                 val endpoint = device.findObject(By.pkg(context.packageName).clazz(EditText::class.java).text(initialUrl))
                 assertNotNull("Service endpoint field was not found", endpoint)
                 endpoint!!.text = replacementUrl
