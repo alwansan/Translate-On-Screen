@@ -89,6 +89,33 @@ class MainUiInstrumentationTest {
         }
     }
 
+    @Test fun redesignedNavigationTracksSelectionAndKeepsCaptureModeVisible() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            fun assertSelected(activity: MainActivity, title: String) {
+                val navigation = descendants(activity.window.decorView).filterIsInstance<Button>()
+                    .filter { it.text.toString() in setOf("Home", "Translate", "More") }
+                assertEquals(listOf(title), navigation.filter { it.isSelected }.map { it.text.toString() })
+            }
+            scenario.onActivity { activity ->
+                assertSelected(activity, "Home")
+                val buttons = descendants(activity.window.decorView).filterIsInstance<Button>()
+                assertTrue(buttons.any { it.text.toString().startsWith("Capture mode: ") })
+                assertTrue(buttons.any { it.text.toString() == "Start floating button" })
+            }
+            recordUiEvidence("redesign_home_en_light")
+            scenario.onActivity { activity ->
+                press(activity, "Translate")
+                assertSelected(activity, "Translate")
+            }
+            recordUiEvidence("redesign_translate_en_light")
+            scenario.onActivity { activity ->
+                press(activity, "More")
+                assertSelected(activity, "More")
+            }
+            recordUiEvidence("redesign_more_en_light")
+        }
+    }
+
     @Test fun arabicDarkInterfaceKeepsTranslationLanguagesIndependent() {
         AppPreferences.saveAppearance(context, "ar", "dark")
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
@@ -101,6 +128,7 @@ class MainUiInstrumentationTest {
                 press(activity, "ترجمة")
                 assertTrue(descendants(activity.window.decorView).filterIsInstance<EditText>().isNotEmpty())
             }
+            recordUiEvidence("redesign_translate_ar_dark")
         }
     }
     @Test fun changingServiceAddressClearsCredentialsAndRevokesNetworkConsent() {
@@ -149,7 +177,7 @@ class MainUiInstrumentationTest {
         }
     }
 
-    /** Only the generated endpoint fixture is captured, before ActivityScenario teardown. */
+    /** Captures generated UI fixtures before ActivityScenario teardown. */
     private fun recordUiEvidence(reason: String) {
         runCatching {
             val instrumentation = InstrumentationRegistry.getInstrumentation()

@@ -4,8 +4,8 @@
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
   "branch": "feature/open-screen-translate",
-  "session": "025",
-  "phase": "awaiting_owner_acceptance",
+  "session": "026",
+  "phase": "ui_redesign",
   "last_verified_code_commit": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
   "starting_branch_head": "474af2a213baa09babab42a6f3e93722c0f9be86",
   "decoded_reference_commit": "53a10142656f60b04299fdd8fa073b0d675210ee",
@@ -27,7 +27,7 @@
   "ask_owner_for_microtests": false,
   "reference_artifact_audit": "memory/evidence/reference-artifacts.json",
   "visual_review": "memory/evidence/UI_REVIEW_AR.md",
-  "session_checkpoint": "memory/sessions/025-owner-acceptance-build.md",
+  "session_checkpoint": "memory/sessions/026-ui-redesign.md",
   "environment": {
     "status": "Local Git, Python, Android SDK 36 and build-tools 35 installed; local Gradle and software emulator bring-up in progress; Actions verifies Android.",
     "local_workspace": "/workspace/scratch/e98596280b49/open-screen-translate",
@@ -56,6 +56,8 @@
   "source_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
   "recovery_source_status": "Complete Kotlin/UI/engine/image/capture reconstruction committed for new CI; exact byte identity with inaccessible local files is not claimed.",
   "pending_gates": [
+    "redesign_visual_review",
+    "redesign_android_ci",
     "owner_final_trial"
   ],
   "latest_observed_device_ci": {
@@ -100,10 +102,10 @@
   },
   "last_verified_code_tree": "bbcab43a941fbed208b63d47e47dea75ba9aa59a",
   "documentation_checkpoint_parent": "f0388b2ac928482e73c82de8115ec10ce9aade4d",
-  "implementation_complete": true,
-  "available_validation_gates_passed": true,
-  "acceptance_ready": true,
-  "completion_condition": "Record the outcome and scope of one consolidated owner trial; resolve any reported defects before closing acceptance.",
+  "implementation_complete": false,
+  "available_validation_gates_passed": false,
+  "acceptance_ready": false,
+  "completion_condition": "Complete and visually verify the UI redesign before offering one owner trial.",
   "acceptance_build": "docs/ACCEPTANCE_BUILD.json",
   "latest_evidence": "memory/evidence/validation-7f098f2.json",
   "delivery": {
@@ -140,13 +142,12 @@
     "artifact": 15101850735,
     "expired": false
   },
-  "owner_acceptance_requested": true,
+  "owner_acceptance_requested": false,
   "latest_development_batch": {
-    "id": "025",
-    "validation": "success",
-    "source": "7f098f29ba4f1e4ec26e47db66d1793e9162d0b9",
-    "host_run": 45941313666,
-    "device_run": 45941313754
+    "id": "026",
+    "validation": "pending",
+    "design_reference": "docs/UI_REDESIGN_AR.md",
+    "historical_acceptance": "7f098f2"
   },
   "hm_behavior_verification": {
     "source": "2fccd59d5c8cab8e0ca63b428c3d55b0108794d9",

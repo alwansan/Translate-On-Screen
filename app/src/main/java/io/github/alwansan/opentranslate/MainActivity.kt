@@ -59,6 +59,7 @@ class MainActivity : Activity() {
     private lateinit var root: LinearLayout
     private lateinit var content: FrameLayout
     private lateinit var status: TextView
+    private val navigationButtons = linkedMapOf<String, Button>()
     private lateinit var progress: ProgressBar
     private lateinit var cancelButton: Button
     private val worker = Executors.newSingleThreadExecutor()
@@ -163,7 +164,12 @@ class MainActivity : Activity() {
 
     private fun t(en: String, ar: String) = ui.text(en, ar)
     private fun rememberDraft() { input?.let { draft = it.text.toString().take(MAX_INPUT) } }
-    private fun message(value: String) { if (alive && ::status.isInitialized) status.text = value }
+    private fun message(value: String) {
+        if (alive && ::status.isInitialized) {
+            status.text = value
+            status.visibility = if (value.isBlank()) View.GONE else View.VISIBLE
+        }
+    }
     private fun fail(error: Throwable) = message(error.message?.take(600) ?: getString(R.string.operation_failed))
 
     private fun buildShell() {
@@ -171,30 +177,51 @@ class MainActivity : Activity() {
         ui.insetRoot(root)
         content = FrameLayout(this)
         root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
-        val feedback = ui.column(10)
+        val feedback = ui.column().apply { setPadding(ui.dp(16), 0, ui.dp(16), 0) }
         progress = ProgressBar(this).apply { visibility = View.GONE }
         feedback.addView(progress, LinearLayout.LayoutParams(-1, ui.dp(24)))
-        status = ui.secondary(getString(R.string.ready)).apply {
+        status = ui.secondary("").apply {
+            visibility = View.GONE
             accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
         }
         feedback.addView(status)
         cancelButton = ui.button(feedback, t("Cancel current task", "إلغاء المهمة الحالية")) { cancelWork() }
         cancelButton.visibility = View.GONE
         root.addView(feedback)
-        val navigation = ui.row().apply { setBackgroundColor(ui.surface) }
-        listOf("home" to t("Home", "الرئيسية"), "translate" to t("Translate", "ترجمة"), "more" to t("More", "المزيد"))
-            .forEach { (id, title) -> ui.smallButton(navigation, title) { rememberDraft(); tab = id; renderPage() } }
+        val navigation = ui.row().apply {
+            setBackgroundColor(ui.surface)
+            setPaddingRelative(ui.dp(12), ui.dp(7), ui.dp(8), ui.dp(7))
+        }
+        navigationButtons.clear()
+        navigationButtons["home"] = ui.navigationButton(navigation, t("Home", "الرئيسية"), R.drawable.nav_screen) { openTab("home") }
+        navigationButtons["translate"] = ui.navigationButton(navigation, t("Translate", "ترجمة"), R.drawable.nav_translate) { openTab("translate") }
+        navigationButtons["more"] = ui.navigationButton(navigation, t("More", "المزيد"), R.drawable.nav_settings) { openTab("more") }
         root.addView(navigation)
         setContentView(root)
         root.requestApplyInsets()
     }
 
+    private fun openTab(id: String) {
+        if (id == tab) return
+        tab = id
+        renderPage()
+    }
+
     private fun renderPage() {
         rememberDraft()
         input = null
+        navigationButtons.forEach { (id, button) -> ui.navigationAppearance(button, id == tab) }
         content.removeAllViews()
-        val body = ui.column(18)
-        body.addView(ui.label(getString(R.string.app_name), 27f, true))
+        val body = ui.column(20)
+        val heading = when (tab) {
+            "translate" -> t("Text and images", "النص والصور")
+            "more" -> t("Library and settings", "المكتبة والإعدادات")
+            else -> getString(R.string.app_name)
+        }
+        body.addView(ui.label(heading, 28f, true).apply {
+            if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = true
+            setPadding(0, ui.dp(2), 0, ui.dp(16))
+        })
         when (tab) {
             "translate" -> renderTranslate(body)
             "more" -> renderMore(body)
@@ -204,15 +231,15 @@ class MainActivity : Activity() {
     }
 
     private fun renderHome(body: LinearLayout) {
-        body.addView(ui.secondary(t("Read it. Understand it. Keep your screen in your hands.",
-            "اقرأ النص وافهمه، وتحكّم بمشاركة شاشتك.")))
-        val capture = ui.card(body)
+        val capture = ui.card(body).apply { background = ui.heroBackground() }
         val running = CaptureService.isRunning
-        lastCaptureMode = ScreenPreferences.read(this).mode
+        val captureMode = ScreenPreferences.read(this).mode
+        lastCaptureMode = captureMode
         capture.addView(ui.label(if (running) t("Screen sharing is active", "مشاركة الشاشة فعالة")
-            else t("Ready when you are", "جاهز عندما تحتاجه"), 23f, true))
-        capture.addView(ui.secondary(t("Start the floating button, then choose the screen or area to read. Android asks before each new sharing session.",
-            "شغّل الفقاعة، ثم اختر الشاشة أو المنطقة لقراءتها. يطلب Android موافقتك عند كل جلسة مشاركة جديدة.")))
+            else t("Translate your screen", "ترجم شاشتك"), 25f, true).apply { setTextColor(android.graphics.Color.WHITE) })
+        capture.addView(ui.label(if (running) modeLabel(captureMode)
+            else t("Use the floating button over another app.", "استخدم الفقاعة العائمة فوق تطبيق آخر."),
+            15f).apply { setTextColor(0xffe3e8ff.toInt()) })
         ui.button(capture, if (running) t("Stop screen sharing", "إيقاف مشاركة الشاشة")
             else t("Start floating button", "تشغيل الفقاعة العائمة"), true) {
             if (CaptureService.isRunning) {
@@ -221,6 +248,7 @@ class MainActivity : Activity() {
                 capture.postDelayed({ if (alive && tab == "home") renderPage() }, 150)
             } else startCapture()
         }
+        ui.menuItem(capture, t("Capture mode: ", "وضع الالتقاط: ") + modeLabel(captureMode)) { chooseMode() }
         languageBar(body)
         val settings = SettingsStore.read(this)
         val provider = ProviderCatalog.find(settings.provider) ?: ProviderCatalog.providers.first()
@@ -236,7 +264,6 @@ class MainActivity : Activity() {
         ))
         ui.button(details, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
         ui.button(details, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
-        ui.button(details, t("Capture mode: ", "وضع الالتقاط: ") + modeLabel(ScreenPreferences.read(this).mode)) { chooseMode() }
         details.addView(ui.secondary(t("Screen and image reading: ", "قراءة الشاشة والصور: ") + settings.ocrLanguage))
         readingNotice(settings.source, settings.ocrLanguage)?.let { details.addView(ui.secondary(it)) }
         val missing = missingScreenReadingModels(settings)
@@ -246,9 +273,8 @@ class MainActivity : Activity() {
         }
         if (OfflineModelStore.find(settings.source, settings.target) != null)
             ui.button(details, t("Set up offline translation", "إعداد الترجمة دون إنترنت")) { setupOffline() }
-        val quick = ui.card(body, t("More ways to translate", "طرق أخرى للترجمة"))
-        ui.button(quick, t("Text, image, camera or voice", "نص أو صورة أو كاميرا أو صوت")) { tab = "translate"; renderPage() }
-        ui.button(quick, t("Quick guide", "دليل سريع")) { showGuide() }
+        ui.menuItem(body, t("Translate text, images or voice", "ترجمة نص أو صورة أو صوت")) { openTab("translate") }
+        ui.menuItem(body, t("Quick guide", "دليل سريع")) { showGuide() }
     }
 
     private fun languageName(code: String): String = when (code) {
@@ -523,32 +549,27 @@ class MainActivity : Activity() {
 
     private fun renderMore(body: LinearLayout) {
         val library = ui.card(body, t("Your saved text", "نصوصك المحفوظة"))
-        ui.button(library, t("Translation history", "سجل الترجمات")) { showHistory() }
-        ui.button(library, t("Personal wordbook", "القاموس الشخصي")) { showWordbook() }
-        val dictionary = ui.card(body, t("Word meanings", "معاني الكلمات"))
-        dictionary.addView(ui.secondary(t("Look up a word's definitions, pronunciation and examples. You choose when to connect to the dictionary service.",
-            "ابحث عن معاني كلمة ولفظها وأمثلتها. أنت تختار متى يتم الاتصال بخدمة القاموس.")))
-        ui.button(dictionary, t("Dictionary lookup", "البحث في القاموس المعجمي")) { openDictionary() }
+        ui.menuItem(library, t("Translation history", "سجل الترجمات")) { showHistory() }
+        ui.menuItem(library, t("Personal wordbook", "القاموس الشخصي")) { showWordbook() }
+        ui.menuItem(library, t("Dictionary lookup", "البحث في القاموس المعجمي")) { openDictionary() }
         val preferences = ui.card(body, t("Preferences", "التفضيلات"))
-        ui.button(preferences, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
-        ui.button(preferences, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
-        ui.button(preferences, t("Offline translation and reading models", "الترجمة المحلية ونماذج القراءة")) { showModels() }
-        ui.button(preferences, t("Voice settings", "إعدادات النطق")) { showSpeechSettings() }
-        ui.button(preferences, t("Interface language and theme", "لغة الواجهة والمظهر")) { showAppearance() }
-        ui.button(preferences, t("Add Quick Settings tile", "إضافة بلاطة الإعدادات السريعة")) { addQuickTile() }
+        ui.menuItem(preferences, t("Languages and provider", "اللغات ومزوّد الترجمة")) { showSettings() }
+        ui.menuItem(preferences, t("Screen modes and appearance", "أوضاع الشاشة والمظهر")) { ScreenSettingsDialog.show(this) }
+        ui.menuItem(preferences, t("Offline translation and reading models", "الترجمة المحلية ونماذج القراءة")) { showModels() }
+        ui.menuItem(preferences, t("Voice settings", "إعدادات النطق")) { showSpeechSettings() }
+        ui.menuItem(preferences, t("Interface language and theme", "لغة الواجهة والمظهر")) { showAppearance() }
+        ui.menuItem(preferences, t("Add Quick Settings tile", "إضافة بلاطة الإعدادات السريعة")) { addQuickTile() }
         val help = ui.card(body, t("About and help", "حول التطبيق والمساعدة"))
-        ui.button(help, t("How to use the app", "طريقة استخدام التطبيق")) { showGuide() }
-        ui.button(help, t("If the floating button disappears", "إذا اختفت الفقاعة العائمة")) { showBackgroundHelp() }
-        ui.button(help, t("Privacy and permissions", "الخصوصية والصلاحيات")) { showPrivacy() }
-        ui.button(help, t("Open-source licenses", "تراخيص المصدر المفتوح")) { showLicenses() }
-        ui.button(help, t("Source code and project", "المصدر ومشروع التطبيق")) {
+        ui.menuItem(help, t("How to use the app", "طريقة استخدام التطبيق")) { showGuide() }
+        ui.menuItem(help, t("If the floating button disappears", "إذا اختفت الفقاعة العائمة")) { showBackgroundHelp() }
+        ui.menuItem(help, t("Privacy and permissions", "الخصوصية والصلاحيات")) { showPrivacy() }
+        ui.menuItem(help, t("Open-source licenses", "تراخيص المصدر المفتوح")) { showLicenses() }
+        ui.menuItem(help, t("Source code and project", "المصدر ومشروع التطبيق")) {
             openUrl("https://github.com/alwansan/Translate-On-Screen/tree/feature/open-screen-translate")
         }
-        ui.button(help, t("Share the project", "مشاركة المشروع")) {
+        ui.menuItem(help, t("Share the project", "مشاركة المشروع")) {
             shareText("Open Screen Translate\nhttps://github.com/alwansan/Translate-On-Screen/tree/feature/open-screen-translate")
         }
-        help.addView(ui.secondary(t("Independent open-source Android application. Development version 0.2.0.",
-            "تطبيق Android مستقل ومفتوح المصدر. إصدار تطويري 0.2.0.")))
     }
 
     private fun showSettings() {

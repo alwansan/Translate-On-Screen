@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "ready_for_owner_acceptance",
+  "status": "historical_build_ui_redesign_requested",
   "updated_date": "2026-11-27",
   "timezone": "Asia/Baghdad",
   "repository": "alwansan/Translate-On-Screen",
@@ -102,7 +102,7 @@
   },
   "evidence": "memory/evidence/validation-7f098f2.json",
   "acceptance_guide": "docs/ACCEPTANCE_AR.md",
-  "owner_acceptance": "awaiting_one_consolidated_owner_trial",
+  "owner_acceptance": "ui_rejected_redesign_in_progress",
   "limitations": [
     "Offline translation en<->ar, en<->ja, ko->en, and zh<->en with Simplified Chinese output.",
     "In-app definition lookup is English; other languages use disclosed external dictionary links",

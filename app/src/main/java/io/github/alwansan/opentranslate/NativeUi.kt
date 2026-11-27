@@ -1,9 +1,11 @@
 package io.github.alwansan.opentranslate
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.text.InputType
 import android.view.Gravity
@@ -14,13 +16,16 @@ import android.widget.*
 /** Small native view helpers; labels remain Arabic/English and follow the app locale. */
 class NativeUi(val context: Context) {
     val dark = AppPreferences.isDark(context)
-    val background = Color.parseColor(if (dark) "#10191F" else "#F2F6F6")
-    val surface = Color.parseColor(if (dark) "#1B2932" else "#FFFFFF")
-    val ink = Color.parseColor(if (dark) "#EDF5F5" else "#17343D")
-    val muted = Color.parseColor(if (dark) "#A9BBC3" else "#536B75")
-    val accent = Color.parseColor(if (dark) "#6CDED1" else "#087F83")
-    val onAccent = Color.parseColor(if (dark) "#073D3C" else "#FFFFFF")
-    val border = Color.parseColor(if (dark) "#3B515D" else "#D4E1E4")
+    val background = Color.parseColor(if (dark) "#10131B" else "#F3F5FA")
+    val surface = Color.parseColor(if (dark) "#1B202E" else "#FFFFFF")
+    val ink = Color.parseColor(if (dark) "#F5F6FF" else "#182139")
+    val muted = Color.parseColor(if (dark) "#B5BDD3" else "#525E77")
+    val accent = Color.parseColor(if (dark) "#B9C6FF" else "#33499A")
+    val onAccent = Color.parseColor(if (dark) "#172751" else "#FFFFFF")
+    val border = Color.parseColor(if (dark) "#3D465D" else "#D9DFEF")
+    private val selectedSurface = Color.parseColor(if (dark) "#303F69" else "#E4EAFF")
+    private val feedbackRipple = ColorStateList.valueOf(if (dark) 0x26ffffff else 0x2233499a)
+
 
     fun dp(value: Int) = (value * context.resources.displayMetrics.density + .5f).toInt()
     fun text(en: String, ar: String) = context.engineMessage(en, ar)
@@ -28,6 +33,38 @@ class NativeUi(val context: Context) {
         setColor(color); cornerRadius = dp(radius).toFloat()
         if (stroke) setStroke(dp(1), border)
     }
+    fun heroBackground() = GradientDrawable(
+        GradientDrawable.Orientation.TL_BR,
+        intArrayOf(Color.rgb(33, 54, 119), Color.rgb(70, 53, 111)),
+    ).apply { cornerRadius = dp(26).toFloat() }
+
+    fun navigationAppearance(button: Button, selected: Boolean) {
+        button.isSelected = selected
+        button.setTextColor(if (selected) accent else muted)
+        button.compoundDrawables.filterNotNull().forEach { it.setTint(if (selected) accent else muted) }
+        button.background = RippleDrawable(feedbackRipple,
+            shape(if (selected) selectedSurface else surface, 17), null)
+    }
+
+    fun navigationButton(parent: LinearLayout, title: String, icon: Int, action: () -> Unit): Button =
+        smallButton(parent, title, action).apply {
+            minimumHeight = dp(58)
+            setPaddingRelative(dp(4), dp(6), dp(4), dp(5))
+            setCompoundDrawablesWithIntrinsicBounds(0, icon, 0, 0)
+            compoundDrawablePadding = dp(2)
+            textSize = 12f
+            (layoutParams as LinearLayout.LayoutParams).marginEnd = dp(4)
+        }
+
+    fun menuItem(parent: LinearLayout, value: String, action: () -> Unit): Button =
+        button(parent, value, action = action).apply {
+            gravity = Gravity.CENTER_VERTICAL or Gravity.START
+            setPaddingRelative(dp(12), dp(6), dp(12), dp(6))
+            setTextColor(ink)
+            backgroundTintList = null
+            background = RippleDrawable(feedbackRipple, shape(surface, 12), null)
+        }
+
     fun column(padding: Int = 0) = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
         setPadding(dp(padding), dp(padding), dp(padding), dp(padding))
@@ -50,7 +87,8 @@ class NativeUi(val context: Context) {
         val button = Button(context).apply {
             text = value; isAllCaps = false; minHeight = dp(48); minimumHeight = dp(48)
             setTextColor(if (primary) onAccent else accent)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(if (primary) accent else surface)
+            background = RippleDrawable(feedbackRipple, shape(if (primary) accent else surface, 15, !primary), null)
+            setPaddingRelative(dp(16), dp(10), dp(16), dp(10))
             setOnClickListener { action() }
         }
         parent.addView(button, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(4) })
@@ -58,7 +96,9 @@ class NativeUi(val context: Context) {
     }
     fun smallButton(parent: LinearLayout, value: String, action: () -> Unit): Button {
         val b = Button(context).apply {
-            text = value; isAllCaps = false; minHeight = dp(48); setTextColor(accent)
+            text = value; isAllCaps = false; minHeight = dp(48); minimumHeight = dp(48); setTextColor(accent)
+            background = RippleDrawable(feedbackRipple, shape(surface, 12), null)
+            setPaddingRelative(dp(5), dp(8), dp(5), dp(8))
             setOnClickListener { action() }
         }
         parent.addView(b, LinearLayout.LayoutParams(0, -2, 1f))
