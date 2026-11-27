@@ -96,6 +96,28 @@ class MarianRuntimeTest {
         } finally { runtime.close() }
     }
 
+    @Test fun reportScreenTranslationBaseline() {
+        val samples = mapOf(
+            "en-ar" to listOf("Do not close this window.", "Your battery is at 20%.",
+                "The meeting starts at 10:30 tomorrow.", "The download failed. Check your connection.",
+                "Hold the button to pause the video.", "Your changes have not been saved."),
+            "ar-en" to listOf("لا تغلق هذه النافذة.", "نسبة شحن البطارية 20%.",
+                "يبدأ الاجتماع غداً في الساعة 10:30.", "فشل التنزيل. تحقق من اتصالك.",
+                "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.", "لم يتم حفظ تغييراتك."))
+        for ((direction, phrases) in samples) {
+            val (pack, folder) = verifiedPack(direction)
+            val started = System.nanoTime()
+            MarianRuntime(folder, pack).use { runtime ->
+                println("benchmark $direction load_ms=" + (System.nanoTime() - started) / 1_000_000)
+                for (phrase in phrases) {
+                    val before = System.nanoTime()
+                    val output = runtime.translate(phrase, gate)
+                    println("benchmark $direction ms=" + (System.nanoTime() - before) / 1_000_000 + " | " + phrase + " | " + output)
+                }
+            }
+        }
+    }
+
     private fun verifiedPack(id: String): Pair<OfflineModelPack, File> {
         val base = System.getenv("OFFLINE_MODEL_TEST_ROOT")
         require(!base.isNullOrBlank()) { "Set OFFLINE_MODEL_TEST_ROOT; native model tests cannot skip missing packs." }

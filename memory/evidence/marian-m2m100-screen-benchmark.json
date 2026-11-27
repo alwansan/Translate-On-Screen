@@ -1,0 +1,222 @@
+{
+  "m2m_load_ms": 1864,
+  "m2m_peak_rss_kib": 597892,
+  "rows": [
+    {
+      "direction": "en-ar",
+      "source": "Do not close this window.",
+      "marian": {
+        "ms": 505,
+        "text": "لا تغلق هذه النافذة."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 366,
+          "text": "لا تغلق هذا النافذة."
+        },
+        "4": {
+          "ms": 451,
+          "text": "لا تقم بإغلاق هذا النافذة."
+        }
+      }
+    },
+    {
+      "direction": "en-ar",
+      "source": "Your battery is at 20%.",
+      "marian": {
+        "ms": 434,
+        "text": "بطاريتك بنسبة 20%"
+      },
+      "m2m100": {
+        "1": {
+          "ms": 317,
+          "text": "البطارية لديك 20 ٪."
+        },
+        "4": {
+          "ms": 377,
+          "text": "البطارية لديك 20 ٪."
+        }
+      }
+    },
+    {
+      "direction": "en-ar",
+      "source": "The meeting starts at 10:30 tomorrow.",
+      "marian": {
+        "ms": 738,
+        "text": "الاجتماع سيبدأ في الساعة 10:30 غداً"
+      },
+      "m2m100": {
+        "1": {
+          "ms": 423,
+          "text": "يبدأ الاجتماع في الساعة 10:30 صباحاً."
+        },
+        "4": {
+          "ms": 486,
+          "text": "يبدأ الاجتماع في الساعة 10:30 صباحاً."
+        }
+      }
+    },
+    {
+      "direction": "en-ar",
+      "source": "The download failed. Check your connection.",
+      "marian": {
+        "ms": 739,
+        "text": "فشل التحميل. تحقق من اتصالك."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 289,
+          "text": "تحميل الفشل – تحقق من الاتصال"
+        },
+        "4": {
+          "ms": 408,
+          "text": "تحميل فشل التحقق من اتصالك"
+        }
+      }
+    },
+    {
+      "direction": "en-ar",
+      "source": "Hold the button to pause the video.",
+      "marian": {
+        "ms": 365,
+        "text": "أوقف الزر لإيقاف الفيديو"
+      },
+      "m2m100": {
+        "1": {
+          "ms": 334,
+          "text": "اضغط على الزر لوقف الفيديو."
+        },
+        "4": {
+          "ms": 398,
+          "text": "اضغط على الزر لوقف الفيديو."
+        }
+      }
+    },
+    {
+      "direction": "en-ar",
+      "source": "Your changes have not been saved.",
+      "marian": {
+        "ms": 522,
+        "text": "لم يتم حفظ تغييراتك."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 420,
+          "text": "لكن التغييرات لم يتم إنقاذها."
+        },
+        "4": {
+          "ms": 453,
+          "text": "التغييرات لم يتم إنقاذها."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "لا تغلق هذه النافذة.",
+      "marian": {
+        "ms": 688,
+        "text": "Don't close that window."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 212,
+          "text": "Do not close this window."
+        },
+        "4": {
+          "ms": 288,
+          "text": "Do not close this window."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "نسبة شحن البطارية 20%.",
+      "marian": {
+        "ms": 465,
+        "text": "Battery charge is 20%."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 277,
+          "text": "The battery is charged by 20%."
+        },
+        "4": {
+          "ms": 323,
+          "text": "The battery charging rate is 20%."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "يبدأ الاجتماع غداً في الساعة 10:30.",
+      "marian": {
+        "ms": 665,
+        "text": "The meeting will begin tomorrow at 10:30."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 292,
+          "text": "The meeting will start tomorrow at 10:30."
+        },
+        "4": {
+          "ms": 461,
+          "text": "The meeting begins tomorrow at 10:30 p.m."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "فشل التنزيل. تحقق من اتصالك.",
+      "marian": {
+        "ms": 342,
+        "text": "Check your call."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 484,
+          "text": "Failure to download. check your contact."
+        },
+        "4": {
+          "ms": 481,
+          "text": "Failure to download. check your contact."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "اضغط مطولاً على الزر لإيقاف الفيديو مؤقتاً.",
+      "marian": {
+        "ms": 653,
+        "text": "Press the button at length to stop the video temporarily."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 490,
+          "text": "Press the button to temporarily stop the video."
+        },
+        "4": {
+          "ms": 555,
+          "text": "Press the button to stop the video temporarily."
+        }
+      }
+    },
+    {
+      "direction": "ar-en",
+      "source": "لم يتم حفظ تغييراتك.",
+      "marian": {
+        "ms": 574,
+        "text": "Your changes have not been saved."
+      },
+      "m2m100": {
+        "1": {
+          "ms": 317,
+          "text": "Your changes have not been saved."
+        },
+        "4": {
+          "ms": 419,
+          "text": "Your changes have not been saved."
+        }
+      }
+    }
+  ]
+}
